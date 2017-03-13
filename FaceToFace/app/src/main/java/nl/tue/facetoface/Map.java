@@ -16,6 +16,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Map extends FragmentActivity implements OnMapReadyCallback {
 
+    //test voor iedereen
+
     private GoogleMap mMap;
 
     @Override
