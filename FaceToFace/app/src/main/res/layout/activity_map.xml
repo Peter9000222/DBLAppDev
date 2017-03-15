@@ -22,7 +22,7 @@
             android:textColor="#FFFFFF"
             android:textSize="40dp"/>
 
-        <ImageButton
+        <Button
             android:id="@+id/goToTopicButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
