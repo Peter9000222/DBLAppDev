@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">FaceToFace</string>
     <string name="title_activity_map">Map</string>
+
+    <string name="Topic">Topic</string>
+    <string name="Interests">Interests</string>
+    <string name="EditTopic">What topic do you want to talk about?</string>
+    <string name="EditInterests">What interests do you have?</string>
 </resources>

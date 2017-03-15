@@ -1,9 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="nl.tue.facetoface.TopicActivity">
+    android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:textSize="25dp"
+        android:textColor="@color/black"
+        android:text="@string/Topic"
+        android:id="@+id/TopicText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"/>
+    <EditText
+        android:padding="5dp"
+        android:textSize="20dp"
+        android:hint="@string/EditTopic"
+        android:id="@+id/TopicEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"/>
+    <TextView
+        android:textSize="25dp"
+        android:text="@string/Interests"
+        android:textColor="@color/black"
+        android:padding="5dp"
+        android:id="@+id/InterestsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:padding="5dp"
+        android:textSize="20dp"
+        android:hint="@string/EditInterests"
+        android:id="@+id/InterestsEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
