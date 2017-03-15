@@ -6,6 +6,31 @@
     android:orientation="vertical"
     android:weightSum="10">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="0.8"
+        android:weightSum="10"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="8"
+            android:text="  Map"
+            android:textColor="#FFFFFF"
+            android:textSize="40dp"/>
+
+        <ImageButton
+            android:id="@+id/goToTopicButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@mipmap/ic_launcher"/>
+
+    </LinearLayout>
+
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -13,10 +38,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         tools:context="nl.tue.facetoface.Map"
-        android:layout_weight="9" />
+        android:layout_weight="8.2" />
 
     <Button
-        android:id="@+id/openListBut"
+        android:id="@+id/openListButton"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/colorPrimary"
