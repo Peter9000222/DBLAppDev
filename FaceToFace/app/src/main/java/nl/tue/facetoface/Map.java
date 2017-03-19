@@ -1,12 +1,15 @@
 package nl.tue.facetoface;
 
+import android.Manifest;
 import android.content.Intent;
-import android.os.Bundle;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.os.Bundle;
+import android.location.Location;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -15,15 +18,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
-
-public class Map extends FragmentActivity implements OnMapReadyCallback {
+public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
     //test voor iedereen
     //test 3
 
     private GoogleMap mMap;
-    private ImageButton listButton;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +36,15 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        listButton = (ImageButton) findViewById(R.id.imageButton);
-        listButton.setOnClickListener(new View.OnClickListener(){
+        Button goToTopic = (Button) findViewById(R.id.goToTopicButton);
+        goToTopic.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                sendMessage();
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), TopicActivity.class);
+                startActivity(intent);
             }
         });
+
     }
 
 
@@ -62,10 +66,5 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
-    }
-
-    public void sendMessage() {
-        Intent intent = new Intent(this, TopicActivity.class);
-        startActivity(intent);
     }
 }
