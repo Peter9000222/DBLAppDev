@@ -20,12 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
-    //test voor iedereen
-    //test 3
-
     private GoogleMap mMap;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,5 +61,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
+    }
+
+    public void goToTopicButtonClick (View view) {
+        Intent intent = new Intent(this, TopicActivity.class);
+        startActivity(intent);
     }
 }
