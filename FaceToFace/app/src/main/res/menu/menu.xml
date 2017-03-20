@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/changeTopic"
+    <!--<item
+        android:id="@+id/toInbox"
         android:title=""
         android:icon="@mipmap/ic_launcher"
         app:showAsAction="always">
 
+    </item>-->
+    <item
+        android:title="Message"
+        android:id="@+id/message"
+        app:showAsAction="always"
+        android:icon="@mipmap/ic_mail_white_48dp">
     </item>
 </menu>
