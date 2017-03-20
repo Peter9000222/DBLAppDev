@@ -36,14 +36,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Button goToTopic = (Button) findViewById(R.id.goToTopicButton);
+   /*     Button goToTopic = (Button) findViewById(R.id.goToTopicButton);
         goToTopic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), TopicActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
     }
 

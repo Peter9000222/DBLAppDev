@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">FaceToFace</string>
     <string name="title_activity_map">Map</string>
+    <string name="ListOfTopics">List of Topics</string>
 </resources>
