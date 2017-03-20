@@ -8,6 +8,9 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -22,28 +25,44 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
     //test voor iedereen
     //test 3
-
+    private Toolbar toolbar;
     private GoogleMap mMap;
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-   /*     Button goToTopic = (Button) findViewById(R.id.goToTopicButton);
-        goToTopic.setOnClickListener(new View.OnClickListener() {
+        //Action Bar with icon
+        toolbar = (Toolbar) findViewById(R.id.toolbar4);
+        setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setTitle("Map");
+        }
+        toolbar.inflateMenu(R.menu.menu);
+
+
+        Button goToInbox = (Button) findViewById(R.id.buttonListOfTopics);
+        goToInbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), TopicActivity.class);
+                Intent intent = new Intent(v.getContext(), InboxActivity.class);
                 startActivity(intent);
             }
-        });*/
+        });
+
 
     }
 
@@ -67,4 +86,21 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch(id){
+            case R.id.message :
+                Intent intentInbox = new Intent(this, InboxActivity.class);
+                startActivity(intentInbox);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+
 }
