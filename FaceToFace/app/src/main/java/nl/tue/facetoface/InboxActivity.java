@@ -3,7 +3,7 @@ package nl.tue.facetoface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class InboxActivity extends AppCompatActivity {
+public class InboxActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
