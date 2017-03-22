@@ -12,30 +12,19 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-            <TextView
+        <TextView
                 android:textSize="25dp"
                 android:textColor="@color/black"
                 android:text="@string/Topic"
                 android:id="@+id/TopicText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:padding="5dp"
                 />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/TopicImage"
-                android:padding="5dp"/>
-        </LinearLayout>
-
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
     <EditText
         android:padding="5dp"
         android:textSize="20dp"
@@ -43,7 +32,15 @@
         android:id="@+id/TopicEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:layout_marginBottom="30dp"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/TopicImage"
+        android:padding="5dp"/>
+    </LinearLayout>
     <TextView
         android:textSize="25dp"
         android:text="@string/Interests"
@@ -52,13 +49,25 @@
         android:id="@+id/InterestsText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
     <EditText
         android:padding="5dp"
         android:textSize="20dp"
         android:hint="@string/EditInterests"
         android:id="@+id/InterestsEdit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+        <Button
+            android:id="@+id/InterestButton"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"

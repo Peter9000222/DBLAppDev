@@ -12,6 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -23,7 +26,9 @@ public class TopicActivity extends AppCompatActivity {
     private RecyclerView.Adapter Interest_adap;
     private RecyclerView.LayoutManager Interests_manager;
 
-    ArrayList<Contact> contacts;
+    ArrayList<Contact> contacts = new ArrayList<>();
+    EditText etInterest;
+    Button bInterest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +40,23 @@ public class TopicActivity extends AppCompatActivity {
         //ImageView displaying wether a topic is filled in or not
         ImageView TopicCorrect = (ImageView) findViewById(R.id.TopicImage);
         TopicCorrect.setImageResource(R.mipmap.ic_launcher);
-        contacts = Contact.createContactsList(20);
         Interests_recyc = (RecyclerView) findViewById(R.id.my_recycler_view);
 
         Interests_manager = new LinearLayoutManager(this);
         Interests_recyc.setLayoutManager(Interests_manager);
-
         Interest_adap = new ContactsAdapter(this, contacts);
         Interests_recyc.setAdapter(Interest_adap);
+
+        etInterest = (EditText) findViewById(R.id.InterestsEdit);
+        bInterest = (Button) findViewById(R.id.InterestButton);
+        bInterest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Contact newContact = new Contact(etInterest.getText().toString());
+                contacts.add(newContact);
+            }
+        });
+
     }
 
     @Override
