@@ -7,11 +7,11 @@ package nl.tue.facetoface.Models;
 public class Request {
 
     public int senderID;
-
     public int receiverId;
-
     public String timeStamp;
-
     public boolean status;
 
+    public void setSenderID(int ID) {
+        this.senderID = ID;
+    }
 }
