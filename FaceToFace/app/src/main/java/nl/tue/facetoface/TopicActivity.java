@@ -1,19 +1,29 @@
 package nl.tue.facetoface;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
-import static java.security.AccessController.getContext;
-import static nl.tue.facetoface.R.mipmap.ic_launcher;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TopicActivity extends AppCompatActivity {
+
+    private RecyclerView Interests_recyc;
+    private RecyclerView.Adapter Interest_adap;
+    private RecyclerView.LayoutManager Interests_manager;
+
+    ArrayList<Contact> contacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +31,18 @@ public class TopicActivity extends AppCompatActivity {
         setContentView(R.layout.activity_topic);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+
+        //ImageView displaying wether a topic is filled in or not
+        ImageView TopicCorrect = (ImageView) findViewById(R.id.TopicImage);
+        TopicCorrect.setImageResource(R.mipmap.ic_launcher);
+        contacts = Contact.createContactsList(20);
+        Interests_recyc = (RecyclerView) findViewById(R.id.my_recycler_view);
+
+        Interests_manager = new LinearLayoutManager(this);
+        Interests_recyc.setLayoutManager(Interests_manager);
+
+        Interest_adap = new ContactsAdapter(this, contacts);
+        Interests_recyc.setAdapter(Interest_adap);
     }
 
     @Override
@@ -42,5 +64,7 @@ public class TopicActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
 
 }

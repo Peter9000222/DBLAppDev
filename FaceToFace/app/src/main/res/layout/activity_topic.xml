@@ -13,16 +13,28 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-
-        <TextView
-            android:textSize="25dp"
-            android:textColor="@color/black"
-            android:text="@string/Topic"
-            android:id="@+id/TopicText"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"/>
-
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:textSize="25dp"
+                android:textColor="@color/black"
+                android:text="@string/Topic"
+                android:id="@+id/TopicText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="5dp"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/TopicImage"
+                android:padding="5dp"/>
+        </LinearLayout>
 
     <EditText
         android:padding="5dp"
@@ -48,4 +60,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/my_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
 </LinearLayout>
+
