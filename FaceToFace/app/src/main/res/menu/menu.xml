@@ -2,10 +2,16 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/changeTopic"
-        android:title=""
-        android:icon="@mipmap/ic_launcher"
+        android:id="@+id/topicIcon"
+        android:title="Edit"
+        android:icon="@mipmap/ic_mode_edit_white_48dp"
         app:showAsAction="always">
+    </item>
 
+    <item
+        android:title="Message"
+        android:id="@+id/inboxIcon"
+        app:showAsAction="always"
+        android:icon="@mipmap/ic_mail_white_48dp">
     </item>
 </menu>

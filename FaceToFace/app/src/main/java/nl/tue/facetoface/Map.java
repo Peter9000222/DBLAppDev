@@ -8,8 +8,11 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,27 +24,42 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private Toolbar tb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Button goToTopic = (Button) findViewById(R.id.goToTopicButton);
+        // Create action bar with icon
+        tb = (Toolbar) findViewById(R.id.toolbar4);
+        setSupportActionBar(tb);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Map");
+        }
+        tb.inflateMenu(R.menu.menu);
+
+        /*Button goToTopic = (Button) findViewById(R.id.goToTopicButton);
         goToTopic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), TopicActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
 
     /**
      * Manipulates the map once available.
@@ -63,8 +81,21 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
 
     }
 
-    public void goToTopicButtonClick (View view) {
-        Intent intent = new Intent(this, TopicActivity.class);
-        startActivity(intent);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch(id){
+            case R.id.inboxIcon :
+                Intent inboxIntent = new Intent(this, InboxActivity.class);
+                startActivity(inboxIntent);
+                break;
+            case R.id.topicIcon :
+                Intent topicIntent = new Intent(this, TopicActivity.class);
+                startActivity(topicIntent);
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
+
 }

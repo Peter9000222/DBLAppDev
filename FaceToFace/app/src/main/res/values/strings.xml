@@ -6,4 +6,5 @@
     <string name="Interests">Interests</string>
     <string name="EditTopic">What topic do you want to talk about?</string>
     <string name="EditInterests">What interests do you have?</string>
+    <string name="ListOfTopics">List of topics</string>
 </resources>
