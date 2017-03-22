@@ -76,7 +76,7 @@ public class ContactsAdapter extends
 
         // Set item views based on your views and data model
         TextView textView = viewHolder.nameTextView;
-        textView.setText(contact.getName());
+        textView.setText(contact.getTopic());
             }
 
     // Returns the total count of items in the list
