@@ -31,10 +31,10 @@ public class InboxActivity extends AppCompatActivity {
             }
                                            });*/
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if(getSupportActionBar() != null){
             getSupportActionBar().setTitle("Inbox");
         }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.addTab(tabs.newTab().setText("Received Requests"));

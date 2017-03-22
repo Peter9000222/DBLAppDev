@@ -9,6 +9,13 @@
 
     </item>-->
     <item
+        android:title="Edit"
+        android:id="@+id/editIcon"
+        app:showAsAction="always"
+        android:icon="@mipmap/ic_mode_edit_white_48dp">
+    </item>
+
+    <item
         android:title="Message"
         android:id="@+id/message"
         app:showAsAction="always"

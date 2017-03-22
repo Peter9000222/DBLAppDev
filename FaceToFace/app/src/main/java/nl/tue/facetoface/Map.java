@@ -96,6 +96,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback {
                 Intent intentInbox = new Intent(this, InboxActivity.class);
                 startActivity(intentInbox);
                 break;
+            case R.id.editIcon :
+                Intent intentTopic = new Intent(this, TopicActivity.class);
+                startActivity(intentTopic);
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
