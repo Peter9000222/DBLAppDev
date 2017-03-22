@@ -36,6 +36,7 @@ public class TopicActivity extends AppCompatActivity {
         setContentView(R.layout.activity_topic);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //ImageView displaying wether a topic is filled in or not
         ImageView TopicCorrect = (ImageView) findViewById(R.id.TopicImage);
@@ -73,6 +74,9 @@ public class TopicActivity extends AppCompatActivity {
             case R.id.save_button:
                 Intent intent = new Intent(this, Map.class);
                 startActivity(intent);
+                return true;
+            case android.R.id.home:
+                onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
