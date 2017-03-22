@@ -1,4 +1,4 @@
-package nl.tue.facetoface;
+package nl.tue.facetoface.Models;
 
 import java.util.ArrayList;
 

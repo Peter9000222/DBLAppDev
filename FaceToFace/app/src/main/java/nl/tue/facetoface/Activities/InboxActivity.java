@@ -1,4 +1,4 @@
-package nl.tue.facetoface;
+package nl.tue.facetoface.Activities;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ActionMenuView;
+
+import nl.tue.facetoface.R;
 
 public class InboxActivity extends AppCompatActivity{
 

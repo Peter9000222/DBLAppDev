@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import nl.tue.facetoface.Models.Contact;
+
 /**
  * Created by s149453 on 20-3-2017.
  */

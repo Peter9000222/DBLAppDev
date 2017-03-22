@@ -1,4 +1,4 @@
-package nl.tue.facetoface;
+package nl.tue.facetoface.Models;
 
 /**
  * Created by piano on 22-Mar-17.

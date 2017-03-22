@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="nl.tue.facetoface.TopicActivity">
+    tools:context="nl.tue.facetoface.Activities.TopicActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
