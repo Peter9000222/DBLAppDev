@@ -70,7 +70,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             @Override
             public void onClick(View v) {
                 LatLng locationUser = new LatLng(mLatitude, mLongitude);
-                mMap.addMarker(new MarkerOptions().position(locationUser).title("New Marker"));
                 mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
             }
