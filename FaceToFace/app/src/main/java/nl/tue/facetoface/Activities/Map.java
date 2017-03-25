@@ -45,6 +45,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     protected Marker mUser;
     public ThisUser thisUser;
 
+    int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,8 +85,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
             }
         });
-
+        System.out.println("voor");
         buildGoogleApiClient();
+        System.out.println("na");
 
         thisUser = new ThisUser();
     }
@@ -147,27 +150,65 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     @Override
     public void onConnected(Bundle connectionHint) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show();
-            return;
-        }
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation != null) {
-            mLatitude = mLastLocation.getLatitude();
-            mLongitude = mLastLocation.getLongitude();
-            LatLng loc = new LatLng(mLatitude, mLongitude);
+            // ask for permission dialog
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
 
-            //Set location when the Map Activity is visited
-            mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-            mUser = mMap.addMarker(new MarkerOptions().position(loc).title("You are here"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
-
-            LatLng locationUser = new LatLng(mLatitude, mLongitude);
-
-            // Update user model location
-            thisUser.setLocation(locationUser);
         } else {
-            Toast.makeText(this, "No_location_detected", Toast.LENGTH_LONG).show();
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mLastLocation != null) {
+                mLatitude = mLastLocation.getLatitude();
+                mLongitude = mLastLocation.getLongitude();
+                LatLng loc = new LatLng(mLatitude, mLongitude);
+
+                //Set location when the Map Activity is visited
+                mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                mUser = mMap.addMarker(new MarkerOptions().position(loc).title("You are here"));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+
+                LatLng locationUser = new LatLng(mLatitude, mLongitude);
+
+                // Update user model location
+                thisUser.setLocation(locationUser);
+            } else {
+                Toast.makeText(this, "No_location_detected", Toast.LENGTH_LONG).show();
+            }
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // permission check for fusedLocationAPI
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mLastLocation != null) {
+                        mLatitude = mLastLocation.getLatitude();
+                        mLongitude = mLastLocation.getLongitude();
+                        LatLng loc = new LatLng(mLatitude, mLongitude);
+
+                        //Set location when the Map Activity is visited
+                        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                        mUser = mMap.addMarker(new MarkerOptions().position(loc).title("You are here"));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+
+                        LatLng locationUser = new LatLng(mLatitude, mLongitude);
+
+                        // Update user model location
+                        thisUser.setLocation(locationUser);
+
+                } else {
+                    // permission denied
+                    Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
     }
 
     // Google API client connection callback
