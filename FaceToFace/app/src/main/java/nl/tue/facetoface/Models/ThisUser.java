@@ -1,5 +1,7 @@
 package nl.tue.facetoface.Models;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 
 /**
@@ -8,27 +10,30 @@ import java.util.ArrayList;
 
 public class ThisUser extends UserData {
 
-    public ThisUser(int nID, String nTopic, ArrayList<String> nInterests) {
-        userID = nID;
-        topic = nTopic;
-        interests = nInterests;
+    public ThisUser() {
+        userID = 0;
+        topic = null;
+        interests = new ArrayList<>();
+        location = null;
     }
 
     public void setTopic(String nTopic){
         topic = nTopic;
     }
 
-    public void addInterest(String interest) {
-        interests.add(interest);
+    public void addInterest(String nInterest) {
+        interests.add(nInterest);
     }
 
-    public void deleteInterest(String interest) {
+    public void deleteInterest(String nInterest) {
         for (int i = 0; i < interests.size(); i++) {
-            if (interests.get(i).equals(interest)) {
+            if (interests.get(i).equals(nInterest)) {
                 interests.remove(i);
                 break;
             }
         }
     }
+
+    public void setLocation(LatLng nLocation) { location = nLocation; }
 
 }

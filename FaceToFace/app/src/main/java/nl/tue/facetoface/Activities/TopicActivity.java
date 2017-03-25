@@ -39,7 +39,7 @@ public class TopicActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //ImageView displaying wether a topic is filled in or not
+        //ImageView displaying whether a topic is filled in or not
         ImageView TopicCorrect = (ImageView) findViewById(R.id.TopicImage);
         TopicCorrect.setImageResource(R.mipmap.ic_launcher);
         Interests_recyc = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -58,7 +58,6 @@ public class TopicActivity extends AppCompatActivity {
                 contacts.add(newContact);
             }
         });
-
     }
 
     @Override
@@ -83,7 +82,4 @@ public class TopicActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
-
 }

@@ -30,6 +30,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 
+import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.R;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks,
@@ -43,6 +44,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     protected Double mLatitude;
     protected Double mLongitude;
     protected Marker mUser;
+    public ThisUser thisUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +65,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         }
         tb.inflateMenu(R.menu.menu);
 
-        //Move to location of the user when button clicked
+        // Move to location of the user when button clicked
         FloatingActionButton centerMap = (FloatingActionButton) findViewById(R.id.fab);
         centerMap.setImageResource(R.mipmap.ic_my_location_white_48dp);
         centerMap.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +78,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         });
 
         buildGoogleApiClient();
+
+
+        thisUser = new ThisUser();
     }
 
     @Override
@@ -84,24 +89,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         return true;
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+    //This callback is triggered when the map is ready to be used.
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-       /* LatLng sydney = new LatLng(-33, 151);
-        mUser = mMap.addMarker(new MarkerOptions().position(sydney).title("You are here"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
     }
 
     @Override
@@ -146,7 +137,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         }
     }
 
-
     // Google API client connection callback
     @Override
     public void onConnected(Bundle connectionHint) {
@@ -164,6 +154,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
             mMap.addMarker(new MarkerOptions().position(loc).title("New Marker"));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+
+            LatLng locationUser = new LatLng(mLatitude, mLongitude);
+
+            // Update user model location
+            thisUser.setLocation(locationUser);
         } else {
             Toast.makeText(this, "No_location_detected", Toast.LENGTH_LONG).show();
         }
