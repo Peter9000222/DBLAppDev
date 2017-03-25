@@ -1,6 +1,7 @@
 package nl.tue.facetoface.Activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -72,9 +73,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         centerMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LatLng locationUser = new LatLng(mLatitude, mLongitude);
-                mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
+                if (mLastLocation != null) {
+                    LatLng locationUser = new LatLng(mLatitude, mLongitude);
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
+                } else {
+                    Context context = getApplicationContext();
+                    Toast.makeText(context, "No location known", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
