@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -77,8 +76,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             }
         });
 
-        buildGoogleApiClient();
+        Button buttonListOfTopics = (Button) findViewById(R.id.buttonListOfTopics);
+        buttonListOfTopics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
+
+        buildGoogleApiClient();
 
         thisUser = new ThisUser();
     }
@@ -152,7 +158,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
             //Set location when the Map Activity is visited
             mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-            mMap.addMarker(new MarkerOptions().position(loc).title("New Marker"));
+            mUser = mMap.addMarker(new MarkerOptions().position(loc).title("You are here"));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
 
             LatLng locationUser = new LatLng(mLatitude, mLongitude);
