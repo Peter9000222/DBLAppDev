@@ -7,13 +7,17 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -26,6 +30,7 @@ public class TopicActivity extends AppCompatActivity {
     private RecyclerView Interests_recyc;
     private RecyclerView.Adapter Interest_adap;
     private RecyclerView.LayoutManager Interests_manager;
+    private static final String TAG = "MyActivity";
 
     ArrayList<Contact> contacts = new ArrayList<>();
     EditText etInterest;
@@ -50,14 +55,31 @@ public class TopicActivity extends AppCompatActivity {
         Interests_recyc.setAdapter(Interest_adap);
 
         etInterest = (EditText) findViewById(R.id.InterestsEdit);
+        etInterest.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    saveInterest();
+                    handled = true;
+                }
+                return handled;
+            }
+        });
         bInterest = (Button) findViewById(R.id.InterestButton);
         bInterest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Contact newContact = new Contact(etInterest.getText().toString());
-                contacts.add(newContact);
+                saveInterest();
             }
         });
+    }
+
+    private void saveInterest(){
+        Contact newContact = new Contact(etInterest.getText().toString());
+        contacts.add(newContact);
+        Interest_adap.notifyDataSetChanged();
+        etInterest.setText("");
     }
 
     @Override
