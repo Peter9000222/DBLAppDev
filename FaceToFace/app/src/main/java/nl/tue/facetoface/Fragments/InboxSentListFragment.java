@@ -60,6 +60,7 @@ public class InboxSentListFragment extends Fragment {
             @Override
             public void onClick(View view, final int position) {
                 //Values are passing to activity & to fragment as well
+                ((InboxActivity)getActivity()).onItemClick(position, "Sent");
                 Toast.makeText(getActivity(), "Single Click on position        :"+position,
                         Toast.LENGTH_SHORT).show();
             }

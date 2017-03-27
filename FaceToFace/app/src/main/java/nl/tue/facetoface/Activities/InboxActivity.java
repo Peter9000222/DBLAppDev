@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,18 +15,21 @@ import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ActionMenuView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.tue.facetoface.Fragments.CancelBottomSheet;
 import nl.tue.facetoface.Fragments.InboxReceivedListFragment;
 import nl.tue.facetoface.Fragments.InboxSentListFragment;
+import nl.tue.facetoface.Fragments.RequestBottomSheet;
 import nl.tue.facetoface.R;
 
 public class InboxActivity extends AppCompatActivity{
 
     private Toolbar tb;
+    CancelBottomSheet bottomSheetCancelFragment;
+    RequestBottomSheet bottomSheetRequestFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,8 @@ public class InboxActivity extends AppCompatActivity{
 
         // Action bar with icon
         tb = (Toolbar) findViewById(R.id.toolbar4);
+        bottomSheetCancelFragment = new CancelBottomSheet();
+        bottomSheetRequestFragment = new RequestBottomSheet();
 
         setSupportActionBar(tb);
         if (getSupportActionBar() != null) {
@@ -45,8 +51,6 @@ public class InboxActivity extends AppCompatActivity{
         setupViewPager(viewPager);
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-
-
     }
     // adds fragments to tabs
     private void setupViewPager(ViewPager viewPager){
@@ -132,6 +136,30 @@ public class InboxActivity extends AppCompatActivity{
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
+        }
+    }
+
+    SlidingPaneLayout.PanelSlideListener panelListener = new SlidingPaneLayout.PanelSlideListener() {
+        @Override
+        public void onPanelSlide(View panel, float slideOffset) {
+        }
+
+        @Override
+        public void onPanelOpened(View panel) {
+        }
+
+        @Override
+        public void onPanelClosed(View panel) {
+        }
+    };
+
+    public void onItemClick(int position, String fragment){
+        if (fragment == "Sent"){
+            bottomSheetCancelFragment.setTime(position);
+            bottomSheetCancelFragment.setDistance(fragment);
+            bottomSheetCancelFragment.show(getSupportFragmentManager(), bottomSheetCancelFragment.getTag());
+        } else {
+            bottomSheetRequestFragment.show(getSupportFragmentManager(), bottomSheetRequestFragment.getTag());
         }
     }
 

@@ -10,4 +10,7 @@
     <string name="ListOfTopics">List of topics</string>
     <string name="deleteButton">-</string>
     <string name="sendButton">></string>
+    <string name="CancelRequest">Cancel Request</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Accept">Accept</string>
 </resources>
