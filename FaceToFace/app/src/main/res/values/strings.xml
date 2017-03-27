@@ -8,4 +8,5 @@
     <string name="EditInterests">What interests do you have?</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAAZ6Zkptd6IjUzNRrec2e1Z5Fu9_dRamw</string>
     <string name="ListOfTopics">List of topics</string>
+    <string name="deleteButton">-</string>
 </resources>
