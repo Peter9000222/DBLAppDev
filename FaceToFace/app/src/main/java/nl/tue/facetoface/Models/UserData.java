@@ -23,6 +23,14 @@ public class UserData {
         return topic;
     }
 
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public void setInterests(ArrayList<String> interests) {
+        this.interests = interests;
+    }
+
     public ArrayList<String> getInterests() {
         return interests;
     }

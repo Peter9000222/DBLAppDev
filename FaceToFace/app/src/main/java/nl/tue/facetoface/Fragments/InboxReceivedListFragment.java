@@ -7,10 +7,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import nl.tue.facetoface.Activities.InboxActivity;
 import nl.tue.facetoface.InterestsAdapter;
 import nl.tue.facetoface.Models.InboxReceivedAdapter;
 import nl.tue.facetoface.Models.UserData;
@@ -47,13 +49,24 @@ public class InboxReceivedListFragment extends Fragment {
 
         }
 
-
         InboxReceived_recyc = (RecyclerView) getView().findViewById(R.id.inbox_received_recycler_view);
         InboxReceived_manager = new LinearLayoutManager(getContext());
         InboxReceived_recyc.setLayoutManager(InboxReceived_manager);
         InboxReceived_adap = new InboxReceivedAdapter(getContext(), inboxReceived);
         InboxReceived_recyc.setAdapter(InboxReceived_adap);
+
+        InboxReceived_recyc.addOnItemTouchListener(new InboxActivity.RecyclerTouchListener(getActivity(),
+                InboxReceived_recyc, new InboxActivity.ClickListener() {
+            @Override
+            public void onClick(View view, final int position) {
+                //Values are passing to activity & to fragment as well
+                Toast.makeText(getActivity(), "Single Click on position        :"+position,
+                        Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
+
+
 
 
 }
