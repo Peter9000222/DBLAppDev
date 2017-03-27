@@ -1,24 +1,29 @@
 package nl.tue.facetoface.Fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
+import nl.tue.facetoface.InterestsAdapter;
+import nl.tue.facetoface.Models.InboxReceivedAdapter;
+import nl.tue.facetoface.Models.UserData;
 import nl.tue.facetoface.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link InboxReceivedListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link InboxReceivedListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class InboxReceivedListFragment extends Fragment {
+
+    RecyclerView InboxReceived_recyc;
+    RecyclerView.Adapter InboxReceived_adap;
+    RecyclerView.LayoutManager InboxReceived_manager;
+
+    ArrayList<String> inboxReceived = new ArrayList<>();
 
     public InboxReceivedListFragment() {
         // Required empty public constructor
@@ -30,5 +35,25 @@ public class InboxReceivedListFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_inbox_received_list, container, false);
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        inboxReceived.add("hello");
+        int i;
+        for (i=0; i<30; i+=1){
+            inboxReceived.add("olla");
+
+        }
+
+
+        InboxReceived_recyc = (RecyclerView) getView().findViewById(R.id.inbox_received_recycler_view);
+        InboxReceived_manager = new LinearLayoutManager(getContext());
+        InboxReceived_recyc.setLayoutManager(InboxReceived_manager);
+        InboxReceived_adap = new InboxReceivedAdapter(getContext(), inboxReceived);
+        InboxReceived_recyc.setAdapter(InboxReceived_adap);
+    }
+
 
 }
