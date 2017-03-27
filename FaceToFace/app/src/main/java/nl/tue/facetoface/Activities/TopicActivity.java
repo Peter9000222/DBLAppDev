@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,7 +67,6 @@ public class TopicActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (etTopic.getText().toString().matches("")) {
@@ -77,9 +77,19 @@ public class TopicActivity extends AppCompatActivity {
                     topicFilledIn = true;
                 }
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
+            }
+        });
+
+        etTopic.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    handled = true;
+                }
+                return handled;
             }
         });
 
@@ -129,7 +139,7 @@ public class TopicActivity extends AppCompatActivity {
         Interest_adap.notifyDataSetChanged();
     }
 
-    public void updateUserData(){
+    public void setUserData(){
         topic = etTopic.getText().toString();
         user.setTopic(topic);
         user.setInterests(interests);
@@ -183,7 +193,8 @@ public class TopicActivity extends AppCompatActivity {
                 if (etTopic.getText().toString().matches("")){
                     Toast.makeText(this, "Topic must be filled in", Toast.LENGTH_SHORT).show();
                 } else {
-                    updateUserData();
+                    setUserData();
+                    Toast.makeText(this, "Topic: " + topic, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(this, Map.class);
                     startActivity(intent);
                 }

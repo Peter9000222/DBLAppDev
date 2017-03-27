@@ -34,7 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginBottom="30dp"
-        android:imeOptions=""
+        android:inputType="text"
+        android:imeOptions="actionSend"
         android:maxLines="1"/>
     <ImageView
         android:layout_width="45dp"
