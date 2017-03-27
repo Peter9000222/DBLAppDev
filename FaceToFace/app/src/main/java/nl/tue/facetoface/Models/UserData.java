@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class UserData {
 
+    public UserData(){}
     protected int userID;
     protected String topic;
     protected ArrayList<String> interests;
@@ -17,6 +18,14 @@ public class UserData {
 
     public void setUserID (int nID) {
         userID = nID;
+    }
+
+    public void setTopic(String topic){
+        this.topic = topic;
+    }
+
+    public void setInterests(ArrayList<String> interestList){
+        interests = interestList;
     }
 
     public int getUserID () {

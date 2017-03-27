@@ -7,19 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import nl.tue.facetoface.Activities.TopicActivity;
-import nl.tue.facetoface.Models.Contact;
 
 /**
  * Created by s149453 on 20-3-2017.
  */
 
-public class ContactsAdapter extends
-        RecyclerView.Adapter<ContactsAdapter.ViewHolder>{
+public class InterestsAdapter extends
+        RecyclerView.Adapter<InterestsAdapter.ViewHolder>{
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
@@ -43,13 +41,13 @@ public class ContactsAdapter extends
     }
 
     // Store a member variable for the contacts
-    private List<Contact> mContacts;
+    private List<String> mInterests;
     // Store the context for easy access
     private Context mContext;
 
     // Pass in the contact array into the constructor
-    public ContactsAdapter(Context context, List<Contact> contacts) {
-        mContacts = contacts;
+    public InterestsAdapter(Context context, List<String> interests) {
+        mInterests = interests;
         mContext = context;
     }
 
@@ -60,7 +58,7 @@ public class ContactsAdapter extends
 
     // Usually involves inflating a layout from XML and returning the holder
     @Override
-    public ContactsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public InterestsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
@@ -74,17 +72,18 @@ public class ContactsAdapter extends
 
     // Involves populating data into the item through holder
     @Override
-    public void onBindViewHolder(final ContactsAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(final InterestsAdapter.ViewHolder viewHolder, int position) {
         // Get the data model based on position
-        Contact contact = mContacts.get(position);
+        String interest = mInterests.get(position);
 
         // Set item views based on your views and data model
         TextView textView = viewHolder.nameTextView;
-        textView.setText(contact.getName());
+        textView.setText(interest);
         viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((TopicActivity)mContext).deleteInterest(viewHolder.getAdapterPosition());
+
             }
         });
     }
@@ -92,7 +91,7 @@ public class ContactsAdapter extends
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return mContacts.size();
+        return mInterests.size();
     }
 }
 

@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,8 +23,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import nl.tue.facetoface.Models.Contact;
-import nl.tue.facetoface.ContactsAdapter;
+import nl.tue.facetoface.InterestsAdapter;
+import nl.tue.facetoface.Models.UserData;
 import nl.tue.facetoface.R;
 
 public class TopicActivity extends AppCompatActivity {
@@ -40,8 +39,12 @@ public class TopicActivity extends AppCompatActivity {
     EditText etInterest;
     Button bInterest;
 
+    boolean topicFilledIn = false;
+
     //Userdata list
-    ArrayList<Contact> contacts = new ArrayList<>();
+    ArrayList<String> interests = new ArrayList<>();
+    UserData user = new UserData();
+    String topic;
 
     //Called upon creation of the topic activity
     @Override
@@ -55,9 +58,10 @@ public class TopicActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Topic");
 
         //ImageView displaying whether a topic is filled in or not
+        MenuItem saveButton = (MenuItem) findViewById(R.id.save_button);
         etTopic = (EditText) findViewById(R.id.TopicEdit);
         final ImageView TopicCorrect = (ImageView) findViewById(R.id.TopicImage);
-        TopicCorrect.setImageResource(R.mipmap.ic_launcher);
+        TopicCorrect.setImageResource(R.mipmap.incorrect_icon);
         etTopic.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -66,9 +70,11 @@ public class TopicActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (etTopic.getText().toString().matches("")) {
-                    TopicCorrect.setImageResource(R.mipmap.ic_launcher);
+                    TopicCorrect.setImageResource(R.mipmap.incorrect_icon);
+                    topicFilledIn = false;
                 } else {
-                    TopicCorrect.setImageResource(R.mipmap.ic_mail_white_48dp);
+                    TopicCorrect.setImageResource(R.mipmap.correct_icon);
+                    topicFilledIn = true;
                 }
             }
 
@@ -81,7 +87,7 @@ public class TopicActivity extends AppCompatActivity {
         Interests_recyc = (RecyclerView) findViewById(R.id.my_recycler_view);
         Interests_manager = new LinearLayoutManager(this);
         Interests_recyc.setLayoutManager(Interests_manager);
-        Interest_adap = new ContactsAdapter(this, contacts);
+        Interest_adap = new InterestsAdapter(this, interests);
         Interests_recyc.setAdapter(Interest_adap);
 
         //Listeners as to check whether the user wants to add an interest
@@ -109,10 +115,9 @@ public class TopicActivity extends AppCompatActivity {
     //adding an interest to the interest list
     public void saveInterest(){
         if(etInterest.getText().toString().matches("")) {
-            Toast.makeText(this, "CAN'T BE EMPTY", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Can't add empty interest", Toast.LENGTH_SHORT).show();
         }   else {
-            Contact newContact = new Contact(etInterest.getText().toString());
-            contacts.add(newContact);
+            interests.add(etInterest.getText().toString());
             Interest_adap.notifyDataSetChanged();
             etInterest.setText("");
         }
@@ -120,8 +125,14 @@ public class TopicActivity extends AppCompatActivity {
 
     //removing an interest from the interest list (called from the recycleview adapter)
     public void deleteInterest(int position){
-        contacts.remove(position);
+        interests.remove(position);
         Interest_adap.notifyDataSetChanged();
+    }
+
+    public void updateUserData(){
+        topic = etTopic.getText().toString();
+        user.setTopic(topic);
+        user.setInterests(interests);
     }
 
     //creating the menu in the toolbar
@@ -129,6 +140,37 @@ public class TopicActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_topic, menu);
+        menu.findItem(R.id.save_button).setEnabled(topicFilledIn);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu (final Menu menu) {
+        etTopic.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (etTopic.getText().toString().matches("")) {
+                    topicFilledIn = false;
+                    menu.findItem(R.id.save_button).setEnabled(topicFilledIn);
+
+
+                } else {
+                    topicFilledIn = true;
+                    menu.findItem(R.id.save_button).setEnabled(topicFilledIn);
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+
         return true;
     }
 
@@ -138,8 +180,14 @@ public class TopicActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.save_button:
-                Intent intent = new Intent(this, Map.class);
-                startActivity(intent);
+                if (etTopic.getText().toString().matches("")){
+                    Toast.makeText(this, "Topic must be filled in", Toast.LENGTH_SHORT).show();
+                } else {
+                    updateUserData();
+                    Intent intent = new Intent(this, Map.class);
+                    startActivity(intent);
+                }
+
                 return true;
             case android.R.id.home:
                 onBackPressed();

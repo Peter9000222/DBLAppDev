@@ -4,9 +4,10 @@
 
     <string name="Topic">Topic</string>
     <string name="Interests">Interests</string>
-    <string name="EditTopic">What topic do you want to talk about?</string>
+    <string name="EditTopic">Fill in a topic</string>
     <string name="EditInterests">What interests do you have?</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAAZ6Zkptd6IjUzNRrec2e1Z5Fu9_dRamw</string>
     <string name="ListOfTopics">List of topics</string>
     <string name="deleteButton">-</string>
+    <string name="sendButton">></string>
 </resources>
