@@ -3,6 +3,7 @@ package nl.tue.facetoface.Models;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Created by piano on 22-Mar-17.
@@ -11,10 +12,14 @@ import java.util.ArrayList;
 public class ThisUser extends UserData {
 
     public ThisUser() {
-        userID = 0;
-        topic = null;
+        userID = "hallo";
+        topic = "ik ben peter";
         interests = new ArrayList<>();
         location = null;
+    }
+
+    public void setUserID(String nID) {
+        userID = nID;
     }
 
     public void setTopic(String nTopic){
@@ -35,5 +40,4 @@ public class ThisUser extends UserData {
     }
 
     public void setLocation(LatLng nLocation) { location = nLocation; }
-
 }

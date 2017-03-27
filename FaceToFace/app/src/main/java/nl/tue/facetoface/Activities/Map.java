@@ -30,8 +30,18 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.UUID;
+
 import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.R;
+
+import static android.R.attr.name;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks,
         OnConnectionFailedListener {
@@ -45,6 +55,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     protected Double mLongitude;
     protected Marker mUser;
     public ThisUser thisUser;
+
+    // Create database
+    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference userData = mRootRef.child("userData");
 
     int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
 
@@ -88,14 +102,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         buttonListOfTopics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                userData = mRootRef.child("Users").child(thisUser.getUserID());
+                userData.setValue("hello");
             }
         });
-        System.out.println("voor");
+
         buildGoogleApiClient();
-        System.out.println("na");
 
         thisUser = new ThisUser();
+        thisUser.setUserID(UUID.randomUUID().toString());
     }
 
     @Override
@@ -141,6 +156,20 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+
+        userData.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String text = dataSnapshot.getValue(String.class);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     // Android activity life cycle method
