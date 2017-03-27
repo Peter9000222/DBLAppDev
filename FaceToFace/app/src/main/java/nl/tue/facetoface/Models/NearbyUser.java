@@ -12,7 +12,7 @@ public class NearbyUser extends UserData {
 
     protected Boolean onlineStatus;
 
-    public NearbyUser(int nID, String nTopic, ArrayList<String> nInterests, LatLng nLocation) {
+    public NearbyUser(String nID, String nTopic, ArrayList<String> nInterests, LatLng nLocation) {
         userID = nID;
         topic = nTopic;
         interests = nInterests;
