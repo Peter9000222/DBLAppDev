@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,12 +25,11 @@ import nl.tue.facetoface.Models.Contact;
 import nl.tue.facetoface.ContactsAdapter;
 import nl.tue.facetoface.R;
 
-public class TopicActivity extends AppCompatActivity {
+public class TopicActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RecyclerView Interests_recyc;
     private RecyclerView.Adapter Interest_adap;
     private RecyclerView.LayoutManager Interests_manager;
-    private static final String TAG = "MyActivity";
 
     ArrayList<Contact> contacts = new ArrayList<>();
     EditText etInterest;
@@ -75,11 +74,20 @@ public class TopicActivity extends AppCompatActivity {
         });
     }
 
-    private void saveInterest(){
-        Contact newContact = new Contact(etInterest.getText().toString());
-        contacts.add(newContact);
+    public void saveInterest(){
+        if(etInterest.getText().toString().matches("")) {
+            Toast.makeText(this, "CAN'T BE EMPTY", Toast.LENGTH_SHORT).show();
+        }   else {
+            Contact newContact = new Contact(etInterest.getText().toString());
+            contacts.add(newContact);
+            Interest_adap.notifyDataSetChanged();
+            etInterest.setText("");
+        }
+    }
+
+    public void deleteInterest(int position){
+        contacts.remove(position);
         Interest_adap.notifyDataSetChanged();
-        etInterest.setText("");
     }
 
     @Override
@@ -103,5 +111,10 @@ public class TopicActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+
     }
 }
