@@ -25,6 +25,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import nl.tue.facetoface.InterestsAdapter;
+import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.Models.UserData;
 import nl.tue.facetoface.R;
 
@@ -44,8 +45,12 @@ public class TopicActivity extends AppCompatActivity {
 
     //Userdata list
     ArrayList<String> interests = new ArrayList<>();
-    UserData user = new UserData();
+    //UserData user = new UserData();
+    //public ThisUser userMyself = new ThisUser();
     String topic;
+
+
+
 
     //Called upon creation of the topic activity
     @Override
@@ -141,8 +146,9 @@ public class TopicActivity extends AppCompatActivity {
 
     public void setUserData(){
         topic = etTopic.getText().toString();
-        user.setTopic(topic);
-        user.setInterests(interests);
+        //user.setTopic(topic);
+        //userMyself.setTopic(topic);
+        //user.setInterests(interests);
     }
 
     //creating the menu in the toolbar
@@ -196,6 +202,10 @@ public class TopicActivity extends AppCompatActivity {
                     setUserData();
                     Toast.makeText(this, "Topic: " + topic, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(this, Map.class);
+                    // send topic to map
+                    intent.putExtra("topic", topic);
+                    //send interests to map
+                    intent.putExtra("interests", interests);
                     startActivity(intent);
                 }
 

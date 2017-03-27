@@ -12,8 +12,8 @@ import java.util.UUID;
 public class ThisUser extends UserData {
 
     public ThisUser() {
-        userID = "hallo";
-        topic = "ik ben peter";
+        userID = "";//
+        topic = "ik ben harry";
         interests = new ArrayList<>();
         location = null;
     }

@@ -36,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import nl.tue.facetoface.Models.ThisUser;
@@ -61,6 +62,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     DatabaseReference userData = mRootRef.child("userData");
 
     int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
+
+
+    String topic;
+    ArrayList<String> interests = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,19 +104,36 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             }
         });
 
+        // putt all info of the user on the database
         Button buttonListOfTopics = (Button) findViewById(R.id.buttonListOfTopics);
         buttonListOfTopics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userData = mRootRef.child("Users").child(thisUser.getUserID());
-                userData.setValue("hello");
+                userData = mRootRef.child("Users").child("ik ben het !!"); //thisUser.getUserID()+" main");
+                userData.setValue("");
+                userData.child("Topic").setValue(thisUser.getTopic());
+                userData.child("Interests").setValue(thisUser.getInterests());
+                userData.child("Lat").setValue(mLatitude);
+                userData.child("Lng").setValue(mLongitude);
             }
         });
 
-        buildGoogleApiClient();
 
+        // make user and set the right values which are gotten from topic
         thisUser = new ThisUser();
         thisUser.setUserID(UUID.randomUUID().toString());
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            topic = extras.getString("topic");
+            interests= extras.getStringArrayList("interests");
+        } else { topic = ""; }
+        thisUser.setTopic(topic);
+        thisUser.setInterests(interests);
+        System.out.println(interests);
+
+
+        // google thingy
+        buildGoogleApiClient();
     }
 
     @Override
@@ -205,7 +228,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 LatLng locationUser = new LatLng(mLatitude, mLongitude);
 
                 // Update user model location
-                thisUser.setLocation(locationUser);
+                //thisUser.setLocation(locationUser);
             } else {
                 Toast.makeText(this, "No_location_detected", Toast.LENGTH_LONG).show();
             }
