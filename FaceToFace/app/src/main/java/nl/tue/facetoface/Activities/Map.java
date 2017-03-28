@@ -106,6 +106,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             userID = extras.getString("userID");
+            System.out.println(userID);
             topic = extras.getString("topic");
             interests = extras.getStringArrayList("interests");
         } else { topic = ""; }
@@ -176,7 +177,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
-
+        /*
         userData.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -188,7 +189,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        }); */
 
     }
 
