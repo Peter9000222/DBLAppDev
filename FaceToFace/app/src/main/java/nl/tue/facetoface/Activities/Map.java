@@ -53,7 +53,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     protected Double mLongitude;
     protected Marker mUser;
     public ThisUser thisUser;
-    public Boolean hasID = false;
+    public Boolean hasID;
 
     // Create database
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
@@ -68,9 +68,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_map);
-        System.out.println("test");
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -106,7 +105,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             userID = extras.getString("userID");
-            System.out.println(userID);
             topic = extras.getString("topic");
             interests = extras.getStringArrayList("interests");
         } else { topic = ""; }
@@ -155,7 +153,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             case R.id.topicIcon:
                 Intent topicIntent = new Intent(this, TopicActivity.class);
                 topicIntent.putExtra("exUserID", thisUser.getUserID());
-                topicIntent.putExtra("hasID", false);
+                hasID = false;
+                topicIntent.putExtra("hasID", hasID);
                 startActivity(topicIntent);
                 break;
 
