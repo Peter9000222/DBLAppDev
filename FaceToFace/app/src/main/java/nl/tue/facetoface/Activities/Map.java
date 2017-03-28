@@ -37,12 +37,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.R;
-
-import static android.R.attr.name;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks,
         OnConnectionFailedListener {
@@ -56,6 +53,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     protected Double mLongitude;
     protected Marker mUser;
     public ThisUser thisUser;
+    public Boolean hasID = false;
 
     // Create database
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
@@ -63,17 +61,16 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
 
-
     String topic;
     ArrayList<String> interests = new ArrayList<>();
-
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_map);
-
+        System.out.println("test");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -104,12 +101,24 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             }
         });
 
+        // make user and set the right values which are gotten from topic
+        thisUser = new ThisUser();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            userID = extras.getString("userID");
+            topic = extras.getString("topic");
+            interests = extras.getStringArrayList("interests");
+        } else { topic = ""; }
+        thisUser.setUserID(userID);
+        thisUser.setTopic(topic);
+        thisUser.setInterests(interests);
+
         // putt all info of the user on the database
         Button buttonListOfTopics = (Button) findViewById(R.id.buttonListOfTopics);
         buttonListOfTopics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userData = mRootRef.child("Users").child("ik ben het !!"); //thisUser.getUserID()+" main");
+                userData = mRootRef.child("Users").child(thisUser.getUserID());
                 userData.setValue("");
                 userData.child("Topic").setValue(thisUser.getTopic());
                 userData.child("Interests").setValue(thisUser.getInterests());
@@ -117,20 +126,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 userData.child("Lng").setValue(mLongitude);
             }
         });
-
-
-        // make user and set the right values which are gotten from topic
-        thisUser = new ThisUser();
-        thisUser.setUserID(UUID.randomUUID().toString());
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            topic = extras.getString("topic");
-            interests= extras.getStringArrayList("interests");
-        } else { topic = ""; }
-        thisUser.setTopic(topic);
-        thisUser.setInterests(interests);
-        System.out.println(interests);
-
 
         // google thingy
         buildGoogleApiClient();
@@ -158,6 +153,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 break;
             case R.id.topicIcon:
                 Intent topicIntent = new Intent(this, TopicActivity.class);
+                topicIntent.putExtra("exUserID", thisUser.getUserID());
+                topicIntent.putExtra("hasID", false);
                 startActivity(topicIntent);
                 break;
 

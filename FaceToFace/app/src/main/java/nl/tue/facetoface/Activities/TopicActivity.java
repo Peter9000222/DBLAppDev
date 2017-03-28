@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import nl.tue.facetoface.InterestsAdapter;
 import nl.tue.facetoface.Models.ThisUser;
@@ -48,6 +49,9 @@ public class TopicActivity extends AppCompatActivity {
     //UserData user = new UserData();
     //public ThisUser userMyself = new ThisUser();
     String topic;
+    String userID;
+    String exUserID;
+    Boolean hasID = true;
 
 
 
@@ -62,6 +66,13 @@ public class TopicActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Topic");
+
+        // getting exciting id from map
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            exUserID = extras.getString("exUserID");
+            hasID = extras.getBoolean("hasID");
+        }
 
         //ImageView displaying whether a topic is filled in or not
         MenuItem saveButton = (MenuItem) findViewById(R.id.save_button);
@@ -146,6 +157,11 @@ public class TopicActivity extends AppCompatActivity {
 
     public void setUserData(){
         topic = etTopic.getText().toString();
+        if (hasID == true) {
+            userID = UUID.randomUUID().toString();
+        } else {
+            userID = exUserID;
+        }
         //user.setTopic(topic);
         //userMyself.setTopic(topic);
         //user.setInterests(interests);
@@ -202,6 +218,8 @@ public class TopicActivity extends AppCompatActivity {
                     setUserData();
                     Toast.makeText(this, "Topic: " + topic, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(this, Map.class);
+                    // send userID to map
+                    intent.putExtra("userID", userID);
                     // send topic to map
                     intent.putExtra("topic", topic);
                     //send interests to map
