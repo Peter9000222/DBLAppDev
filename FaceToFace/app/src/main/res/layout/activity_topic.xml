@@ -13,7 +13,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
         <TextView
-                android:textSize="25dp"
+                android:textSize="20dp"
                 android:textColor="@color/black"
                 android:text="@string/Topic"
                 android:id="@+id/TopicText"
@@ -27,13 +27,12 @@
     android:orientation="horizontal">
     <EditText
         android:padding="5dp"
-        android:textSize="20dp"
+        android:textSize="18dp"
         android:hint="@string/EditTopic"
         android:id="@+id/TopicEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginBottom="10dp"
         android:inputType="text"
         android:imeOptions="actionSend"
         android:maxLines="1"/>
@@ -47,8 +46,7 @@
         android:padding="5dp"/>
     </LinearLayout>
     <TextView
-        android:textSize="25dp"
-        android:layout_marginTop="10dp"
+        android:textSize="20dp"
         android:text="@string/Interests"
         android:textColor="@color/black"
         android:padding="5dp"
@@ -63,7 +61,7 @@
         >
     <EditText
         android:padding="5dp"
-        android:textSize="20dp"
+        android:textSize="18dp"
         android:hint="@string/EditInterests"
         android:id="@+id/InterestsEdit"
         android:layout_width="match_parent"

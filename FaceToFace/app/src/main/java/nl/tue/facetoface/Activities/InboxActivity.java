@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -138,20 +137,6 @@ public class InboxActivity extends AppCompatActivity{
 
         }
     }
-
-    SlidingPaneLayout.PanelSlideListener panelListener = new SlidingPaneLayout.PanelSlideListener() {
-        @Override
-        public void onPanelSlide(View panel, float slideOffset) {
-        }
-
-        @Override
-        public void onPanelOpened(View panel) {
-        }
-
-        @Override
-        public void onPanelClosed(View panel) {
-        }
-    };
 
     public void onItemClick(int position, String fragment){
         if (fragment == "Sent"){
