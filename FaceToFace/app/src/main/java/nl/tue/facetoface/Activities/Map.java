@@ -57,7 +57,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     // Create database
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-    DatabaseReference userData = mRootRef.child("userData");
+    DatabaseReference userData = mRootRef.child("Users");
+    DatabaseReference Users = mRootRef.child("Users");
 
     int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
 
@@ -151,11 +152,35 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 startActivity(inboxIntent);
                 break;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             case R.id.topicIcon:
                 Intent topicIntent = new Intent(this, TopicActivity.class);
                 topicIntent.putExtra("exUserID", thisUser.getUserID());
                 hasID = false;
                 topicIntent.putExtra("hasID", hasID);
+
                 topicIntent.putExtra("userTopic", thisUser.getTopic());
                 topicIntent.putExtra("userInterestList", thisUser.getInterests());
                 startActivity(topicIntent);
@@ -202,6 +227,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Users.child(thisUser.getUserID()).removeValue();
     }
 
     // Google API client connection callback
