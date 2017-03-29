@@ -89,7 +89,6 @@ public class TopicActivity extends AppCompatActivity {
 
 
         final ImageView TopicCorrect = (ImageView) findViewById(R.id.TopicImage);
-        //TopicCorrect.setImageResource(R.mipmap.incorrect_icon);
         checkTopic(TopicCorrect);
 
         etTopic.addTextChangedListener(new TextWatcher() {
