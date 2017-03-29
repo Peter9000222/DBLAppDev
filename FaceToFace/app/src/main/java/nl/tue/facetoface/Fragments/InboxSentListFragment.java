@@ -12,7 +12,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import nl.tue.facetoface.Activities.InboxActivity;
-import nl.tue.facetoface.Adapters.InboxReceivedAdapter;
+import nl.tue.facetoface.Adapters.InboxSendAdapter;
 import nl.tue.facetoface.R;
 
 
@@ -42,7 +42,7 @@ public class InboxSentListFragment extends Fragment {
         inboxSend.add("hello");
         int i;
         for (i=0; i<30; i+=1){
-            inboxSend.add("olla");
+            inboxSend.add("p");
 
         }
 
@@ -50,7 +50,7 @@ public class InboxSentListFragment extends Fragment {
         InboxSend_recyc = (RecyclerView) getView().findViewById(R.id.inbox_send_recycler_view);
         InboxSend_manager = new LinearLayoutManager(getContext());
         InboxSend_recyc.setLayoutManager(InboxSend_manager);
-        InboxSend_adap = new InboxReceivedAdapter(getContext(), inboxSend);
+        InboxSend_adap = new InboxSendAdapter(getContext(), inboxSend);
         InboxSend_recyc.setAdapter(InboxSend_adap);
 
         InboxSend_recyc.addOnItemTouchListener(new InboxActivity.RecyclerTouchListener(getActivity(),

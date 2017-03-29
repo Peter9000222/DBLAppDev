@@ -55,7 +55,7 @@ public class InboxReceivedAdapter extends
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View contactView = inflater.inflate(R.layout.my_text_view2, parent, false);
+        View contactView = inflater.inflate(R.layout.inbox_received_cards, parent, false);
 
         // Return a new holder instance
         InboxReceivedAdapter.ViewHolder viewHolder = new InboxReceivedAdapter.ViewHolder(contactView);

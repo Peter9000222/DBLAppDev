@@ -19,7 +19,9 @@ public class InboxSendAdapter extends
     public static class ViewHolder extends RecyclerView.ViewHolder{
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView inboxSendTextView;
+        public TextView inboxSendTopicTextView;
+        public TextView inboxSendTimeTextView;
+        public TextView inboxSendDistanceTextView;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -28,7 +30,9 @@ public class InboxSendAdapter extends
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            inboxSendTextView = (TextView) itemView.findViewById(R.id.inboxsendTextView);
+            inboxSendTopicTextView = (TextView) itemView.findViewById(R.id.inboxsendTopicTextView);
+            inboxSendTimeTextView = (TextView) itemView.findViewById(R.id.inboxsendTimeTextView);
+            inboxSendDistanceTextView = (TextView) itemView.findViewById(R.id.inboxsendDistanceTextView);
         }
     }
 
@@ -55,7 +59,7 @@ public class InboxSendAdapter extends
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View contactView = inflater.inflate(R.layout.my_text_view3, parent, false);
+        View contactView = inflater.inflate(R.layout.inbox_sent_cards, parent, false);
 
         // Return a new holder instance
         InboxSendAdapter.ViewHolder viewHolder = new InboxSendAdapter.ViewHolder(contactView);
@@ -69,8 +73,13 @@ public class InboxSendAdapter extends
         String interest = mInterests.get(position);
 
         // Set item views based on your views and data model
-        TextView textView = viewHolder.inboxSendTextView;
-        textView.setText(interest);
+        TextView tvTopic = viewHolder.inboxSendTopicTextView;
+        tvTopic.setText("Topic: "+ interest);
+        TextView tvTime = viewHolder.inboxSendTimeTextView;
+        tvTime.setText("Time: " + interest);
+        TextView tvDistance = viewHolder.inboxSendDistanceTextView;
+        tvDistance.setText("Distance: " + interest);
+
     }
 
     // Returns the total count of items in the list

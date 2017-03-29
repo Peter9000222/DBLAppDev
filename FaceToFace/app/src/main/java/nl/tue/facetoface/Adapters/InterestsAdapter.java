@@ -27,7 +27,7 @@ public class InterestsAdapter extends
         // for any view that will be set as you render a row
         public TextView nameTextView;
         public ImageButton deleteButton;
-        public CardView cv;
+        //public CardView cv;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -35,7 +35,7 @@ public class InterestsAdapter extends
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
-            cv = (CardView) itemView.findViewById(R.id.cv);
+            //cv = (CardView) itemView.findViewById(R.id.cv);
             deleteButton = (ImageButton) itemView.findViewById(R.id.deleteButton);
             nameTextView = (TextView) itemView.findViewById(R.id.theTextView);
         }
@@ -64,7 +64,7 @@ public class InterestsAdapter extends
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View contactView = inflater.inflate(R.layout.my_text_view, parent, false);
+        View contactView = inflater.inflate(R.layout.interest_cards, parent, false);
 
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(contactView);
