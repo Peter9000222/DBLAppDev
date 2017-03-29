@@ -150,6 +150,30 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 Intent inboxIntent = new Intent(this, InboxActivity.class);
                 startActivity(inboxIntent);
                 break;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             case R.id.topicIcon:
                 Intent topicIntent = new Intent(this, TopicActivity.class);
                 topicIntent.putExtra("exUserID", thisUser.getUserID());
