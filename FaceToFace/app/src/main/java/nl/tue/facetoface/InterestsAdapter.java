@@ -18,7 +18,6 @@ import nl.tue.facetoface.Activities.TopicActivity;
 
 public class InterestsAdapter extends
         RecyclerView.Adapter<InterestsAdapter.ViewHolder>{
-
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -26,7 +25,6 @@ public class InterestsAdapter extends
         // for any view that will be set as you render a row
         public TextView nameTextView;
         public Button deleteButton;
-
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -94,4 +92,5 @@ public class InterestsAdapter extends
         return mInterests.size();
     }
 }
+
 
