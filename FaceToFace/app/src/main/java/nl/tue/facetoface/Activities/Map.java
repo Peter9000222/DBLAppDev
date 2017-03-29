@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -65,7 +66,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     String topic;
     ArrayList<String> interests = new ArrayList<>();
     String userID;
+
     LatLng locationUser;
+    LocationManager mlocManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +94,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         centerMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setMyLocationButton();
+                setLocation();
+                System.out.println("knop");
             }
         });
 
@@ -114,13 +118,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
         // google thingy
         buildGoogleApiClient();
-    }
-
-    private void setMyLocationButton() {
-        mMap.clear();
-        setLocation();
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
+        mlocManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     }
 
     private void setUser() {
@@ -220,27 +218,29 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     private void setLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation != null) {
-            mLatitude = mLastLocation.getLatitude();
-            mLongitude = mLastLocation.getLongitude();
-            //LatLng loc = new LatLng(mLatitude, mLongitude);
-            locationUser = new LatLng(mLatitude, mLongitude);
+        mMap.clear();
+        if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            //mLastLocation = mlocManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        System.out.println(mLastLocation);
+            if (mLastLocation != null) {
+                System.out.println("knop");
+                mLatitude = mLastLocation.getLatitude();
+                mLongitude = mLastLocation.getLongitude();
+                locationUser = new LatLng(mLatitude, mLongitude);
 
-            //Set location when the Map Activity is visited
-            mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-            mUser = mMap.addMarker(new MarkerOptions().position(locationUser).title("You are here"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
-
-            //LatLng
-
-            // Update user model location
-            // thisUser.setLocation(locationUser);
+                //Set location when the Map Activity is visited
+                mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                mUser = mMap.addMarker(new MarkerOptions().position(locationUser).title("You are here"));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
+            } else {
+                Toast.makeText(this, "No location detected", Toast.LENGTH_LONG).show();
+            }
         } else {
-            Toast.makeText(this, "No location detected", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Enable location/GPS", Toast.LENGTH_LONG).show();
         }
     }
 
