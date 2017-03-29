@@ -51,10 +51,7 @@ public class TopicActivity extends AppCompatActivity {
     String topic;
     String userID;
     String exUserID;
-    Boolean hasID = true;
-
-
-
+    Boolean hasID;
 
     //Called upon creation of the topic activity
     @Override
@@ -67,11 +64,16 @@ public class TopicActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Topic");
 
+        hasID = true;
+
         // getting exciting id from map
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             exUserID = extras.getString("exUserID");
             hasID = extras.getBoolean("hasID");
+            if (exUserID == null) {
+                hasID = true;
+            }
         }
 
         //ImageView displaying whether a topic is filled in or not
