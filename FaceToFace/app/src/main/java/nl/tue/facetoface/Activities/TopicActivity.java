@@ -64,36 +64,40 @@ public class TopicActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Topic");
 
+        etTopic = (EditText) findViewById(R.id.TopicEdit);
+        interests  = new ArrayList<>();
+
         hasID = true;
+
 
         // getting exciting id from map
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             exUserID = extras.getString("exUserID");
             hasID = extras.getBoolean("hasID");
+            topic = extras.getString("userTopic");
+            etTopic.setText(topic);
+            interests = extras.getStringArrayList("userInterestList");
             if (exUserID == null) {
                 hasID = true;
             }
         }
 
         //ImageView displaying whether a topic is filled in or not
-        MenuItem saveButton = (MenuItem) findViewById(R.id.save_button);
-        etTopic = (EditText) findViewById(R.id.TopicEdit);
+        //MenuItem saveButton = (MenuItem) findViewById(R.id.save_button);
+
+
         final ImageView TopicCorrect = (ImageView) findViewById(R.id.TopicImage);
-        TopicCorrect.setImageResource(R.mipmap.incorrect_icon);
+        //TopicCorrect.setImageResource(R.mipmap.incorrect_icon);
+        checkTopic(TopicCorrect);
+
         etTopic.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (etTopic.getText().toString().matches("")) {
-                    TopicCorrect.setImageResource(R.mipmap.incorrect_icon);
-                    topicFilledIn = false;
-                } else {
-                    TopicCorrect.setImageResource(R.mipmap.correct_icon);
-                    topicFilledIn = true;
-                }
+                checkTopic(TopicCorrect);
             }
             @Override
             public void afterTextChanged(Editable editable) {
@@ -180,6 +184,13 @@ public class TopicActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu (final Menu menu) {
+        if (etTopic.getText().toString().matches("")) {
+            topicFilledIn = false;
+            menu.findItem(R.id.save_button).setEnabled(topicFilledIn);
+        } else {
+            topicFilledIn = true;
+            menu.findItem(R.id.save_button).setEnabled(topicFilledIn);
+        }
         etTopic.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -190,12 +201,9 @@ public class TopicActivity extends AppCompatActivity {
                 if (etTopic.getText().toString().matches("")) {
                     topicFilledIn = false;
                     menu.findItem(R.id.save_button).setEnabled(topicFilledIn);
-
-
                 } else {
                     topicFilledIn = true;
                     menu.findItem(R.id.save_button).setEnabled(topicFilledIn);
-
                 }
             }
 
@@ -235,6 +243,16 @@ public class TopicActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void checkTopic(ImageView TopicCorrect){
+        if (etTopic.getText().toString().matches("")) {
+            TopicCorrect.setImageResource(R.mipmap.incorrect_icon);
+            topicFilledIn = false;
+        } else {
+            TopicCorrect.setImageResource(R.mipmap.correct_icon);
+            topicFilledIn = true;
         }
     }
 }
