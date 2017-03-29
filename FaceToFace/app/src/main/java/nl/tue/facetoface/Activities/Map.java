@@ -180,6 +180,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 .build();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mGoogleApiClient.connect();
+    }
+
     // Android activity life cycle method
     @Override
     protected void onStart() {
@@ -225,9 +231,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             }
             //mLastLocation = mlocManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        System.out.println(mLastLocation);
+                System.out.println(mLastLocation);
             if (mLastLocation != null) {
-                System.out.println("knop");
+                System.out.println("knop1");
                 mLatitude = mLastLocation.getLatitude();
                 mLongitude = mLastLocation.getLongitude();
                 locationUser = new LatLng(mLatitude, mLongitude);
