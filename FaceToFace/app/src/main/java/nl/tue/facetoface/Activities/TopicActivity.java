@@ -76,7 +76,9 @@ public class TopicActivity extends AppCompatActivity {
             hasID = extras.getBoolean("hasID");
             topic = extras.getString("userTopic");
             etTopic.setText(topic);
-            interests = extras.getStringArrayList("userInterestList");
+            if (extras.getStringArrayList("userInterestList") != null) {
+                interests = extras.getStringArrayList("userInterestList");
+            }
             if (exUserID == null) {
                 hasID = true;
             }
