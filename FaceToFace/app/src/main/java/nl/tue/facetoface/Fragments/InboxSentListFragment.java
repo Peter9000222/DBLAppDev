@@ -23,6 +23,8 @@ public class InboxSentListFragment extends Fragment {
     RecyclerView.LayoutManager InboxSend_manager;
 
     ArrayList<String> inboxSend = new ArrayList<>();
+    ArrayList<String> time = new ArrayList<>();
+    ArrayList<String> distance = new ArrayList<>();
 
     public InboxSentListFragment() {
         // Required empty public constructor
@@ -39,18 +41,18 @@ public class InboxSentListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        inboxSend.add("hello");
         int i;
         for (i=0; i<30; i+=1){
-            inboxSend.add("p");
-
+            inboxSend.add("The animal kindom");
+            time.add("15:13");
+            distance.add("300");
         }
 
 
         InboxSend_recyc = (RecyclerView) getView().findViewById(R.id.inbox_send_recycler_view);
         InboxSend_manager = new LinearLayoutManager(getContext());
         InboxSend_recyc.setLayoutManager(InboxSend_manager);
-        InboxSend_adap = new InboxSendAdapter(getContext(), inboxSend);
+        InboxSend_adap = new InboxSendAdapter(getContext(), inboxSend, time, distance);
         InboxSend_recyc.setAdapter(InboxSend_adap);
 
         InboxSend_recyc.addOnItemTouchListener(new InboxActivity.RecyclerTouchListener(getActivity(),

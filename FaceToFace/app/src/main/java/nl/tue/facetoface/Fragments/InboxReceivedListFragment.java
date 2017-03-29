@@ -23,6 +23,8 @@ public class InboxReceivedListFragment extends Fragment {
     RecyclerView.LayoutManager InboxReceived_manager;
 
     ArrayList<String> inboxReceived = new ArrayList<>();
+    ArrayList<String> time = new ArrayList<>();
+    ArrayList<String> distance = new ArrayList<>();
 
     public InboxReceivedListFragment() {
         // Required empty public constructor
@@ -39,17 +41,17 @@ public class InboxReceivedListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        inboxReceived.add("hello");
         int i;
         for (i=0; i<30; i+=1){
-            inboxReceived.add("olla");
-
+            inboxReceived.add("Philosophy");
+            time.add("12:30");
+            distance.add("1300");
         }
 
         InboxReceived_recyc = (RecyclerView) getView().findViewById(R.id.inbox_received_recycler_view);
         InboxReceived_manager = new LinearLayoutManager(getContext());
         InboxReceived_recyc.setLayoutManager(InboxReceived_manager);
-        InboxReceived_adap = new InboxReceivedAdapter(getContext(), inboxReceived);
+        InboxReceived_adap = new InboxReceivedAdapter(getContext(), inboxReceived, time, distance);
         InboxReceived_recyc.setAdapter(InboxReceived_adap);
 
         InboxReceived_recyc.addOnItemTouchListener(new InboxActivity.RecyclerTouchListener(getActivity(),

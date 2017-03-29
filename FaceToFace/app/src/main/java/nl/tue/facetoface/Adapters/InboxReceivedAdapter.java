@@ -19,7 +19,9 @@ public class InboxReceivedAdapter extends
     public static class ViewHolder extends RecyclerView.ViewHolder{
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView inboxReceivedTextView;
+        public TextView inboxReceivedTopicTextView;
+        public TextView inboxReceivedTimeTextView;
+        public TextView inboxReceivedDistanceTextView;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -28,18 +30,24 @@ public class InboxReceivedAdapter extends
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            inboxReceivedTextView = (TextView) itemView.findViewById(R.id.inboxTextView);
+            inboxReceivedTopicTextView = (TextView) itemView.findViewById(R.id.inboxReceivedTopicTextView);
+            inboxReceivedTimeTextView = (TextView) itemView.findViewById(R.id.inboxReceivedTimeTextView);
+            inboxReceivedDistanceTextView = (TextView) itemView.findViewById(R.id.inboxReceivedDistanceTextView);
         }
     }
 
     // Store a member variable for the contacts
-    private List<String> mInterests;
+    private List<String> topicList;
+    private List<String> timeList;
+    private List<String> distanceList;
     // Store the context for easy access
     private Context mContext;
 
     // Pass in the contact array into the constructor
-    public InboxReceivedAdapter(Context context, List<String> interests) {
-        mInterests = interests;
+    public InboxReceivedAdapter(Context context, List<String> topic, List<String> time, List<String> distance) {
+        topicList = topic;
+        timeList = time;
+        distanceList = distance;
         mContext = context;
     }
 
@@ -66,16 +74,22 @@ public class InboxReceivedAdapter extends
     @Override
     public void onBindViewHolder(final InboxReceivedAdapter.ViewHolder viewHolder, int position) {
         // Get the data model based on position
-        String interest = mInterests.get(position);
+        String topic = topicList.get(position);
+        String time = timeList.get(position);
+        String distance = distanceList.get(position);
 
         // Set item views based on your views and data model
-        TextView textView = viewHolder.inboxReceivedTextView;
-        textView.setText(interest);
+        TextView tvTopic = viewHolder.inboxReceivedTopicTextView;
+        tvTopic.setText("Topic: "+ topic);
+        TextView tvTime = viewHolder.inboxReceivedTimeTextView;
+        tvTime.setText("Request received at: " + time);
+        TextView tvDistance = viewHolder.inboxReceivedDistanceTextView;
+        tvDistance.setText("Distance: " + distance + "m");
     }
 
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return mInterests.size();
+        return topicList.size();
     }
 }

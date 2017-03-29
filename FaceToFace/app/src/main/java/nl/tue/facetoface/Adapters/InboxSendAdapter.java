@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nl.tue.facetoface.R;
@@ -37,13 +38,17 @@ public class InboxSendAdapter extends
     }
 
     // Store a member variable for the contacts
-    private List<String> mInterests;
+    private List<String> topicList;
+    private List<String> timeList;
+    private List<String> distanceList;
     // Store the context for easy access
     private Context mContext;
 
     // Pass in the contact array into the constructor
-    public InboxSendAdapter(Context context, List<String> interests) {
-        mInterests = interests;
+    public InboxSendAdapter(Context context, ArrayList<String> topic, ArrayList<String> time, List<String> distance) {
+        topicList = topic;
+        timeList = time;
+        distanceList = distance;
         mContext = context;
     }
 
@@ -70,21 +75,23 @@ public class InboxSendAdapter extends
     @Override
     public void onBindViewHolder(final InboxSendAdapter.ViewHolder viewHolder, int position) {
         // Get the data model based on position
-        String interest = mInterests.get(position);
+        String topic = topicList.get(position);
+        String time = timeList.get(position);
+        String distance = distanceList.get(position);
 
         // Set item views based on your views and data model
         TextView tvTopic = viewHolder.inboxSendTopicTextView;
-        tvTopic.setText("Topic: "+ interest);
+        tvTopic.setText("Topic: "+ topic);
         TextView tvTime = viewHolder.inboxSendTimeTextView;
-        tvTime.setText("Time: " + interest);
+        tvTime.setText("Request sent at: " + time);
         TextView tvDistance = viewHolder.inboxSendDistanceTextView;
-        tvDistance.setText("Distance: " + interest);
+        tvDistance.setText("Distance: " + distance + "m");
 
     }
 
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return mInterests.size();
+        return topicList.size();
     }
 }
