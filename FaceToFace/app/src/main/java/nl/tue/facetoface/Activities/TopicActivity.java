@@ -7,10 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +17,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,8 +26,6 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import nl.tue.facetoface.InterestsAdapter;
-import nl.tue.facetoface.Models.ThisUser;
-import nl.tue.facetoface.Models.UserData;
 import nl.tue.facetoface.R;
 
 public class TopicActivity extends AppCompatActivity {
@@ -41,12 +38,12 @@ public class TopicActivity extends AppCompatActivity {
     //UI elements
     EditText etTopic;
     EditText etInterest;
-    Button bInterest;
+    ImageButton bInterest;
 
     boolean topicFilledIn = false;
 
     //Userdata list
-    ArrayList<String> interests = new ArrayList<>();
+    ArrayList<String> interests;
     //UserData user = new UserData();
     //public ThisUser userMyself = new ThisUser();
     String topic;
@@ -67,6 +64,7 @@ public class TopicActivity extends AppCompatActivity {
 
         etTopic = (EditText) findViewById(R.id.TopicEdit);
         interests  = new ArrayList<>();
+        interests.add("hoi");
 
         hasID = true;
 
@@ -135,7 +133,8 @@ public class TopicActivity extends AppCompatActivity {
                 return handled;
             }
         });
-        bInterest = (Button) findViewById(R.id.InterestButton);
+        bInterest = (ImageButton) findViewById(R.id.InterestButton);
+        bInterest.setImageResource(R.mipmap.ic_send_white_48dp);
         bInterest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -248,10 +247,10 @@ public class TopicActivity extends AppCompatActivity {
 
     public void checkTopic(ImageView TopicCorrect){
         if (etTopic.getText().toString().matches("")) {
-            TopicCorrect.setImageResource(R.mipmap.incorrect_icon);
+            TopicCorrect.setImageResource(R.mipmap.ic_clear_white_48dp);
             topicFilledIn = false;
         } else {
-            TopicCorrect.setImageResource(R.mipmap.correct_icon);
+            TopicCorrect.setImageResource(R.mipmap.ic_done_white_128dp_2x);
             topicFilledIn = true;
         }
     }

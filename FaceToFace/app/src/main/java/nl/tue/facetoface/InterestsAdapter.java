@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class InterestsAdapter extends
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public TextView nameTextView;
-        public Button deleteButton;
+        public ImageButton deleteButton;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -33,7 +33,7 @@ public class InterestsAdapter extends
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            deleteButton = (Button) itemView.findViewById(R.id.deleteButton);
+            deleteButton = (ImageButton) itemView.findViewById(R.id.deleteButton);
             nameTextView = (TextView) itemView.findViewById(R.id.theTextView);
         }
     }
