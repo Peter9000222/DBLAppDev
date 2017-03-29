@@ -63,7 +63,6 @@ public class TopicActivity extends AppCompatActivity {
 
         etTopic = (EditText) findViewById(R.id.TopicEdit);
         interests  = new ArrayList<>();
-        interests.add("hoi");
 
         hasID = true;
 
