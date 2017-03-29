@@ -62,7 +62,15 @@ public class TopicActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Topic");
 
         etTopic = (EditText) findViewById(R.id.TopicEdit);
+        etInterest = (EditText) findViewById(R.id.InterestsEdit);
         interests  = new ArrayList<>();
+
+        //instancing the objects for the recycler view
+        Interests_recyc = (RecyclerView) findViewById(R.id.my_recycler_view);
+        Interests_manager = new LinearLayoutManager(this);
+        Interests_recyc.setLayoutManager(Interests_manager);
+        Interest_adap = new InterestsAdapter(this, interests);
+        Interests_recyc.setAdapter(Interest_adap);
 
         hasID = true;
 
@@ -113,15 +121,7 @@ public class TopicActivity extends AppCompatActivity {
             }
         });
 
-        //instancing the objects for the recycler view
-        Interests_recyc = (RecyclerView) findViewById(R.id.my_recycler_view);
-        Interests_manager = new LinearLayoutManager(this);
-        Interests_recyc.setLayoutManager(Interests_manager);
-        Interest_adap = new InterestsAdapter(this, interests);
-        Interests_recyc.setAdapter(Interest_adap);
-
         //Listeners as to check whether the user wants to add an interest
-        etInterest = (EditText) findViewById(R.id.InterestsEdit);
         etInterest.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -194,7 +194,6 @@ public class TopicActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (etTopic.getText().toString().matches("")) {
@@ -205,13 +204,10 @@ public class TopicActivity extends AppCompatActivity {
                     menu.findItem(R.id.save_button).setEnabled(topicFilledIn);
                 }
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
             }
         });
-
-
         return true;
     }
 
@@ -235,7 +231,6 @@ public class TopicActivity extends AppCompatActivity {
                     intent.putExtra("interests", interests);
                     startActivity(intent);
                 }
-
                 return true;
             case android.R.id.home:
                 onBackPressed();
