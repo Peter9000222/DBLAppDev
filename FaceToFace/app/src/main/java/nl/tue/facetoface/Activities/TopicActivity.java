@@ -65,16 +65,6 @@ public class TopicActivity extends AppCompatActivity {
         etInterest = (EditText) findViewById(R.id.InterestsEdit);
         interests  = new ArrayList<>();
 
-        //instancing the objects for the recycler view
-        Interests_recyc = (RecyclerView) findViewById(R.id.my_recycler_view);
-        Interests_manager = new LinearLayoutManager(this);
-        Interests_recyc.setLayoutManager(Interests_manager);
-        Interest_adap = new InterestsAdapter(this, interests);
-        Interests_recyc.setAdapter(Interest_adap);
-
-        hasID = true;
-
-
         // getting exciting id from map
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -89,6 +79,15 @@ public class TopicActivity extends AppCompatActivity {
                 hasID = true;
             }
         }
+
+        //instancing the objects for the recycler view
+        Interests_recyc = (RecyclerView) findViewById(R.id.my_recycler_view);
+        Interests_manager = new LinearLayoutManager(this);
+        Interests_recyc.setLayoutManager(Interests_manager);
+        Interest_adap = new InterestsAdapter(this, interests);
+        Interests_recyc.setAdapter(Interest_adap);
+
+        hasID = true;
 
         //ImageView displaying whether a topic is filled in or not
         //MenuItem saveButton = (MenuItem) findViewById(R.id.save_button);
@@ -221,7 +220,7 @@ public class TopicActivity extends AppCompatActivity {
                     Toast.makeText(this, "Topic must be filled in", Toast.LENGTH_SHORT).show();
                 } else {
                     setUserData();
-                    Toast.makeText(this, "Topic: " + topic, Toast.LENGTH_SHORT).show();
+
                     Intent intent = new Intent(this, Map.class);
                     // send userID to map
                     intent.putExtra("userID", userID);

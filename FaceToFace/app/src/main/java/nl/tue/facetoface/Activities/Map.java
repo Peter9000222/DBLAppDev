@@ -162,7 +162,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 topicIntent.putExtra("exUserID", thisUser.getUserID());
                 hasID = false;
                 topicIntent.putExtra("hasID", hasID);
-
                 topicIntent.putExtra("userTopic", thisUser.getTopic());
                 topicIntent.putExtra("userInterestList", thisUser.getInterests());
                 startActivity(topicIntent);
