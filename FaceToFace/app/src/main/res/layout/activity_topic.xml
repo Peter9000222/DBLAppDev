@@ -11,88 +11,83 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-    <android.support.v7.widget.CardView android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        >
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
+        <android.support.v7.widget.CardView android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-        <TextView
-            android:textSize="15dp"
-            android:textColor="@color/colorAccent"
-            android:text="@string/Topic"
-            android:id="@+id/TopicText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <EditText
-            android:textSize="20dp"
-            android:hint="@string/EditTopic"
-            android:id="@+id/TopicEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:inputType="text"
-            android:imeOptions="actionSend"
-            android:maxLines="1"
-            android:paddingLeft="5dp"/>
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_weight="0"
-            android:scaleType="fitCenter"
-            android:id="@+id/TopicImage"
-            android:padding="0dp"/>
-    </LinearLayout>
-    <TextView
-        android:textSize="15dp"
-        android:text="@string/Interests"
-        android:textColor="@color/colorAccent"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:id="@+id/InterestsText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="5dp">
-        <EditText
-            android:paddingLeft="5dp"
-            android:textSize="20dp"
-            android:hint="@string/EditInterests"
-            android:id="@+id/InterestsEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:inputType="text"
-            android:imeOptions="actionSend"
-            android:maxLines="1"/>
-        <ImageButton
-            android:id="@+id/InterestButton"
-            android:layout_weight="0"
-            android:layout_width="48dp"
-            android:scaleType="centerCrop"
-            android:backgroundTint="@color/unSelected"
-            android:layout_height="48dp" />
-    </LinearLayout>
+            android:layout_margin="5dp">
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:textSize="15dp"
+                    android:textColor="@color/colorAccent"
+                    android:text="@string/Topic"
+                    android:id="@+id/TopicText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="5dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:textSize="20dp"
+                        android:hint="@string/EditTopic"
+                        android:id="@+id/TopicEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:imeOptions="actionSend"
+                        android:maxLines="1"
+                        android:paddingLeft="5dp"/>
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="0"
+                        android:scaleType="fitCenter"
+                        android:id="@+id/TopicImage"
+                        android:padding="0dp"/>
+                </LinearLayout>
+            <TextView
+                android:textSize="15dp"
+                android:text="@string/Interests"
+                android:textColor="@color/colorAccent"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:id="@+id/InterestsText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="5dp">
+                    <EditText
+                        android:textSize="20dp"
+                        android:hint="@string/EditInterests"
+                        android:id="@+id/InterestsEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:imeOptions="actionSend"
+                        android:maxLines="1"/>
+                    <ImageButton
+                        android:id="@+id/InterestButton"
+                        android:layout_weight="0"
+                        android:layout_width="48dp"
+                        android:scaleType="centerCrop"
+                        android:backgroundTint="@color/cardview_light_background"
+                        android:layout_height="48dp" />
+            </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
-
-
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"
         android:layout_width="match_parent"
