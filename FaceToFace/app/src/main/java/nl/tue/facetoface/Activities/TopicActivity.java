@@ -62,7 +62,7 @@ public class TopicActivity extends AppCompatActivity {
         //Settings for the toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setTitle("Topic");
 
         etTopic = (EditText) findViewById(R.id.TopicEdit);
