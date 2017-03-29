@@ -26,8 +26,8 @@ public class CancelBottomSheet extends BottomSheetDialogFragment{
         super.setupDialog(dialog, style);
         View contentView = View.inflate(getContext(), R.layout.fragment_cancel_bottomsheet, null);
         dialog.setContentView(contentView);
-        tvTime = (TextView) contentView.findViewById(R.id.time);
-        tvDistance = (TextView) contentView.findViewById(R.id.distance);
+        tvTime = (TextView) contentView.findViewById(R.id.timeCancel);
+        tvDistance = (TextView) contentView.findViewById(R.id.distanceCancel);
         tvTime.setText("Time: " + String.valueOf(time));
         tvDistance.setText("Distance: " + distance);
 
