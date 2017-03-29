@@ -91,6 +91,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             @Override
             public void onClick(View v) {
                 if (mLastLocation != null) {
+
+
                     LatLng locationUser = new LatLng(mLatitude, mLongitude);
                     mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
