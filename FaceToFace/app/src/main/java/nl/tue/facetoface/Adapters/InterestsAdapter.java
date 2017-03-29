@@ -1,6 +1,7 @@
 package nl.tue.facetoface.Adapters;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ public class InterestsAdapter extends
         // for any view that will be set as you render a row
         public TextView nameTextView;
         public ImageButton deleteButton;
+        public CardView cv;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -33,7 +35,7 @@ public class InterestsAdapter extends
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
-
+            cv = (CardView) itemView.findViewById(R.id.cv);
             deleteButton = (ImageButton) itemView.findViewById(R.id.deleteButton);
             nameTextView = (TextView) itemView.findViewById(R.id.theTextView);
         }
