@@ -1,4 +1,4 @@
-package nl.tue.facetoface;
+package nl.tue.facetoface.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import nl.tue.facetoface.Activities.TopicActivity;
+import nl.tue.facetoface.R;
 
 /**
  * Created by s149453 on 20-3-2017.

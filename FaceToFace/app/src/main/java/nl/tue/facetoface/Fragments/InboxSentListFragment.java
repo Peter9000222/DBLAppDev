@@ -1,7 +1,5 @@
 package nl.tue.facetoface.Fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +12,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import nl.tue.facetoface.Activities.InboxActivity;
-import nl.tue.facetoface.Models.InboxReceivedAdapter;
+import nl.tue.facetoface.Adapters.InboxReceivedAdapter;
 import nl.tue.facetoface.R;
 
 

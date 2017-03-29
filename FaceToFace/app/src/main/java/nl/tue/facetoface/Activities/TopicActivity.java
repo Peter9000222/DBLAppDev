@@ -15,7 +15,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,7 +24,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import nl.tue.facetoface.InterestsAdapter;
+import nl.tue.facetoface.Adapters.InterestsAdapter;
 import nl.tue.facetoface.R;
 
 public class TopicActivity extends AppCompatActivity {

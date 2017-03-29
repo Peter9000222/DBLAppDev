@@ -9,13 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import nl.tue.facetoface.Activities.InboxActivity;
-import nl.tue.facetoface.InterestsAdapter;
-import nl.tue.facetoface.Models.InboxReceivedAdapter;
-import nl.tue.facetoface.Models.UserData;
+import nl.tue.facetoface.Adapters.InboxReceivedAdapter;
 import nl.tue.facetoface.R;
 
 

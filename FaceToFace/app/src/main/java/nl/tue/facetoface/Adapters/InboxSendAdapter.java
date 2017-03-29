@@ -1,4 +1,4 @@
-package nl.tue.facetoface.Models;
+package nl.tue.facetoface.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
