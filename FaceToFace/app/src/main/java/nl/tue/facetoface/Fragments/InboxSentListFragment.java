@@ -1,6 +1,7 @@
 package nl.tue.facetoface.Fragments;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,9 @@ public class InboxSentListFragment extends Fragment {
     ArrayList<String> time = new ArrayList<>();
     ArrayList<String> distance = new ArrayList<>();
 
+    //FloatingActionButton fab = new FloatingActionButton();
+
+
     public InboxSentListFragment() {
         // Required empty public constructor
     }
@@ -44,8 +48,8 @@ public class InboxSentListFragment extends Fragment {
         int i;
         for (i=0; i<30; i+=1){
             inboxSend.add("The animal kindom");
-            time.add("15:13");
-            distance.add("300");
+            time.add("15:" + String.valueOf(i));
+            distance.add("300" + String.valueOf(i));
         }
 
 
@@ -60,7 +64,7 @@ public class InboxSentListFragment extends Fragment {
             @Override
             public void onClick(View view, final int position) {
                 //Values are passing to activity & to fragment as well
-                ((InboxActivity)getActivity()).onItemClick(position, "Sent", inboxSend.get(position));
+                ((InboxActivity)getActivity()).onItemClick(time.get(position), distance.get(position), inboxSend.get(position), "Sent");
                 Toast.makeText(getActivity(), "Single Click on position        :"+position,
                         Toast.LENGTH_SHORT).show();
             }

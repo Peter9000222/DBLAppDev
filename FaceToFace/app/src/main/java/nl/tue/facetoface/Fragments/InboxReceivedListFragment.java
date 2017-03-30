@@ -44,8 +44,8 @@ public class InboxReceivedListFragment extends Fragment {
         int i;
         for (i=0; i<30; i+=1){
             inboxReceived.add("Philosophy");
-            time.add("12:30");
-            distance.add("1300");
+            time.add("12:" + String.valueOf(i));
+            distance.add("1300" + String.valueOf(i));
         }
 
         InboxReceived_recyc = (RecyclerView) getView().findViewById(R.id.inbox_received_recycler_view);
@@ -59,7 +59,7 @@ public class InboxReceivedListFragment extends Fragment {
             @Override
             public void onClick(View view, final int position) {
                 //Values are passing to activity & to fragment as well
-                ((InboxActivity)getActivity()).onItemClick(position, "Received", inboxReceived.get(position));
+                ((InboxActivity)getActivity()).onItemClick(time.get(position), distance.get(position), inboxReceived.get(position), "Received");
                 Toast.makeText(getActivity(), "Single Click on position        :"+position,
                         Toast.LENGTH_SHORT).show();
             }

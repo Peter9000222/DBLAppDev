@@ -3,6 +3,7 @@ package nl.tue.facetoface.Fragments;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 
@@ -24,9 +25,10 @@ public class RequestBottomSheet extends BottomSheetDialogFragment {
         View contentView = View.inflate(getContext(), R.layout.fragment_request_bottomsheet, null);
         dialog.setContentView(contentView);
         tvTopic = (TextView) contentView.findViewById(R.id.topicTitle);
-        tvInsterst = (TextView) contentView.findViewById(R.id.InterestTitle);
+        //tvInsterst = (TextView) contentView.findViewById(R.id.InterestTitle);
         tvTopic.setText(topic);
-        tvInsterst.setText(Interest);
+        //tvInsterst.setText(Interest);
+        ((View) contentView.getParent()).setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
 
 
     }

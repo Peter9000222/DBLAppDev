@@ -3,6 +3,7 @@ package nl.tue.facetoface.Fragments;
 import android.app.Dialog;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,7 +30,7 @@ import nl.tue.facetoface.R;
 public class CancelBottomSheet extends BottomSheetDialogFragment{
 
 
-    private int time;
+    private String time;
     private String distance;
     private String topic;
     private ArrayList<String> interestList  = new ArrayList<>();;
@@ -42,6 +43,8 @@ public class CancelBottomSheet extends BottomSheetDialogFragment{
     RecyclerView.Adapter cancel_adap;
     RecyclerView.LayoutManager cancel_manager;
 
+    //BottomSheetBehavior behavior;
+
     @Override
     public void setupDialog(final Dialog dialog, int style) {
         super.setupDialog(dialog, style);
@@ -49,7 +52,7 @@ public class CancelBottomSheet extends BottomSheetDialogFragment{
         dialog.setContentView(contentView);
         tvTime = (TextView) contentView.findViewById(R.id.timeCancel);
         tvDistance = (TextView) contentView.findViewById(R.id.distanceCancel);
-        tvTime.setText(String.valueOf(time));
+        tvTime.setText(time);
         tvDistance.setText(distance);
         tvTopic = (TextView) contentView.findViewById(R.id.topicCancel);
         tvTopic.setText(topic);
@@ -79,6 +82,12 @@ public class CancelBottomSheet extends BottomSheetDialogFragment{
         cancel_recyc.setLayoutManager(cancel_manager);
         cancel_adap = new CancelSendAdapter(this.getActivity(), interestList);
         cancel_recyc.setAdapter(cancel_adap);
+
+        //behavior = new BottomSheetBehavior().from(((View) contentView.getParent()));
+        //if (behavior != null) {
+        //    behavior.setPeekHeight(size.y);
+        //    contentView.requestLayout();
+       // }
         ((View) contentView.getParent()).setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
 
 
@@ -86,15 +95,14 @@ public class CancelBottomSheet extends BottomSheetDialogFragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
-    public void setTime(int position){
-        time = position;
+    public void setTime(String time){
+        this.time = time;
     }
 
-    public void setDistance(String fragment){
-        distance = fragment;
+    public void setDistance(String distance){
+        this.distance = distance;
     }
 
     public void setTopic(String topic){ this.topic = topic;}

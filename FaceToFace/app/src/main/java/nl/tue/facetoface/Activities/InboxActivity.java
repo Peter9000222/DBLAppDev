@@ -138,10 +138,10 @@ public class InboxActivity extends AppCompatActivity{
         }
     }
 
-    public void onItemClick(int position, String fragment, String topic){
-        if (fragment == "Sent"){
-            bottomSheetCancelFragment.setTime(position);
-            bottomSheetCancelFragment.setDistance(fragment);
+    public void onItemClick(String time, String distance, String topic, String tag){
+        if (tag == "Sent"){
+            bottomSheetCancelFragment.setTime(time);
+            bottomSheetCancelFragment.setDistance(distance);
             bottomSheetCancelFragment.setTopic(topic);
             bottomSheetCancelFragment.show(getSupportFragmentManager(), bottomSheetCancelFragment.getTag());
         } else {
