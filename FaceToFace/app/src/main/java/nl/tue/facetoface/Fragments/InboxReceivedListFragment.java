@@ -22,7 +22,7 @@ public class InboxReceivedListFragment extends Fragment {
     RecyclerView.Adapter InboxReceived_adap;
     RecyclerView.LayoutManager InboxReceived_manager;
 
-    ArrayList<String> inboxReceived = new ArrayList<>();
+    ArrayList<String> topic = new ArrayList<>();
     ArrayList<String> time = new ArrayList<>();
     ArrayList<String> distance = new ArrayList<>();
 
@@ -41,17 +41,14 @@ public class InboxReceivedListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        int i;
-        for (i=0; i<30; i+=1){
-            inboxReceived.add("Philosophy");
-            time.add("12:" + String.valueOf(i));
-            distance.add("1300" + String.valueOf(i));
-        }
+        topic = ((InboxActivity)getActivity()).getTopic("Received");
+        time = ((InboxActivity)getActivity()).getTime("Received");
+        distance = ((InboxActivity)getActivity()).getDistance("Received");
 
         InboxReceived_recyc = (RecyclerView) getView().findViewById(R.id.inbox_received_recycler_view);
         InboxReceived_manager = new LinearLayoutManager(getContext());
         InboxReceived_recyc.setLayoutManager(InboxReceived_manager);
-        InboxReceived_adap = new InboxReceivedAdapter(getContext(), inboxReceived, time, distance);
+        InboxReceived_adap = new InboxReceivedAdapter(getContext(), topic, time, distance);
         InboxReceived_recyc.setAdapter(InboxReceived_adap);
 
         InboxReceived_recyc.addOnItemTouchListener(new InboxActivity.RecyclerTouchListener(getActivity(),
@@ -59,7 +56,7 @@ public class InboxReceivedListFragment extends Fragment {
             @Override
             public void onClick(View view, final int position) {
                 //Values are passing to activity & to fragment as well
-                ((InboxActivity)getActivity()).onItemClick(time.get(position), distance.get(position), inboxReceived.get(position), "Received");
+                ((InboxActivity)getActivity()).onItemClick("Received", position);
                 Toast.makeText(getActivity(), "Single Click on position        :"+position,
                         Toast.LENGTH_SHORT).show();
             }

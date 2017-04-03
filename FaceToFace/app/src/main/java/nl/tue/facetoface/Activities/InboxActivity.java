@@ -27,8 +27,19 @@ import nl.tue.facetoface.R;
 public class InboxActivity extends AppCompatActivity{
 
     private Toolbar tb;
-    CancelBottomSheet bottomSheetCancelFragment;
+    static CancelBottomSheet bottomSheetCancelFragment;
     RequestBottomSheet bottomSheetRequestFragment;
+    private static ArrayList<ArrayList<String>> interestListSent;
+    private ArrayList<ArrayList<String>> interestListRequest;
+    private ArrayList<String> interestListS;
+    private ArrayList<String> interestListR;
+    private static ArrayList<String> topicListS;
+    private ArrayList<String> topicListR;
+    private static ArrayList<String> timeListS;
+    private ArrayList<String> timeListR;
+    private static ArrayList<String> distanceListS;
+    private ArrayList<String> distanceListR;
+    public static InboxSentListFragment inboxSentListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +50,32 @@ public class InboxActivity extends AppCompatActivity{
         tb = (Toolbar) findViewById(R.id.toolbar4);
         bottomSheetCancelFragment = new CancelBottomSheet();
         bottomSheetRequestFragment = new RequestBottomSheet();
+        //These arraylists should be filled with data from server
+        interestListSent = new ArrayList<>(); //each position has an list with interests of a user
+        interestListRequest = new ArrayList<>();
+        topicListS = new ArrayList<>(); //each position has a topic of a user
+        timeListS = new ArrayList<>(); //each position has a time of a user
+        distanceListS = new ArrayList<>(); //each postion has a distance of a user
+        interestListS = new ArrayList<>(); //each position has an interest of a user
+        topicListR = new ArrayList<>();
+        timeListR = new ArrayList<>();
+        distanceListR = new ArrayList<>();
+        interestListR = new ArrayList<>();
+        inboxSentListFragment = new InboxSentListFragment();
+
+        int i;
+        for (i=0; i<30; i+=1){
+            interestListS.add(String.valueOf(i) + " Sent");
+            interestListSent.add(interestListS);
+            interestListR.add(String.valueOf(i) + "Request");
+            interestListRequest.add(interestListR);
+            topicListS.add(String.valueOf(i )+ " Sent");
+            timeListS.add(String.valueOf(i) + " Sent");
+            distanceListS.add(String.valueOf(i) + " Sent");
+            topicListR.add(String.valueOf(i) + "Request");
+            timeListR.add(String.valueOf(i) + "Request");
+            distanceListR.add(String.valueOf(i) + "Request");
+        }
 
         setSupportActionBar(tb);
         if (getSupportActionBar() != null) {
@@ -52,12 +89,14 @@ public class InboxActivity extends AppCompatActivity{
         tabs.setupWithViewPager(viewPager);
     }
     // adds fragments to tabs
-    private void setupViewPager(ViewPager viewPager){
+    public void setupViewPager(ViewPager viewPager){
         Adapter adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new InboxReceivedListFragment(), "Received");
-        adapter.addFragment(new InboxSentListFragment(), "Sent");
+        adapter.addFragment(inboxSentListFragment, "Sent");
         viewPager.setAdapter(adapter);
     }
+
+
 
     static class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -101,14 +140,14 @@ public class InboxActivity extends AppCompatActivity{
         }
 
     public interface ClickListener{
-        public void onClick(View view, int position);
+         void onClick(View view, int position);
     }
 
     public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener{
         private ClickListener clicklistener;
         private GestureDetector gestureDetector;
 
-        public RecyclerTouchListener(Context context, final RecyclerView recycleView, final ClickListener clicklistener){
+        public RecyclerTouchListener(Context context,final RecyclerView recyclerView, final ClickListener clicklistener){
 
             this.clicklistener=clicklistener;
             gestureDetector=new GestureDetector(context,new GestureDetector.SimpleOnGestureListener(){
@@ -134,19 +173,61 @@ public class InboxActivity extends AppCompatActivity{
 
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
         }
     }
 
-    public void onItemClick(String time, String distance, String topic, String tag){
+    public void onItemClick(String tag, int position){
         if (tag == "Sent"){
-            bottomSheetCancelFragment.setTime(time);
-            bottomSheetCancelFragment.setDistance(distance);
-            bottomSheetCancelFragment.setTopic(topic);
+            bottomSheetCancelFragment.setTime(timeListS.get(position));
+            bottomSheetCancelFragment.setDistance(distanceListS.get(position));
+            bottomSheetCancelFragment.setTopic(topicListS.get(position));
+            bottomSheetCancelFragment.setInterestList(interestListSent.get(position));
             bottomSheetCancelFragment.show(getSupportFragmentManager(), bottomSheetCancelFragment.getTag());
+            bottomSheetCancelFragment.setPosition(position);
         } else {
+            bottomSheetRequestFragment.setTopic(topicListR.get(position));
+            bottomSheetRequestFragment.setInterest(interestListRequest.get(position));
             bottomSheetRequestFragment.show(getSupportFragmentManager(), bottomSheetRequestFragment.getTag());
         }
     }
 
+    public ArrayList<String> getTopic(String tag){
+        if (tag == "Sent"){
+            return topicListS;
+        } else {
+            return  topicListR;
+        }
+    }
+    public ArrayList<String> getTime(String tag){
+        if (tag == "Sent"){
+            return timeListS;
+        } else {
+            return  timeListR;
+        }
+    }
+    public ArrayList<String> getDistance(String tag){
+        if (tag == "Sent"){
+            return distanceListS;
+        } else {
+            return  distanceListR;
+        }
+    }
+    public ArrayList<ArrayList<String>> getInterests(String tag){
+        if (tag == "Sent"){
+            return interestListSent;
+        } else {
+            return  interestListRequest;
+        }
+    }
+
+    public static void cancelSentRequest(int position){
+        topicListS.remove(position);
+        timeListS.remove(position);
+        distanceListS.remove(position);
+        interestListSent.remove(position);
+    }
+
+    public static InboxSentListFragment getFragment(){return inboxSentListFragment;}
+
+    public static CancelBottomSheet getBottomSheetCancelFragment() {return bottomSheetCancelFragment;}
 }

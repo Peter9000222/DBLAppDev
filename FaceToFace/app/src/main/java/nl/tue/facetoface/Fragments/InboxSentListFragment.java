@@ -23,7 +23,7 @@ public class InboxSentListFragment extends Fragment {
     RecyclerView.Adapter InboxSend_adap;
     RecyclerView.LayoutManager InboxSend_manager;
 
-    ArrayList<String> inboxSend = new ArrayList<>();
+    ArrayList<String> topic = new ArrayList<>();
     ArrayList<String> time = new ArrayList<>();
     ArrayList<String> distance = new ArrayList<>();
 
@@ -45,18 +45,14 @@ public class InboxSentListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        int i;
-        for (i=0; i<30; i+=1){
-            inboxSend.add("The animal kindom");
-            time.add("15:" + String.valueOf(i));
-            distance.add("300" + String.valueOf(i));
-        }
-
+        topic = ((InboxActivity)getActivity()).getTopic("Sent");
+        time = ((InboxActivity)getActivity()).getTime("Sent");
+        distance = ((InboxActivity)getActivity()).getDistance("Sent");
 
         InboxSend_recyc = (RecyclerView) getView().findViewById(R.id.inbox_send_recycler_view);
         InboxSend_manager = new LinearLayoutManager(getContext());
         InboxSend_recyc.setLayoutManager(InboxSend_manager);
-        InboxSend_adap = new InboxSendAdapter(getContext(), inboxSend, time, distance);
+        InboxSend_adap = new InboxSendAdapter(getContext(), topic, time, distance);
         InboxSend_recyc.setAdapter(InboxSend_adap);
 
         InboxSend_recyc.addOnItemTouchListener(new InboxActivity.RecyclerTouchListener(getActivity(),
@@ -64,11 +60,15 @@ public class InboxSentListFragment extends Fragment {
             @Override
             public void onClick(View view, final int position) {
                 //Values are passing to activity & to fragment as well
-                ((InboxActivity)getActivity()).onItemClick(time.get(position), distance.get(position), inboxSend.get(position), "Sent");
+                ((InboxActivity)getActivity()).onItemClick("Sent", position);
                 Toast.makeText(getActivity(), "Single Click on position        :"+position,
                         Toast.LENGTH_SHORT).show();
             }
         }));
+    }
+
+    public void notifyAdapter(){
+        InboxSend_adap.notifyDataSetChanged();
     }
 
 }

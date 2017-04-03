@@ -11,6 +11,12 @@
             android:orientation="vertical"
             android:layout_margin="15dp">
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:text="@string/Topic"
+            android:textColor="@color/colorAccent" />
+        <TextView
             android:id="@+id/topicTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,14 +46,18 @@
             android:id="@+id/DeclineButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/cardview_light_background"
             android:text="@string/Cancel"
-            android:padding="5dp"
+            android:paddingRight="5dp"
             android:layout_weight="1"/>
         <Button
-            android:padding="5dp"
+            android:paddingLeft="5dp"
             android:id="@+id/AcceptButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/green"
+            android:textColor="@color/cardview_light_background"
             android:text="@string/Accept"
             android:layout_weight="1"/>
     </LinearLayout>

@@ -7,4 +7,5 @@
     <color name="black">#000</color>
     <color name="unSelected">#ECEFF1</color>
     <color name="grey">#616161</color>
+    <color name="green">#689f38</color>
 </resources>

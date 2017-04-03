@@ -5,6 +5,8 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +20,9 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import nl.tue.facetoface.Activities.InboxActivity;
 import nl.tue.facetoface.Adapters.CancelSendAdapter;
 import nl.tue.facetoface.Adapters.InboxSendAdapter;
 import nl.tue.facetoface.R;
@@ -27,23 +31,26 @@ import nl.tue.facetoface.R;
  * Created by s149453 on 27-3-2017.
  */
 
-public class CancelBottomSheet extends BottomSheetDialogFragment{
+public class CancelBottomSheet extends BottomSheetDialogFragment {
 
 
     private String time;
     private String distance;
     private String topic;
-    private ArrayList<String> interestList  = new ArrayList<>();;
+    private int position;
+    private ArrayList<String> interestList  = new ArrayList<>();
 
     TextView tvTime;
     TextView tvDistance;
     TextView tvTopic;
 
+    FloatingActionButton fab;
+
     RecyclerView cancel_recyc;
     RecyclerView.Adapter cancel_adap;
     RecyclerView.LayoutManager cancel_manager;
 
-    //BottomSheetBehavior behavior;
+    BottomSheetBehavior behavior;
 
     @Override
     public void setupDialog(final Dialog dialog, int style) {
@@ -57,23 +64,6 @@ public class CancelBottomSheet extends BottomSheetDialogFragment{
         tvTopic = (TextView) contentView.findViewById(R.id.topicCancel);
         tvTopic.setText(topic);
 
-        interestList.add("P");
-        interestList.add("Philosophy");
-        interestList.add("App Development");
-        interestList.add("Eric Luiten");
-        interestList.add("Marshall");
-        interestList.add("P");
-        interestList.add("Philosophy");
-        interestList.add("App Development");
-        interestList.add("Eric Luiten");
-        interestList.add("Marshall");
-        interestList.add("P");
-        interestList.add("Philosophy");
-        interestList.add("App Development");
-        interestList.add("Eric Luiten");
-        interestList.add("Marshall");
-
-
         cancel_recyc = (RecyclerView) contentView.findViewById(R.id.rvCancel);
         Point size = new Point();
         getActivity().getWindowManager().getDefaultDisplay().getSize(size);
@@ -82,16 +72,13 @@ public class CancelBottomSheet extends BottomSheetDialogFragment{
         cancel_recyc.setLayoutManager(cancel_manager);
         cancel_adap = new CancelSendAdapter(this.getActivity(), interestList);
         cancel_recyc.setAdapter(cancel_adap);
-
-        //behavior = new BottomSheetBehavior().from(((View) contentView.getParent()));
-        //if (behavior != null) {
-        //    behavior.setPeekHeight(size.y);
-        //    contentView.requestLayout();
-       // }
         ((View) contentView.getParent()).setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
 
-
+        fab = (FloatingActionButton) contentView.findViewById(R.id.cancel_fab);
+        fab.setOnClickListener(new MyLovelyOnClickListener(position, contentView));
+        //fab.setOnClickListener(this);
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,4 +93,36 @@ public class CancelBottomSheet extends BottomSheetDialogFragment{
     }
 
     public void setTopic(String topic){ this.topic = topic;}
+
+    public void setInterestList(ArrayList interestList){ this.interestList = interestList; }
+
+    public void setPosition(int position) {this.position = position;}
+
+
+    public class MyLovelyOnClickListener implements View.OnClickListener
+    {
+        int position;
+        View contentView;
+        public MyLovelyOnClickListener(int position, View contentView) {
+            this.position = position;
+            this.contentView = contentView;
+        }
+        @Override
+        public void onClick(View v)
+        {
+            behavior = BottomSheetBehavior.from((View)contentView.getParent());
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+            InboxSentListFragment fragment;
+            InboxActivity.cancelSentRequest(position);
+            fragment = InboxActivity.getFragment();
+            fragment.notifyAdapter();
+
+        }
+
+    };
+    //@Override
+    //public void onClick(View view) {
+    //    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+   // }
 }
