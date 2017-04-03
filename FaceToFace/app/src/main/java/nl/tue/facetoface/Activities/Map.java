@@ -38,6 +38,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.R;
@@ -69,6 +71,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     LatLng locationUser;
     LocationManager mlocManager;
+
+    // send and get variables
+    TimerTask taskSend;
+    TimerTask taskGet;
+    Timer timerSend = new Timer();
+    Timer timerGet = new Timer();
+    int clockSend = 2000;       // time is miliseconds: 1000 = 1 s
+    int clockGet = 2000;        // time is miliseconds: 1000 = 1 s
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,12 +117,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         buttonListOfTopics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userData = mRootRef.child("Users").child(thisUser.getUserID());
-                userData.setValue("");
-                userData.child("Topic").setValue(thisUser.getTopic());
-                userData.child("Interests").setValue(thisUser.getInterests());
-                userData.child("Lat").setValue(mLatitude);
-                userData.child("Lng").setValue(mLongitude);
+                setUserToDatabase();
             }
         });
 
@@ -135,6 +140,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         thisUser.setUserID(userID);
         thisUser.setTopic(topic);
         thisUser.setInterests(interests);
+    }
+
+    private void setUserToDatabase() {
+        userData = mRootRef.child("Users").child(thisUser.getUserID());
+        userData.setValue("");
+        userData.child("Topic").setValue(thisUser.getTopic());
+        userData.child("Interests").setValue(thisUser.getInterests());
+        userData.child("Lat").setValue(mLatitude);
+        userData.child("Lng").setValue(mLongitude);
     }
 
     @Override

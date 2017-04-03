@@ -65,6 +65,9 @@ public class TopicActivity extends AppCompatActivity {
         etInterest = (EditText) findViewById(R.id.InterestsEdit);
         interests  = new ArrayList<>();
 
+        // DO NOT REPLACE OR SET AT OTHER POSITION
+        hasID = true;
+
         // getting exciting id from map
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -87,7 +90,7 @@ public class TopicActivity extends AppCompatActivity {
         Interest_adap = new InterestsAdapter(this, interests);
         Interests_recyc.setAdapter(Interest_adap);
 
-        hasID = true;
+
 
         //ImageView displaying whether a topic is filled in or not
         //MenuItem saveButton = (MenuItem) findViewById(R.id.save_button);
