@@ -223,6 +223,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+
+        // start for receiving data from database
+
     }
 
     @Override
