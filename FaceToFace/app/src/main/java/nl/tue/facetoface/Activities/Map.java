@@ -41,6 +41,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.R;
@@ -224,7 +225,25 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         super.onStart();
         mGoogleApiClient.connect();
 
-        // start for receiving data from database
+        userData.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                @SuppressWarnings("unchecked")
+                HashMap<String, Object> map = (HashMap<String, Object>) dataSnapshot.getValue();
+                //String mUserID = (String) map.get("UserID");
+                ArrayList<String> mInterests = (ArrayList) map.get("Interests");
+                String mTopic = (String) map.get("Topic");
+                //double dLatitude = (double) map.get("Lat");
+                //double dLongitude = (double) map.get("Lng");
+                System.out.println(mTopic);
+                //System.out.println(mUserID);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
