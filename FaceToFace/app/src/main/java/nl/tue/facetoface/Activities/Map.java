@@ -17,6 +17,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -37,7 +42,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,7 +52,7 @@ import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.R;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks,
-        OnConnectionFailedListener {
+        OnConnectionFailedListener, LocationListener {
 
     private Toolbar tb;
 
@@ -71,6 +78,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     LatLng locationUser;
     LocationManager mlocManager;
+    LocationRequest mLocationRequest;
 
     // send and get variables
     TimerTask taskSend;
@@ -98,7 +106,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         }
         tb.inflateMenu(R.menu.menu);
 
-        // Move to location of the user when button clicked
+        // Move to location of the user when own location button clicked
         FloatingActionButton centerMap = (FloatingActionButton) findViewById(R.id.fab);
         centerMap.setImageResource(R.mipmap.ic_my_location_white_48dp);
         centerMap.setOnClickListener(new View.OnClickListener() {
@@ -112,22 +120,58 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         // Set user data
         setUser();
 
-        // putt all info of the user on the database
         Button buttonListOfTopics = (Button) findViewById(R.id.buttonListOfTopics);
         buttonListOfTopics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setUserToDatabase();
+                // show list
             }
         });
 
-        // google thingy
+        // build and load google maps
         buildGoogleApiClient();
         mlocManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        createLocationRequest();
+
+        // set the initial location of the user
+        setLocation();
+
+        // putt all info of the user on the database
+        setUserToDatabase();
     }
 
+    // Begin location update
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(4000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+            .addLocationRequest(mLocationRequest);
+
+    protected void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        updateLocation();
+        setUserToDatabase();
+    }
+    // End location update
+
+    // make user and set the right values which are gotten from topic
     private void setUser() {
-        // make user and set the right values which are gotten from topic
         thisUser = new ThisUser();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -144,9 +188,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     private void setUserToDatabase() {
         userData = mRootRef.child("Users").child(thisUser.getUserID());
-        userData.setValue("");
+        userData.setValue(thisUser.getUserID());
         userData.child("Topic").setValue(thisUser.getTopic());
         userData.child("Interests").setValue(thisUser.getInterests());
+        setUserLocationToDatabase();
+    }
+
+    private void setUserLocationToDatabase() {
+        userData = mRootRef.child("Users").child(thisUser.getUserID());
         userData.child("Lat").setValue(mLatitude);
         userData.child("Lng").setValue(mLongitude);
     }
@@ -157,21 +206,17 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         return true;
     }
 
-    //This callback is triggered when the map is ready to be used.
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
             case R.id.inboxIcon:
+                timerSend.cancel();
                 Intent inboxIntent = new Intent(this, InboxActivity.class);
                 startActivity(inboxIntent);
                 break;
             case R.id.topicIcon:
+                timerSend.cancel();
                 Intent topicIntent = new Intent(this, TopicActivity.class);
                 topicIntent.putExtra("exUserID", thisUser.getUserID());
                 hasID = false;
@@ -180,9 +225,72 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 topicIntent.putExtra("userInterestList", thisUser.getInterests());
                 startActivity(topicIntent);
                 break;
-
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // Begin Android activity life cycle methods
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mGoogleApiClient.connect();
+        if (mGoogleApiClient.isConnected()) {
+            startLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopLocationUpdates();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Delete user from database when app is closed
+        Users.child(thisUser.getUserID()).removeValue();
+        timerSend.cancel();
+    }
+    // End Android activity life cycle methods
+
+    // Set the initial location of the user
+    private void setLocation() {
+        //mMap.clear();
+        if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mLastLocation != null) {
+                updateLocation();
+            } else {
+                Toast.makeText(this, "No location detected", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, "Enable location/GPS", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // Update the location on the map
+    private void updateLocation() {
+        mLatitude = mLastLocation.getLatitude();
+        mLongitude = mLastLocation.getLongitude();
+        locationUser = new LatLng(mLatitude, mLongitude);
+
+        mMap.clear();
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+        mUser = mMap.addMarker(new MarkerOptions().position(locationUser).title("You are here"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
     }
 
     // Build Google API client
@@ -194,74 +302,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 .build();
     }
 
+    //This callback is triggered when the map is ready to be used.
     @Override
-    protected void onResume() {
-        super.onResume();
-        mGoogleApiClient.connect();
-    }
-
-    // Android activity life cycle method
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-        /*
-        userData.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String text = dataSnapshot.getValue(String.class);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        }); */
-
-    }
-
-    // Android activity life cycle method
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Delete user from database when app is closed
-        Users.child(thisUser.getUserID()).removeValue();
-    }
-
-    private void setLocation() {
-        mMap.clear();
-        if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            //mLastLocation = mlocManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                System.out.println(mLastLocation);
-            if (mLastLocation != null) {
-                System.out.println("knop1");
-                mLatitude = mLastLocation.getLatitude();
-                mLongitude = mLastLocation.getLongitude();
-                locationUser = new LatLng(mLatitude, mLongitude);
-
-                //Set location when the Map Activity is visited
-                mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-                mUser = mMap.addMarker(new MarkerOptions().position(locationUser).title("You are here"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
-            } else {
-                Toast.makeText(this, "No location detected", Toast.LENGTH_LONG).show();
-            }
-        } else {
-            Toast.makeText(this, "Enable location/GPS", Toast.LENGTH_LONG).show();
-        }
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
     }
 
     // Google API client connection callback
@@ -275,6 +319,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
         } else {
             setLocation();
+            startLocationUpdates();
         }
     }
 
