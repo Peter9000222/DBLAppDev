@@ -17,11 +17,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -42,11 +40,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.R;
@@ -80,14 +74,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     LocationManager mlocManager;
     LocationRequest mLocationRequest;
 
-    // send and get variables
-    TimerTask taskSend;
-    TimerTask taskGet;
-    Timer timerSend = new Timer();
-    Timer timerGet = new Timer();
-    int clockSend = 2000;       // time is miliseconds: 1000 = 1 s
-    int clockGet = 2000;        // time is miliseconds: 1000 = 1 s
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +99,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             @Override
             public void onClick(View v) {
                 setLocation();
-                System.out.println("knop");
             }
         });
 
@@ -133,9 +118,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         mlocManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         createLocationRequest();
 
-        // set the initial location of the user
-        setLocation();
-
         // putt all info of the user on the database
         setUserToDatabase();
     }
@@ -143,7 +125,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     // Begin location update
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
+        mLocationRequest.setInterval(7000);
         mLocationRequest.setFastestInterval(4000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
@@ -211,12 +193,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         int id = item.getItemId();
         switch (id) {
             case R.id.inboxIcon:
-                timerSend.cancel();
                 Intent inboxIntent = new Intent(this, InboxActivity.class);
                 startActivity(inboxIntent);
                 break;
             case R.id.topicIcon:
-                timerSend.cancel();
                 Intent topicIntent = new Intent(this, TopicActivity.class);
                 topicIntent.putExtra("exUserID", thisUser.getUserID());
                 hasID = false;
@@ -259,7 +239,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         super.onDestroy();
         // Delete user from database when app is closed
         Users.child(thisUser.getUserID()).removeValue();
-        timerSend.cancel();
     }
     // End Android activity life cycle methods
 
