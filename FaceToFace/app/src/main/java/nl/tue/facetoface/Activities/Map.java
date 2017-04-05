@@ -275,7 +275,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     // Still need to test whether this function still triggers when a new user is registered or changes data
 
                     // Print test to check correctness of data base retrieval and adding to local map
-                    System.out.println("wtff" + key + " " + dTopic + " " + dInterests + " " + latLng + " " + dLat + " " + dLng);
+                    //System.out.println("wtff" + key + " " + dTopic + " " + dInterests + " " + latLng + " " + dLat + " " + dLng);
                 }
 
                 // Print test to check content of mapOfNearbyUsers after retrieving data
