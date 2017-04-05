@@ -265,10 +265,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                         dLat = 0.0;
                         dLng = 0.0;
                     }
+
+                    if (inProximity(mLatitude, mLongitude,dLat, dLng))
+                    {
                     LatLng latLng = new LatLng(dLat, dLng);
                     NearbyUser nearbyUser = new NearbyUser(key, dTopic, dInterests, latLng);
                     mapOfNearbyUsers.put(key, nearbyUser);
-
+                    }
                     // Still need to test whether this function still triggers when a new user is registered or changes data
 
                     // Print test to check correctness of data base retrieval and adding to local map
