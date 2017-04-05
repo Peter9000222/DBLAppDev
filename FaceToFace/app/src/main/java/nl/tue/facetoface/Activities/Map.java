@@ -42,6 +42,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.R;
@@ -149,7 +150,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         updateLocation();
-        setUserToDatabase();
+        setUserLocationToDatabase();
     }
     // End location update
 
@@ -170,11 +171,25 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     private void setUserToDatabase() {
-        userData = mRootRef.child("Users").child(thisUser.getUserID());
+
+        HashMap<String, Object> hashMapUser = new HashMap<>();
+        hashMapUser.put("Topic", thisUser.getTopic());
+        hashMapUser.put("Interests", thisUser.getInterests());
+        hashMapUser.put("Lat", mLatitude);
+        hashMapUser.put("Lng", mLongitude);
+
+        userData.child(thisUser.getUserID()).setValue(hashMapUser);
+
+      /*  userData = mRootRef.child("Users").child(thisUser.getUserID());
         userData.setValue(thisUser.getUserID());
+
+        //userData.child("Lat").setValue(mLatitude);
+        //userData.child("Lng").setValue(mLongitude);
+
         userData.child("Topic").setValue(thisUser.getTopic());
         userData.child("Interests").setValue(thisUser.getInterests());
-        setUserLocationToDatabase();
+       // setUserLocationToDatabase();*/
+
     }
 
     private void setUserLocationToDatabase() {
@@ -244,12 +259,17 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             public void onDataChange(DataSnapshot dataSnapshot) {
                 @SuppressWarnings("unchecked")
                 HashMap<String, Object> map = (HashMap<String, Object>) dataSnapshot.getValue();
+
                 //String mUserID = (String) map.get("UserID");
-                ArrayList<String> mInterests = (ArrayList) map.get("Interests");
-                String mTopic = (String) map.get("Topic");
-                //double dLatitude = (double) map.get("Lat");
-                //double dLongitude = (double) map.get("Lng");
-                System.out.println(mTopic);
+                //ArrayList<String> mInterests = (ArrayList) map.get("Interests");
+                String mTopic = (String) map.get(thisUser.getUserID());
+               // double dLatitude = (double) map.get("Lat");
+               // double dLongitude = (double) map.get("Lng");
+                System.out.println("Topic: " + mTopic);
+                System.out.println(map.get(thisUser.getUserID()));
+              //  System.out.println(dLatitude);
+              //  System.out.println(dLongitude);
+               // System.out.print(mInterests);
                 //System.out.println(mUserID);
             }
 
