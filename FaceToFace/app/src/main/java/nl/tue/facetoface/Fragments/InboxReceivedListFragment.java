@@ -63,6 +63,9 @@ public class InboxReceivedListFragment extends Fragment {
         }));
     }
 
+    public void notifyAdapter(){
+        InboxReceived_adap.notifyDataSetChanged();
+    }
 
 
 
