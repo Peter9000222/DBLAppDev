@@ -262,11 +262,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
                 //String mUserID = (String) map.get("UserID");
                 //ArrayList<String> mInterests = (ArrayList) map.get("Interests");
-                String mTopic = (String) map.get(thisUser.getUserID());
+                //String mTopic = (String) map.get(thisUser.getUserID());
                // double dLatitude = (double) map.get("Lat");
                // double dLongitude = (double) map.get("Lng");
-                System.out.println("Topic: " + mTopic);
-                System.out.println(map.get(thisUser.getUserID()));
+                //System.out.println("Topic: " + mTopic);
+                //System.out.println(map.get(thisUser.getUserID()));
               //  System.out.println(dLatitude);
               //  System.out.println(dLongitude);
                // System.out.print(mInterests);
