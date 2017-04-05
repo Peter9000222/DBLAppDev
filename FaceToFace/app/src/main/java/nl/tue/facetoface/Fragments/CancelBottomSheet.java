@@ -3,14 +3,15 @@ package nl.tue.facetoface.Fragments;
 import android.app.Dialog;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,6 @@ import nl.tue.facetoface.R;
  */
 
 public class CancelBottomSheet extends BottomSheetDialogFragment {
-
 
     private String time;
     private String distance;
@@ -72,11 +72,26 @@ public class CancelBottomSheet extends BottomSheetDialogFragment {
         cancel_recyc.setLayoutManager(cancel_manager);
         cancel_adap = new CancelSendAdapter(this.getActivity(), interestList);
         cancel_recyc.setAdapter(cancel_adap);
+        behavior = BottomSheetBehavior.from((View)contentView.getParent());
+        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    Log.e("onStateChanged", "onStateChanged:" + newState);
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
         ((View) contentView.getParent()).setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
 
         fab = (FloatingActionButton) contentView.findViewById(R.id.cancel_fab);
-        fab.setOnClickListener(new MyLovelyOnClickListener(position, contentView));
-        //fab.setOnClickListener(this);
+        fab.setOnClickListener(new MyLovelyOnClickListener(position));
     }
 
     @Override
@@ -103,16 +118,13 @@ public class CancelBottomSheet extends BottomSheetDialogFragment {
     {
         int position;
         View contentView;
-        public MyLovelyOnClickListener(int position, View contentView) {
+        BottomSheetBehavior behavior;
+        public MyLovelyOnClickListener(int position) {
             this.position = position;
-            this.contentView = contentView;
         }
         @Override
         public void onClick(View v)
         {
-            behavior = BottomSheetBehavior.from((View)contentView.getParent());
-            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
             InboxSentListFragment fragment;
             InboxActivity.cancelSentRequest(position);
             fragment = InboxActivity.getFragment();

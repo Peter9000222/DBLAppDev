@@ -225,9 +225,8 @@ public class InboxActivity extends AppCompatActivity{
         timeListS.remove(position);
         distanceListS.remove(position);
         interestListSent.remove(position);
+        bottomSheetCancelFragment.dismiss();
     }
 
     public static InboxSentListFragment getFragment(){return inboxSentListFragment;}
-
-    public static CancelBottomSheet getBottomSheetCancelFragment() {return bottomSheetCancelFragment;}
 }
