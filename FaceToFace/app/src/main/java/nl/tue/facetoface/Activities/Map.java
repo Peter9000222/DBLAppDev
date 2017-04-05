@@ -225,6 +225,20 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         super.onStart();
         mGoogleApiClient.connect();
 
+        // start for receiving data from database
+      /*  Users = Users.child("test");
+        Users.addValueEventListener( new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String text = dataSnapshot.getValue(String.class);
+                System.out.println(text);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println(databaseError);
+            }
+        });*/
         userData.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
