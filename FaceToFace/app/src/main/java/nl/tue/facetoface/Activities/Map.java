@@ -44,8 +44,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
+import nl.tue.facetoface.Models.NearbyUser;
 import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.R;
+
+import static nl.tue.facetoface.R.id.map;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks,
         OnConnectionFailedListener, LocationListener {
@@ -83,7 +86,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(map);
         mapFragment.getMapAsync(this);
 
         // Create action bar with icon
@@ -240,37 +243,23 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         super.onStart();
         mGoogleApiClient.connect();
 
-        // start for receiving data from database
-      /*  Users = Users.child("test");
-        Users.addValueEventListener( new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String text = dataSnapshot.getValue(String.class);
-                System.out.println(text);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println(databaseError);
-            }
-        });*/
         userData.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 @SuppressWarnings("unchecked")
-                HashMap<String, Object> map = (HashMap<String, Object>) dataSnapshot.getValue();
+                HashMap<String, HashMap<String, Object>> map = (HashMap<String, HashMap<String, Object>>) dataSnapshot.getValue();
+                HashMap<String, Object> newUser = map.get("6731cc1c-9f3b-4644-b98a-4f0b1541173c");
+                String dTopic = (String) newUser.get("Topic");
+                Double dLat = (Double) newUser.get("Lat");
+                Double dLng = (Double) newUser.get("Lng");
+                ArrayList<String> dInterests = (ArrayList<String>) newUser.get("Interests");
 
-                //String mUserID = (String) map.get("UserID");
-                //ArrayList<String> mInterests = (ArrayList) map.get("Interests");
-                String mTopic = (String) map.get(thisUser.getUserID());
-               // double dLatitude = (double) map.get("Lat");
-               // double dLongitude = (double) map.get("Lng");
-                System.out.println("Topic: " + mTopic);
-                System.out.println(map.get(thisUser.getUserID()));
-              //  System.out.println(dLatitude);
-              //  System.out.println(dLongitude);
-               // System.out.print(mInterests);
-                //System.out.println(mUserID);
+                System.out.println("wtf" + newUser);
+                System.out.println("wtf" + dTopic + dLat + dLng + dInterests);
+
+                for ( String key : map.keySet() ) {
+                    System.out.println("wtf" + key);
+                }
             }
 
             @Override
