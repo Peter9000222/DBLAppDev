@@ -48,8 +48,6 @@ import nl.tue.facetoface.Models.NearbyUser;
 import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.R;
 
-import static nl.tue.facetoface.R.id.map;
-
 public class Map extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks,
         OnConnectionFailedListener, LocationListener {
 
@@ -86,7 +84,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(map);
+                .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         // Create action bar with icon
@@ -213,6 +211,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         switch (id) {
             case R.id.inboxIcon:
                 Intent inboxIntent = new Intent(this, InboxActivity.class);
+                inboxIntent.putExtra("exUserID", thisUser.getUserID());
+                hasID = false;
+                inboxIntent.putExtra("hasID", hasID);
+                inboxIntent.putExtra("userTopic", thisUser.getTopic());
+                inboxIntent.putExtra("userInterestList", thisUser.getInterests());
                 startActivity(inboxIntent);
                 break;
             case R.id.topicIcon:
@@ -243,7 +246,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         super.onStart();
         mGoogleApiClient.connect();
 
-        userData.addListenerForSingleValueEvent(new ValueEventListener() {
+        Users.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 @SuppressWarnings("unchecked")

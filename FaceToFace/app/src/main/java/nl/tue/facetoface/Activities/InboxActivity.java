@@ -1,6 +1,7 @@
 package nl.tue.facetoface.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -41,6 +42,11 @@ public class InboxActivity extends AppCompatActivity{
     private static ArrayList<String> distanceListR;
     public static InboxSentListFragment inboxSentListFragment;
     public static InboxReceivedListFragment inboxReceivedListFragment;
+
+    String topic;
+    ArrayList<String> interests = new ArrayList<>();
+    String userID;
+    Boolean hasID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +95,17 @@ public class InboxActivity extends AppCompatActivity{
         setupViewPager(viewPager);
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+
+        //give info from map
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            userID = extras.getString("userID");
+            topic = extras.getString("topic");
+            interests = extras.getStringArrayList("interests");
+            hasID = extras.getBoolean("hasID");
+        }
     }
+
     // adds fragments to tabs
     public void setupViewPager(ViewPager viewPager){
         Adapter adapter = new Adapter(getSupportFragmentManager());
@@ -140,6 +156,19 @@ public class InboxActivity extends AppCompatActivity{
             }
             return super.onOptionsItemSelected(item);
         }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Intent intent = new Intent();
+
+        intent.putExtra("exUserID", userID);
+        hasID = false;
+        intent.putExtra("hasID", hasID);
+        intent.putExtra("userTopic", topic);
+        intent.putExtra("userInterestList", intent);
+    }
 
     public interface ClickListener{
          void onClick(View view, int position);
