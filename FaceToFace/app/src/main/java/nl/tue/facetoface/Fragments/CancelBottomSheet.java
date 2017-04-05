@@ -77,7 +77,7 @@ public class CancelBottomSheet extends BottomSheetDialogFragment {
 
         fab = (FloatingActionButton) contentView.findViewById(R.id.cancel_fab);
         fab.setOnClickListener(new ButtonOnClickListener(position, "Cancel"));
-        cancelButton = (Button) contentView.findViewById(R.id.cancel_button);
+        cancelButton = (Button) contentView.findViewById(R.id.CancelButton);
         cancelButton.setOnClickListener(new ButtonOnClickListener(position, "Cancel"));
     }
 
