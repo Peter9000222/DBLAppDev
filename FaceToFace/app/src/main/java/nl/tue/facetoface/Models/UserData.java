@@ -16,16 +16,16 @@ public class UserData {
     protected ArrayList<String> interests;
     protected LatLng location;
 
-    public String getUserID () {
+    public String getUserID() {
         return userID;
+    }
+
+    public void setUserID(String nID) {
+        userID = nID;
     }
 
     public String getTopic() {
         return topic;
-    }
-
-    public void setTopic(String ntopic) {
-        topic = ntopic;
     }
 
     public void setInterests(ArrayList<String> interests) {

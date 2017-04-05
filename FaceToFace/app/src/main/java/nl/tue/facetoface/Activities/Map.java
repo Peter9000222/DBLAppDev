@@ -46,7 +46,10 @@ import java.util.Objects;
 
 import nl.tue.facetoface.Models.NearbyUser;
 import nl.tue.facetoface.Models.ThisUser;
+import nl.tue.facetoface.Models.UserData;
 import nl.tue.facetoface.R;
+
+import static android.R.attr.key;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks,
         OnConnectionFailedListener, LocationListener {
@@ -76,6 +79,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     LatLng locationUser;
     LocationManager mlocManager;
     LocationRequest mLocationRequest;
+
+    HashMap<String, NearbyUser> mapOfNearbyUsers = new HashMap<String, NearbyUser>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,19 +256,38 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             public void onDataChange(DataSnapshot dataSnapshot) {
                 @SuppressWarnings("unchecked")
                 HashMap<String, HashMap<String, Object>> map = (HashMap<String, HashMap<String, Object>>) dataSnapshot.getValue();
-                HashMap<String, Object> newUser = map.get("6731cc1c-9f3b-4644-b98a-4f0b1541173c");
+                for (String key : map.keySet()) {
+                    String dTopic = (String) map.get(key).get("Topic");
+                    ArrayList<String> dInterests = (ArrayList<String>) map.get(key).get("Interests");
+                    Double dLat = (Double) map.get(key).get("Lat");
+                    Double dLng = (Double) map.get(key).get("Lng");
+                    if (dLat == null || dLng == null) {
+                        dLat = 0.0;
+                        dLng = 0.0;
+                    }
+                    LatLng latLng = new LatLng(dLat, dLng);
+                    NearbyUser nearbyUser = new NearbyUser(key, dTopic, dInterests, latLng);
+                    mapOfNearbyUsers.put(key, nearbyUser);
+
+                    // Still need to test whether this function still triggers when a new user is registered or changes data
+
+                    // Print test to check correctness of data base retrieval and adding to local map
+                    System.out.println("wtff" + key + " " + dTopic + " " + dInterests + " " + latLng + " " + dLat + " " + dLng);
+                }
+
+                // Print test to check content of mapOfNearbyUsers after retrieving data
+                for (String key: mapOfNearbyUsers.keySet()) {
+                    System.out.println("wtffFinalTest" + mapOfNearbyUsers.get(key).getUserID() + mapOfNearbyUsers.get(key).getTopic() + mapOfNearbyUsers.get(key).getInterests() + mapOfNearbyUsers.get(key).getLocation());
+                }
+
+                // OLD CODE
+                /*HashMap<String, Object> newUser = map.get("6731cc1c-9f3b-4644-b98a-4f0b1541173c");
                 String dTopic = (String) newUser.get("Topic");
                 Double dLat = (Double) newUser.get("Lat");
                 Double dLng = (Double) newUser.get("Lng");
                 ArrayList<String> dInterests = (ArrayList<String>) newUser.get("Interests");
-
                 System.out.println("wtf" + newUser);
-                System.out.println("wtf" + dTopic + dLat + dLng + dInterests);
-
-                for ( String key : map.keySet() ) {
-                    System.out.println("wtf" + key);
-                }
-
+                System.out.println("wtf" + dTopic + dLat + dLng + dInterests); */
             }
 
             @Override
@@ -380,7 +404,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         mGoogleApiClient.connect();
     }
 
-    public double getDistance(double user1Lat, double user1Lng, double user2Lat, double user2Lng) {
+    public boolean inProximity(double user1Lat, double user1Lng, double user2Lat, double user2Lng) {
 
         final int R = 6371; // Radius of the earth
 
@@ -392,6 +416,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double distance = R * c * 1000; // convert to meters
 
-        return distance;
+        return distance <= 1000;
     }
 }
