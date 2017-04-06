@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import nl.tue.facetoface.Adapters.CancelSendAdapter;
 import nl.tue.facetoface.Adapters.UserMarkerAdapter;
+import nl.tue.facetoface.Models.ButtonOnClickListener;
 import nl.tue.facetoface.R;
 
 /**
@@ -34,6 +35,8 @@ public class UserMarkerBottomSheet extends BottomSheetDialogFragment {
     RecyclerView userMarker_recyc;
     RecyclerView.Adapter userMarker_adap;
     RecyclerView.LayoutManager userMarker_manager;
+
+    Button sendRequest;
 
     @Override
     public void setupDialog(final Dialog dialog, int style) {
@@ -53,6 +56,8 @@ public class UserMarkerBottomSheet extends BottomSheetDialogFragment {
         userMarker_recyc.setAdapter(userMarker_adap);
         bottomSheetBehavior = BottomSheetBehavior.from((View)contentView.getParent());
         bottomSheetBehavior.setPeekHeight(size.y);
+        sendRequest = (Button) contentView.findViewById(R.id.SendRequestButton);
+        sendRequest.setOnClickListener(new ButtonOnClickListener(1, "Send Request"));
         ((View) contentView.getParent()).setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
 
 
@@ -62,6 +67,8 @@ public class UserMarkerBottomSheet extends BottomSheetDialogFragment {
     public void setInterest(ArrayList interestList){ this.interestList = interestList; }
 
     public void setIdSheet(String idSheet){this.idSheet = idSheet;}
+
+    public String getIdSheet(){ return this.idSheet;}
 
 }
 
