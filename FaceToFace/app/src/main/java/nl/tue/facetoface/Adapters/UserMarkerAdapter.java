@@ -79,6 +79,6 @@ public class UserMarkerAdapter extends
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return mInterests.size();
+        return mInterests == null ? 0 : mInterests.size();
     }
 }

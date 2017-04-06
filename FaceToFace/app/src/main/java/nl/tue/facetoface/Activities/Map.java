@@ -436,6 +436,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 Bundle extras = getIntent().getExtras();
                 markerSheet.setTopic(extras.getString("topic"));
                 markerSheet.setInterest(extras.getStringArrayList("interests"));
+                markerSheet.setIdSheet(extras.getString("userID"));
                 markerSheet.show(getSupportFragmentManager(), "test");
         }
         return true;
