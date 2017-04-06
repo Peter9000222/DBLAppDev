@@ -24,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -42,8 +43,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Objects;
 
+import nl.tue.facetoface.Fragments.UserMarkerBottomSheet;
 import nl.tue.facetoface.Models.NearbyUser;
 import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.Models.UserData;
@@ -52,7 +55,7 @@ import nl.tue.facetoface.R;
 import static android.R.attr.key;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks,
-        OnConnectionFailedListener, LocationListener {
+        OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener {
 
     private Toolbar tb;
 
@@ -266,12 +269,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                         dLng = 0.0;
                     }
 
-                    if (inProximity(mLatitude, mLongitude,dLat, dLng))
+                   /* if (inProximity(mLatitude, mLongitude,dLat, dLng))
                     {
                     LatLng latLng = new LatLng(dLat, dLng);
                     NearbyUser nearbyUser = new NearbyUser(key, dTopic, dInterests, latLng);
                     mapOfNearbyUsers.put(key, nearbyUser);
-                    }
+                    }*/
                     // Still need to test whether this function still triggers when a new user is registered or changes data
 
                     // Print test to check correctness of data base retrieval and adding to local map
@@ -346,7 +349,16 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         mUser = mMap.addMarker(new MarkerOptions().position(locationUser).title("You are here"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
+        mMap.setOnMarkerClickListener(this);
     }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        UserMarkerBottomSheet markerSheet = new UserMarkerBottomSheet();
+        markerSheet.show(getSupportFragmentManager(), "test");
+        return true;
+    }
+
 
     // Build Google API client
     protected synchronized void buildGoogleApiClient() {
@@ -421,4 +433,21 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
         return distance <= 1000;
     }
+
+    // Adds markers on the map
+    public void addMarkersMap(HashMap<String, HashMap<String, Object>> userDataMarkerCollection){
+
+        for(String key: userDataMarkerCollection.keySet()){
+            HashMap<String, Object> userDataMarker = userDataMarkerCollection.get(key);
+            //NOT CORRECT LOCATION: THIS LOCATION SHOULD BE RETRIEVED FROM userDataMarker object
+            LatLng locOtherUser = new LatLng(mLatitude+100, mLongitude+100);
+            //add marker on map with color blue
+            Marker markerOtherUser = mMap.addMarker(new MarkerOptions().position(locOtherUser)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+            //adds the ID of userDataMarker as identifier, when click on Marker use getTag() and
+            //use it to get object in UserDataMarkerCollection which could be a global HashMap
+            markerOtherUser.setTag(key);
+        }
+    }
+
 }
