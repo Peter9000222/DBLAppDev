@@ -9,6 +9,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import nl.tue.facetoface.R;
 public class UserMarkerBottomSheet extends BottomSheetDialogFragment {
     private String topic = "Topic";
     private String Interest = "Interests";
+    private String idSheet;
     private TextView tvTopic;
     private ArrayList<String> interestList  = new ArrayList<>();
     BottomSheetBehavior bottomSheetBehavior;
@@ -57,6 +60,9 @@ public class UserMarkerBottomSheet extends BottomSheetDialogFragment {
     public void setTopic(String topic){ this.topic = topic;}
 
     public void setInterest(ArrayList interestList){ this.interestList = interestList; }
+
+    public void setIdSheet(String idSheet){this.idSheet = idSheet;}
+
 }
 
 

@@ -406,17 +406,41 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
         mMap.clear();
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-        mUser = mMap.addMarker(new MarkerOptions().position(locationUser).title("You are here"));
+        mUser = mMap.addMarker(new MarkerOptions().position(locationUser).title("You are here")
+        .icon(BitmapDescriptorFactory
+                .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+        mUser.setTag("mydevice");
         mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
         mMap.setOnMarkerClickListener(this);
     }
 
+
+    //shows BottomSheet when clicking on a marker
     @Override
     public boolean onMarkerClick(Marker marker) {
-        UserMarkerBottomSheet markerSheet = new UserMarkerBottomSheet();
-        markerSheet.show(getSupportFragmentManager(), "test");
+        String idMarker = (String) marker.getTag();
+        if(idMarker != "mydevice") {
+            NearbyUser user = mapOfNearbyUsers.get(idMarker);
+            String topicMarker = (String) user.getTopic();
+            ArrayList<String> interestsMarker = user.getInterests();
+
+            UserMarkerBottomSheet markerSheet = new UserMarkerBottomSheet();
+            markerSheet.setTopic(topicMarker);
+            markerSheet.setInterest(interestsMarker);
+            markerSheet.setIdSheet(idMarker);
+            markerSheet.show(getSupportFragmentManager(), "test");
+        }
+            //if clicked on your own marker
+            else{
+                UserMarkerBottomSheet markerSheet = new UserMarkerBottomSheet();
+                Bundle extras = getIntent().getExtras();
+                markerSheet.setTopic(extras.getString("topic"));
+                markerSheet.setInterest(extras.getStringArrayList("interests"));
+                markerSheet.show(getSupportFragmentManager(), "test");
+        }
         return true;
     }
+
 
 
     // Build Google API client
@@ -495,8 +519,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         LatLng location = user.getLocation();
         double lat = location.latitude;
         double lng = location.longitude;
-        Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
+        float hue = (float) Math.random() * 360;
+
+        Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
+        .icon(BitmapDescriptorFactory
+                .defaultMarker(hue)));
         user.setMarker(marker);
+        marker.setTag(key);
     }
 
     public void updateMarker(String key) {
