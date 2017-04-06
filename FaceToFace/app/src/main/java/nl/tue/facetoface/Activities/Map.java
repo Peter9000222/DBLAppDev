@@ -302,11 +302,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     user.setInterests(dInterests);
                     user.setLocation(latLng);
                 }
-
                 updateMarker(dKey);
-                // This method is now triggered even when the location of a user in the database
+
+                // This method (onChildChanger) is now triggered even when the location of a user in the database
                 // being uploaded is the same. It would be more efficient to only update the location
                 // to the database if the location has actually changed.
+
+                // Also, we need to test whether a user instance in the database is still deleted
+                // whenever a user closes the app.
 
                 System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getUserID());
                 System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getTopic());
