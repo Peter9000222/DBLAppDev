@@ -137,8 +137,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     // Begin location update
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(7000);
-        mLocationRequest.setFastestInterval(4000);
+        mLocationRequest.setInterval(700000);
+        mLocationRequest.setFastestInterval(400000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -273,6 +273,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 LatLng latLng = new LatLng(dLat, dLng);
                 NearbyUser nearbyUser = new NearbyUser(dKey, dTopic, dInterests, latLng);
                 mapOfNearbyUsers.put(dKey, nearbyUser);
+                addMarker(dKey);
 
                 System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getUserID());
                 System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getTopic());
@@ -295,9 +296,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     dLng = 0.0;
                 }
                 LatLng latLng = new LatLng(dLat, dLng);
-                NearbyUser nearbyUser = new NearbyUser(dKey, dTopic, dInterests, latLng);
-                mapOfNearbyUsers.put(dKey, nearbyUser);
+                NearbyUser user = mapOfNearbyUsers.get(dKey);
+                if (user != null) {
+                    user.setTopic(dTopic);
+                    user.setInterests(dInterests);
+                    user.setLocation(latLng);
+                }
 
+                updateMarker(dKey);
                 // This method is now triggered even when the location of a user in the database
                 // being uploaded is the same. It would be more efficient to only update the location
                 // to the database if the location has actually changed.
@@ -311,6 +317,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 String dKey = dataSnapshot.getKey();
+                removeMarker(dKey);
+
                 System.out.println("wtfremovedchild" + dKey);
             }
 
@@ -468,9 +476,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     public boolean inProximity(double user1Lat, double user1Lng, double user2Lat, double user2Lng) {
-
         final int R = 6371; // Radius of the earth
-
         Double latDistance = Math.toRadians(user2Lat - user1Lat);
         Double lonDistance = Math.toRadians(user2Lng - user1Lng);
         Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
@@ -478,23 +484,35 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double distance = R * c * 1000; // convert to meters
-
         return distance <= 1000;
     }
 
-    // Adds markers on the map
-    public void addMarkersMap(HashMap<String, HashMap<String, Object>> userDataMarkerCollection){
+    public void addMarker(String key) {
+        NearbyUser user = mapOfNearbyUsers.get(key);
+        LatLng location = user.getLocation();
+        double lat = location.latitude;
+        double lng = location.longitude;
+        Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
+        user.setMarker(marker);
+    }
 
-        for(String key: userDataMarkerCollection.keySet()){
-            HashMap<String, Object> userDataMarker = userDataMarkerCollection.get(key);
-            //NOT CORRECT LOCATION: THIS LOCATION SHOULD BE RETRIEVED FROM userDataMarker object
-            LatLng locOtherUser = new LatLng(mLatitude+100, mLongitude+100);
-            //add marker on map with color blue
-            Marker markerOtherUser = mMap.addMarker(new MarkerOptions().position(locOtherUser)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-            //adds the ID of userDataMarker as identifier, when click on Marker use getTag() and
-            //use it to get object in UserDataMarkerCollection which could be a global HashMap
-            markerOtherUser.setTag(key);
+    public void updateMarker(String key) {
+        NearbyUser user = mapOfNearbyUsers.get(key);
+        LatLng location = user.getLocation();
+        double lat = location.latitude;
+        double lng = location.longitude;
+        Marker marker = user.getMarker();
+        if (marker != null) {
+            marker.setPosition(new LatLng(lat, lng));
+        }
+    }
+
+    public void removeMarker(String key) {
+        NearbyUser user = mapOfNearbyUsers.get(key);
+        Marker marker = user.getMarker();
+        if (marker != null) {
+            marker.remove();
+            user.setMarker(null);
         }
     }
 

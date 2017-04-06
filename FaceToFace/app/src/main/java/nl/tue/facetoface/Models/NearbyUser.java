@@ -17,6 +17,7 @@ public class NearbyUser extends UserData {
         topic = nTopic;
         interests = nInterests;
         location = nLocation;
+        marker = null;
         onlineStatus = true;
     }
 

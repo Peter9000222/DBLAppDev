@@ -16,6 +16,7 @@ public class ThisUser extends UserData {
         topic = "ik ben harry";
         interests = new ArrayList<>();
         location = null;
+        marker = null;
     }
 
     public void setUserID(String nID) {
@@ -39,5 +40,4 @@ public class ThisUser extends UserData {
         }
     }
 
-    public void setLocation(LatLng nLocation) { location = nLocation; }
 }
