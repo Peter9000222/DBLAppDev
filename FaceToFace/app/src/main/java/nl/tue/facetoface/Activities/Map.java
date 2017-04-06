@@ -35,6 +35,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -254,10 +255,88 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         super.onStart();
         mGoogleApiClient.connect();
 
-        Users.addListenerForSingleValueEvent(new ValueEventListener() {
+        Users.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 @SuppressWarnings("unchecked")
+                HashMap<String, Object> map = (HashMap<String, Object>) dataSnapshot.getValue();
+                String dKey = dataSnapshot.getKey();
+                String dTopic = (String) map.get("Topic");
+                @SuppressWarnings("unchecked")
+                ArrayList<String> dInterests = (ArrayList<String>) map.get("Interests");
+                Double dLat = (Double) map.get("Lat");
+                Double dLng = (Double) map.get("Lng");
+                if (dLat == null || dLng == null) {
+                    dLat = 0.0;
+                    dLng = 0.0;
+                }
+                LatLng latLng = new LatLng(dLat, dLng);
+                NearbyUser nearbyUser = new NearbyUser(dKey, dTopic, dInterests, latLng);
+                mapOfNearbyUsers.put(dKey, nearbyUser);
+
+                System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getUserID());
+                System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getTopic());
+                System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getInterests());
+                System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getLocation());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                @SuppressWarnings("unchecked")
+                HashMap<String, Object> map = (HashMap<String, Object>) dataSnapshot.getValue();
+                String dKey = dataSnapshot.getKey();
+                String dTopic = (String) map.get("Topic");
+                @SuppressWarnings("unchecked")
+                ArrayList<String> dInterests = (ArrayList<String>) map.get("Interests");
+                Double dLat = (Double) map.get("Lat");
+                Double dLng = (Double) map.get("Lng");
+                if (dLat == null || dLng == null) {
+                    dLat = 0.0;
+                    dLng = 0.0;
+                }
+                LatLng latLng = new LatLng(dLat, dLng);
+                NearbyUser nearbyUser = new NearbyUser(dKey, dTopic, dInterests, latLng);
+                mapOfNearbyUsers.put(dKey, nearbyUser);
+
+                // This method is now triggered even when the location of a user in the database
+                // being uploaded is the same. It would be more efficient to only update the location
+                // to the database if the location has actually changed.
+
+                System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getUserID());
+                System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getTopic());
+                System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getInterests());
+                System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getLocation());
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                String dKey = dataSnapshot.getKey();
+                System.out.println("wtfremovedchild" + dKey);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        // OLD CODE 1
+                /*HashMap<String, Object> newUser = map.get("6731cc1c-9f3b-4644-b98a-4f0b1541173c");
+                String dTopic = (String) newUser.get("Topic");
+                Double dLat = (Double) newUser.get("Lat");
+                Double dLng = (Double) newUser.get("Lng");
+                ArrayList<String> dInterests = (ArrayList<String>) newUser.get("Interests");
+                System.out.println("wtf" + newUser);
+                System.out.println("wtf" + dTopic + dLat + dLng + dInterests);
+                //} */
+
+                // OLD CODE 2
+                /*@SuppressWarnings("unchecked")
                 HashMap<String, HashMap<String, Object>> map = (HashMap<String, HashMap<String, Object>>) dataSnapshot.getValue();
                 for (String key : map.keySet()) {
                     String dTopic = (String) map.get(key).get("Topic");
@@ -268,40 +347,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                         dLat = 0.0;
                         dLng = 0.0;
                     }
-
-                   /* if (inProximity(mLatitude, mLongitude,dLat, dLng))
-                    {
                     LatLng latLng = new LatLng(dLat, dLng);
                     NearbyUser nearbyUser = new NearbyUser(key, dTopic, dInterests, latLng);
-                    mapOfNearbyUsers.put(key, nearbyUser);
-                    }*/
-                    // Still need to test whether this function still triggers when a new user is registered or changes data
-
-                    // Print test to check correctness of data base retrieval and adding to local map
-                    //System.out.println("wtff" + key + " " + dTopic + " " + dInterests + " " + latLng + " " + dLat + " " + dLng);
-                }
-
-                // Print test to check content of mapOfNearbyUsers after retrieving data
-                for (String key: mapOfNearbyUsers.keySet()) {
-                    System.out.println("wtffFinalTest" + mapOfNearbyUsers.get(key).getUserID() + mapOfNearbyUsers.get(key).getTopic() + mapOfNearbyUsers.get(key).getInterests() + mapOfNearbyUsers.get(key).getLocation());
-                }
-
-                // OLD CODE
-                /*HashMap<String, Object> newUser = map.get("6731cc1c-9f3b-4644-b98a-4f0b1541173c");
-                String dTopic = (String) newUser.get("Topic");
-                Double dLat = (Double) newUser.get("Lat");
-                Double dLng = (Double) newUser.get("Lng");
-                ArrayList<String> dInterests = (ArrayList<String>) newUser.get("Interests");
-                System.out.println("wtf" + newUser);
-                System.out.println("wtf" + dTopic + dLat + dLng + dInterests); */
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+                    mapOfNearbyUsers.put(key, nearbyUser);*/
     }
 
     @Override
