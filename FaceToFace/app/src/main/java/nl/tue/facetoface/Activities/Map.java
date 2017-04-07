@@ -270,15 +270,22 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     dLat = 0.0;
                     dLng = 0.0;
                 }
-                LatLng latLng = new LatLng(dLat, dLng);
-                NearbyUser nearbyUser = new NearbyUser(dKey, dTopic, dInterests, latLng);
-                mapOfNearbyUsers.put(dKey, nearbyUser);
-                addMarker(dKey);
 
-                System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getUserID());
-                System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getTopic());
-                System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getInterests());
-                System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getLocation());
+                if (!((mLatitude == null) || (mLongitude == null))) {
+
+                    if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
+
+                        LatLng latLng = new LatLng(dLat, dLng);
+                        NearbyUser nearbyUser = new NearbyUser(dKey, dTopic, dInterests, latLng);
+                        mapOfNearbyUsers.put(dKey, nearbyUser);
+                        addMarker(dKey);
+
+                        System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getUserID());
+                        System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getTopic());
+                        System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getInterests());
+                        System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getLocation());
+                    }
+                }
             }
 
             @Override
@@ -295,32 +302,42 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     dLat = 0.0;
                     dLng = 0.0;
                 }
-                LatLng latLng = new LatLng(dLat, dLng);
-                NearbyUser user = mapOfNearbyUsers.get(dKey);
-                if (user != null) {
-                    user.setTopic(dTopic);
-                    user.setInterests(dInterests);
-                    user.setLocation(latLng);
+
+                if (!((mLatitude == null) || (mLongitude == null))) {
+
+                    if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
+
+                        LatLng latLng = new LatLng(dLat, dLng);
+                        NearbyUser user = mapOfNearbyUsers.get(dKey);
+                        if (user != null) {
+                            user.setTopic(dTopic);
+                            user.setInterests(dInterests);
+                            user.setLocation(latLng);
+
+                            updateMarker(dKey);
+
+                            System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getUserID());
+                            System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getTopic());
+                            System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getInterests());
+                            System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getLocation());
+                        }
+                    }
                 }
-                updateMarker(dKey);
 
-                // This method (onChildChanger) is now triggered even when the location of a user in the database
-                // being uploaded is the same. It would be more efficient to only update the location
-                // to the database if the location has actually changed.
+                    // This method (onChildChanger) is now triggered even when the location of a user in the database
+                    // being uploaded is the same. It would be more efficient to only update the location
+                    // to the database if the location has actually changed.
 
-                // Also, we need to test whether a user instance in the database is still deleted
-                // whenever a user closes the app.
-
-                System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getUserID());
-                System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getTopic());
-                System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getInterests());
-                System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getLocation());
+                    // Also, we need to test whether a user instance in the database is still deleted
+                    // whenever a user closes the app.
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 String dKey = dataSnapshot.getKey();
-                removeMarker(dKey);
+                if (dKey != null) {
+                    removeMarker(dKey);
+                }
 
                 System.out.println("wtfremovedchild" + dKey);
             }
@@ -504,6 +521,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     public boolean inProximity(double user1Lat, double user1Lng, double user2Lat, double user2Lng) {
+
+        if (((user1Lat == 0.0) && (user1Lng ==0.0)) || ((user2Lat == 0.0) && (user2Lng ==0.0))){
+            return false;
+        }
+
         final int R = 6371; // Radius of the earth
         Double latDistance = Math.toRadians(user2Lat - user1Lat);
         Double lonDistance = Math.toRadians(user2Lng - user1Lng);
@@ -531,21 +553,25 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     public void updateMarker(String key) {
         NearbyUser user = mapOfNearbyUsers.get(key);
-        LatLng location = user.getLocation();
-        double lat = location.latitude;
-        double lng = location.longitude;
-        Marker marker = user.getMarker();
-        if (marker != null) {
-            marker.setPosition(new LatLng(lat, lng));
+        if (user != null) {
+            LatLng location = user.getLocation();
+            double lat = location.latitude;
+            double lng = location.longitude;
+            Marker marker = user.getMarker();
+            if (marker != null) {
+                marker.setPosition(new LatLng(lat, lng));
+            }
         }
     }
 
     public void removeMarker(String key) {
         NearbyUser user = mapOfNearbyUsers.get(key);
-        Marker marker = user.getMarker();
-        if (marker != null) {
-            marker.remove();
-            user.setMarker(null);
+        if (user !=null) {
+            Marker marker = user.getMarker();
+            if (marker != null) {
+                marker.remove();
+                user.setMarker(null);
+            }
         }
     }
 
