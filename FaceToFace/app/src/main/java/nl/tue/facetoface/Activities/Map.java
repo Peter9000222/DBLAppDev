@@ -73,6 +73,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     DatabaseReference userData = mRootRef.child("Users");
     DatabaseReference Users = mRootRef.child("Users");
+    DatabaseReference DestroyUser = mRootRef.child("Users");
 
     int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
 
@@ -110,6 +111,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         centerMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mUser.remove();
                 setLocation();
             }
         });
@@ -122,6 +124,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             @Override
             public void onClick(View v) {
                 // show list
+                Users.child(thisUser.getUserID()).removeValue();
             }
         });
 
@@ -137,8 +140,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     // Begin location update
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(700000);
-        mLocationRequest.setFastestInterval(400000);
+        mLocationRequest.setInterval(7000);
+        mLocationRequest.setFastestInterval(4000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -159,6 +162,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
+        mUser.remove();
         updateLocation();
         setUserLocationToDatabase();
     }
@@ -181,7 +185,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     private void setUserToDatabase() {
-
         HashMap<String, Object> hashMapUser = new HashMap<>();
         hashMapUser.put("Topic", thisUser.getTopic());
         hashMapUser.put("Interests", thisUser.getInterests());
@@ -189,17 +192,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         hashMapUser.put("Lng", mLongitude);
 
         userData.child(thisUser.getUserID()).setValue(hashMapUser);
-
-      /*  userData = mRootRef.child("Users").child(thisUser.getUserID());
-        userData.setValue(thisUser.getUserID());
-
-        //userData.child("Lat").setValue(mLatitude);
-        //userData.child("Lng").setValue(mLongitude);
-
-        userData.child("Topic").setValue(thisUser.getTopic());
-        userData.child("Interests").setValue(thisUser.getInterests());
-       // setUserLocationToDatabase();*/
-
     }
 
     private void setUserLocationToDatabase() {
@@ -245,15 +237,23 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     protected void onResume() {
         super.onResume();
         mGoogleApiClient.connect();
+        System.out.println("voor connect");
         if (mGoogleApiClient.isConnected()) {
             startLocationUpdates();
+            System.out.println("na connect");
         }
+        if (mUser != null) {
+            mUser.remove();
+        }
+        System.out.println("end resume");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+
+        System.out.println("HEEEEEEEEE " + mapOfNearbyUsers);
 
         Users.addChildEventListener(new ChildEventListener() {
             @Override
@@ -280,6 +280,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                         mapOfNearbyUsers.put(dKey, nearbyUser);
                         addMarker(dKey);
 
+                        System.out.println("1");
                         System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getUserID());
                         System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getTopic());
                         System.out.println("wtfnewchild" + mapOfNearbyUsers.get(dKey).getInterests());
@@ -316,6 +317,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
                             updateMarker(dKey);
 
+                            System.out.println("2");
                             System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getUserID());
                             System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getTopic());
                             System.out.println("wtfchangedchild" + mapOfNearbyUsers.get(dKey).getInterests());
@@ -352,32 +354,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
             }
         });
-
-        // OLD CODE 1
-                /*HashMap<String, Object> newUser = map.get("6731cc1c-9f3b-4644-b98a-4f0b1541173c");
-                String dTopic = (String) newUser.get("Topic");
-                Double dLat = (Double) newUser.get("Lat");
-                Double dLng = (Double) newUser.get("Lng");
-                ArrayList<String> dInterests = (ArrayList<String>) newUser.get("Interests");
-                System.out.println("wtf" + newUser);
-                System.out.println("wtf" + dTopic + dLat + dLng + dInterests);
-                //} */
-
-                // OLD CODE 2
-                /*@SuppressWarnings("unchecked")
-                HashMap<String, HashMap<String, Object>> map = (HashMap<String, HashMap<String, Object>>) dataSnapshot.getValue();
-                for (String key : map.keySet()) {
-                    String dTopic = (String) map.get(key).get("Topic");
-                    ArrayList<String> dInterests = (ArrayList<String>) map.get(key).get("Interests");
-                    Double dLat = (Double) map.get(key).get("Lat");
-                    Double dLng = (Double) map.get(key).get("Lng");
-                    if (dLat == null || dLng == null) {
-                        dLat = 0.0;
-                        dLng = 0.0;
-                    }
-                    LatLng latLng = new LatLng(dLat, dLng);
-                    NearbyUser nearbyUser = new NearbyUser(key, dTopic, dInterests, latLng);
-                    mapOfNearbyUsers.put(key, nearbyUser);*/
     }
 
     @Override
@@ -387,13 +363,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
+        System.out.println("HEEEEEEEEE56 " + mapOfNearbyUsers);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Delete user from database when app is closed
-        Users.child(thisUser.getUserID()).removeValue();
+        DestroyUser.child(thisUser.getUserID()).removeValue();
+        //Users.child(thisUser.getUserID()).removeValue();
     }
     // End Android activity life cycle methods
 
@@ -420,13 +397,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         mLatitude = mLastLocation.getLatitude();
         mLongitude = mLastLocation.getLongitude();
         locationUser = new LatLng(mLatitude, mLongitude);
-
-        mMap.clear();
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-        mUser = mMap.addMarker(new MarkerOptions().position(locationUser).title("You are here")
-        .icon(BitmapDescriptorFactory
-                .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+        //mUser.remove();
+        mUser = mMap.addMarker(new MarkerOptions().position(locationUser)
+            .icon(BitmapDescriptorFactory
+            .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
         mUser.setTag("mydevice");
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
         mMap.setOnMarkerClickListener(this);
     }
@@ -542,11 +518,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         LatLng location = user.getLocation();
         double lat = location.latitude;
         double lng = location.longitude;
-        float hue = (float) Math.random() * 360;
+        float hue = 180;//(float) Math.random() * 360;
 
         Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
-        .icon(BitmapDescriptorFactory
-                .defaultMarker(hue)));
+            .icon(BitmapDescriptorFactory
+            .defaultMarker(hue)));
         user.setMarker(marker);
         marker.setTag(key);
     }
