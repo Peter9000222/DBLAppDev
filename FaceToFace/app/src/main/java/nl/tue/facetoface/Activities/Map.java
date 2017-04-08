@@ -135,6 +135,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
         // putt all info of the user on the database
         setUserToDatabase();
+
+        Bundle extras = getIntent().getExtras();
+        if (extras.getSerializable("userHashMap") != null) {
+            System.out.println("test");
+            mapOfNearbyUsers = (HashMap<String, NearbyUser>) extras.getSerializable("userHashMap");
+        }
     }
 
     // Begin location update
@@ -226,6 +232,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 topicIntent.putExtra("hasID", hasID);
                 topicIntent.putExtra("userTopic", thisUser.getTopic());
                 topicIntent.putExtra("userInterestList", thisUser.getInterests());
+                System.out.println("hoi hoi heeei ");
+                topicIntent.putExtra("userHashMap", mapOfNearbyUsers);
                 startActivity(topicIntent);
                 break;
         }

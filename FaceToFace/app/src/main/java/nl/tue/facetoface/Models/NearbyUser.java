@@ -2,13 +2,14 @@ package nl.tue.facetoface.Models;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by piano on 22-Mar-17.
  */
 
-public class NearbyUser extends UserData {
+public class NearbyUser extends UserData implements Serializable {
 
     protected Boolean onlineStatus;
 

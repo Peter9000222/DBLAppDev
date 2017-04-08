@@ -22,9 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 import nl.tue.facetoface.Adapters.InterestsAdapter;
+import nl.tue.facetoface.Models.NearbyUser;
 import nl.tue.facetoface.R;
 
 public class TopicActivity extends AppCompatActivity {
@@ -49,6 +51,7 @@ public class TopicActivity extends AppCompatActivity {
     String userID;
     String exUserID;
     Boolean hasID;
+    HashMap<String, NearbyUser> mapUsers;
 
     //Called upon creation of the topic activity
     @Override
@@ -75,6 +78,7 @@ public class TopicActivity extends AppCompatActivity {
             hasID = extras.getBoolean("hasID");
             topic = extras.getString("userTopic");
             etTopic.setText(topic);
+            mapUsers = (HashMap<String, NearbyUser>) extras.getSerializable("userHashMap");
             if (extras.getStringArrayList("userInterestList") != null) {
                 interests = extras.getStringArrayList("userInterestList");
             }
@@ -169,9 +173,6 @@ public class TopicActivity extends AppCompatActivity {
         } else {
             userID = exUserID;
         }
-        //user.setTopic(topic);
-        //userMyself.setTopic(topic);
-        //user.setInterests(interests);
     }
 
     //creating the menu in the toolbar
@@ -231,6 +232,9 @@ public class TopicActivity extends AppCompatActivity {
                     intent.putExtra("topic", topic);
                     //send interests to map
                     intent.putExtra("interests", interests);
+                    if (mapUsers != null) {
+                        intent.putExtra("userHashMap", mapUsers);
+                    }
                     startActivity(intent);
                 }
                 return true;
