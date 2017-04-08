@@ -169,7 +169,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         mUser.remove();
-        updateLocation();
+        updateLocation(false);
         setUserLocationToDatabase();
     }
     // End location update
@@ -281,7 +281,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
                 if (!((mLatitude == null) || (mLongitude == null))) {
 
-                    if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
+                    if (inProximity(mLatitude, mLongitude, dLat, dLng) && thisUser.getUserID() != dKey) {
 
                         LatLng latLng = new LatLng(dLat, dLng);
                         NearbyUser nearbyUser = new NearbyUser(dKey, dTopic, dInterests, latLng);
@@ -312,7 +312,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     dLng = 0.0;
                 }
 
-                if (!((mLatitude == null) || (mLongitude == null))) {
+                boolean notThisUser = dKey != thisUser.getUserID();
+
+                if (!((mLatitude == null) || (mLongitude == null)) && notThisUser) {
 
                     if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
 
@@ -391,7 +393,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             }
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mLastLocation != null) {
-                updateLocation();
+                updateLocation(true);
             } else {
                 Toast.makeText(this, "No location detected", Toast.LENGTH_LONG).show();
             }
@@ -401,7 +403,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     // Update the location on the map
-    private void updateLocation() {
+    private void updateLocation(boolean firstTimeOrManual) {
+
         mLatitude = mLastLocation.getLatitude();
         mLongitude = mLastLocation.getLongitude();
         locationUser = new LatLng(mLatitude, mLongitude);
@@ -410,8 +413,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             .icon(BitmapDescriptorFactory
             .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
         mUser.setTag("mydevice");
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
+        if (firstTimeOrManual)
+        {
+            mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
+        }
         mMap.setOnMarkerClickListener(this);
     }
 
@@ -547,6 +553,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             }
         }
     }
+
 
     public void removeMarker(String key) {
         NearbyUser user = mapOfNearbyUsers.get(key);
