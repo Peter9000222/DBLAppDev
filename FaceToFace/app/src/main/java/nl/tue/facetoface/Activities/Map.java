@@ -631,6 +631,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             return false;
         }
 
+        double distance = calculateDistance(user1Lat, user1Lng, user2Lat, user2Lng);
+        return distance <= 1000;
+    }
+
+    public double calculateDistance(double user1Lat, double user1Lng, double user2Lat, double user2Lng) {
+
         final int R = 6371; // Radius of the earth
         Double latDistance = Math.toRadians(user2Lat - user1Lat);
         Double lonDistance = Math.toRadians(user2Lng - user1Lng);
@@ -638,8 +644,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 + Math.cos(Math.toRadians(user1Lat)) * Math.cos(Math.toRadians(user2Lat))
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = R * c * 1000; // Convert to meters
-        return distance <= 1000;
+        return R * c * 1000; // Convert to meters
     }
 
     /*
