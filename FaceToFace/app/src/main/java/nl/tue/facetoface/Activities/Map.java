@@ -70,6 +70,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     private static ArrayList<ArrayList<String>> interestListSent;
     private static ArrayList<ArrayList<String>> interestListRequest;
+    private static HashMap<String, ArrayList<String>> hashmapListRequest;
     private static ArrayList<String> topicListS;
     private static ArrayList<String> topicListR;
     private static ArrayList<String> timeListS;
@@ -107,7 +108,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     // OnCreate lifecycle method
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //will be used when request button is clicked
         mapInstance = this;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
@@ -165,6 +169,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
         interestListSent = new ArrayList<>(); //each position has an list with interests of a user
         interestListRequest = new ArrayList<>();
+        hashmapListRequest = new HashMap<>();
         topicListS = new ArrayList<>(); //each position has a topic of a user
         timeListS = new ArrayList<>(); //each position has a time of a user
         distanceListS = new ArrayList<>(); //each postion has a distance of a user
@@ -296,6 +301,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 hasID = false;
                 inboxIntent.putExtra("hasID", hasID);
                 inboxIntent.putExtra("userTopic", topicListR);
+                inboxIntent.putExtra("hashMap", hashmapListRequest);
                 inboxIntent.putExtra("userInterestList", interestListRequest);
                 inboxIntent.putExtra("userTime", timeListR);
                 startActivity(inboxIntent);
@@ -699,10 +705,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
      */
     // Processes request from user with ID {@code nKey}
     public void processNewIncomingRequest(String nKey, String nTimeStamp) {
+
+
         NearbyUser requester = mapOfNearbyUsers.get(nKey);
 
         topicListR.add(requester.getTopic());
         interestListRequest.add(requester.getInterests());
+        //hashmapListRequest.put(nKey, requester.getInterests());
         LatLng location = requester.getLocation();
         timeListR.add(nTimeStamp);
         // TODO process new request in UI
@@ -730,7 +739,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     public void sendRequest(String receiverKey) {
         setRequestToDatabase(receiverKey);
-        // TODO run this method when clicking send request button
     }
 
     public void sendResponse(String requesterID, boolean response) {
