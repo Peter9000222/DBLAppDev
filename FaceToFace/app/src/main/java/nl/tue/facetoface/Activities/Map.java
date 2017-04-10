@@ -724,12 +724,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         }
         else {
             interestListRequest.add(requester.getInterests());
-            idListR.add(requester.getUserID());
         }
 
         //hashmapListRequest.put(nKey, requester.getInterests());
         LatLng location = requester.getLocation();
         timeListR.add(nTimeStamp);
+        idListR.add(requester.getUserID());
     }
 
     public void updateRequestUI(String nKey) {
