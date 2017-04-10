@@ -374,7 +374,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                         mapOfNearbyUsers.put(dKey, nearbyUser);
 
                         // Add marker for the new user
-                        addMarker(dKey);
+                if (dKey != thisUser.getUserID()) {
+                    addMarker(dKey);
+                }
                     //}
                 //}
             }
