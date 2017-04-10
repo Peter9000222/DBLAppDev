@@ -103,8 +103,8 @@ public class InboxActivity extends AppCompatActivity{
         if (extras != null) {
             userID = extras.getString("userID");
             topicListR = extras.getStringArrayList("userTopic");
-            interestListR = extras.getStringArrayList("userInterestList");
-            interestListRequest.add(interestListR);
+            interestListRequest = (ArrayList<ArrayList<String>>) extras.getSerializable("userInterestList");
+            //interestListRequest.add(interestListR);
             hasID = extras.getBoolean("hasID");
             timeListR = extras.getStringArrayList("userTime");
         }
