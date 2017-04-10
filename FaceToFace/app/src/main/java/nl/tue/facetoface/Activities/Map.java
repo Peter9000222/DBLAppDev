@@ -44,6 +44,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.zip.DataFormatException;
 
 import nl.tue.facetoface.Fragments.UserMarkerBottomSheet;
 import nl.tue.facetoface.Models.NearbyUser;
@@ -79,6 +80,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     private static ArrayList<String> distanceListR;
     private static ArrayList<String> interestListR;
     private static ArrayList<String> idListR;
+    private static ArrayList<String> idListS;
 
     ArrayList<String> requesterIDs = new ArrayList<String>();
 
@@ -183,6 +185,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         timeListR = new ArrayList<>();
         distanceListR = new ArrayList<>();
         idListR = new ArrayList<>();
+        idListS = new ArrayList<>();
     }
 
     public static Map getMapInstance(){
@@ -309,9 +312,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 inboxIntent.putExtra("hasID", hasID);
                 inboxIntent.putExtra("userTopic", topicListR);
                 inboxIntent.putExtra("userID", idListR);
+                inboxIntent.putExtra("userDistanceR", distanceListR);
                 inboxIntent.putExtra("hashMap", hashmapListRequest);
                 inboxIntent.putExtra("userInterestList", interestListRequest);
                 inboxIntent.putExtra("userTime", timeListR);
+                inboxIntent.putExtra("userTopicS", topicListS);
+                inboxIntent.putExtra("userInterestListS", interestListSent);
+                inboxIntent.putExtra("userTimeS", timeListS);
+                inboxIntent.putExtra("userDistanceS", distanceListS);
                 startActivity(inboxIntent);
                 break;
             case R.id.topicIcon:
@@ -734,6 +742,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
         //hashmapListRequest.put(nKey, requester.getInterests());
         LatLng location = requester.getLocation();
+        distanceListR.add("300m");
         timeListR.add(nTimeStamp);
         idListR.add(requester.getUserID());
     }
@@ -763,11 +772,21 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     public void sendRequest(String receiverKey) {
         setRequestToDatabase(receiverKey);
 
-        NearbyUser receiver = mapOfNearbyUsers.get(receiverKey);
-        String topic = receiver.getTopic();
-        ArrayList<String> interests = receiver.getInterests();
-        LatLng location = receiver.getLocation();
-        String timeStamp = (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString());
+        NearbyUser requester = mapOfNearbyUsers.get(receiverKey);
+        ArrayList<String> empty = new ArrayList<>();
+        topicListS.add(requester.getTopic());
+        if (requester.getInterests() == null){
+            empty.add("");
+            interestListSent.add(empty);
+        }
+        else {
+            interestListSent.add(requester.getInterests());
+        }
+        //hashmapListRequest.put(nKey, requester.getInterests());
+        LatLng location = requester.getLocation();
+        timeListS.add((DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date())).toString());
+        idListS.add(requester.getUserID());
+        distanceListS.add("100m");
 
     }
 

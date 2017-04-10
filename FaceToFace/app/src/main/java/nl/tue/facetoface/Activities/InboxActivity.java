@@ -74,19 +74,19 @@ public class InboxActivity extends AppCompatActivity{
         inboxSentListFragment = new InboxSentListFragment();
         inboxReceivedListFragment = new InboxReceivedListFragment();
 
-        int i;
-        for (i=0; i<30; i+=1){
-            interestListS.add(String.valueOf(i) + " Sent");
-            interestListSent.add(interestListS);
-            //interestListR.add(String.valueOf(i) + "Request");
-            //interestListRequest.add(interestListR);
-            topicListS.add(String.valueOf(i )+ " Sent");
-            timeListS.add(String.valueOf(i) + " Sent");
-            distanceListS.add(String.valueOf(i) + " Sent");
-            //topicListR.add(String.valueOf(i) + "Request");
-            //timeListR.add(String.valueOf(i) + "Request");
-            distanceListR.add(String.valueOf(i) + "Request");
-        }
+//        int i;
+//        for (i=0; i<30; i+=1){
+//            interestListS.add(String.valueOf(i) + " Sent");
+//            interestListSent.add(interestListS);
+//            //interestListR.add(String.valueOf(i) + "Request");
+//            //interestListRequest.add(interestListR);
+//            topicListS.add(String.valueOf(i )+ " Sent");
+//            timeListS.add(String.valueOf(i) + " Sent");
+//            distanceListS.add(String.valueOf(i) + " Sent");
+//            //topicListR.add(String.valueOf(i) + "Request");
+//            //timeListR.add(String.valueOf(i) + "Request");
+//            distanceListR.add(String.valueOf(i) + "Request");
+//        }
 
         setSupportActionBar(tb);
         if (getSupportActionBar() != null) {
@@ -106,7 +106,12 @@ public class InboxActivity extends AppCompatActivity{
             topicListR = extras.getStringArrayList("userTopic");
             interestListRequest = (ArrayList<ArrayList<String>>) extras.getSerializable("userInterestList");
             hasID = extras.getBoolean("hasID");
+            distanceListR = extras.getStringArrayList("userDistanceR");
             timeListR = extras.getStringArrayList("userTime");
+            topicListS = extras.getStringArrayList("userTopicS");
+            interestListSent = (ArrayList<ArrayList<String>>) extras.getSerializable("userInterestListS");
+            timeListS = extras.getStringArrayList("userTimeS");
+            distanceListS = extras.getStringArrayList("userDistanceS");
         }
     }
 
