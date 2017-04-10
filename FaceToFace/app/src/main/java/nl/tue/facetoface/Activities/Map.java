@@ -79,6 +79,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     private static ArrayList<String> distanceListR;
     private static ArrayList<String> interestListR;
 
+    ArrayList<String> requesterIDs = new ArrayList<String>();
+
     // Create database
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
@@ -433,7 +435,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 HashMap<String, Object> request = (HashMap<String, Object>) dataSnapshot.getValue();
                 String dKey = dataSnapshot.getKey();
 
-                // Check whether request is a received (incoming) request or sent request
+                if (requesterIDs.contains(dKey)) {
+                    return;
+                }
+
+                requesterIDs.add(dKey);
+
                 Boolean incoming = (Boolean) request.get("incoming");
                 if (incoming == false) {
                     return;
@@ -708,9 +715,16 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
 
         NearbyUser requester = mapOfNearbyUsers.get(nKey);
-
+        ArrayList<String> empty = new ArrayList<>();
         topicListR.add(requester.getTopic());
-        interestListRequest.add(requester.getInterests());
+        if (requester.getInterests() == null){
+            empty.add("");
+            interestListRequest.add(empty);
+        }
+        else {
+            interestListRequest.add(requester.getInterests());
+        }
+
         //hashmapListRequest.put(nKey, requester.getInterests());
         LatLng location = requester.getLocation();
         timeListR.add(nTimeStamp);
