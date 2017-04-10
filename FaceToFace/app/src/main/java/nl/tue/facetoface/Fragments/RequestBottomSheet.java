@@ -26,6 +26,7 @@ import nl.tue.facetoface.R;
 public class RequestBottomSheet extends BottomSheetDialogFragment {
     private String topic = "Topic";
     private String Interest = "Interests";
+    private String userId;
     private TextView tvTopic;
     private ArrayList<String> interestList  = new ArrayList<>();
 
@@ -60,9 +61,9 @@ public class RequestBottomSheet extends BottomSheetDialogFragment {
         bottomSheetBehavior.setPeekHeight(size.y);
 
         acceptButton = (Button) contentView.findViewById(R.id.AcceptButton);
-        acceptButton.setOnClickListener(new ButtonOnClickListener(position, "x", "Accept"));
+        acceptButton.setOnClickListener(new ButtonOnClickListener(position, userId, "Accept"));
         declineButton = (Button) contentView.findViewById(R.id.DeclineButton);
-        declineButton.setOnClickListener(new ButtonOnClickListener(position, "x", "Decline"));
+        declineButton.setOnClickListener(new ButtonOnClickListener(position, userId, "Decline"));
         ((View) contentView.getParent()).setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
 
 
@@ -72,6 +73,8 @@ public class RequestBottomSheet extends BottomSheetDialogFragment {
     public void setInterest(ArrayList interestList){ this.interestList = interestList; }
 
     public void setPosition(int position){ this.position = position;}
+
+    public void setId(String userID){this.userId = userID;}
 }
 
 

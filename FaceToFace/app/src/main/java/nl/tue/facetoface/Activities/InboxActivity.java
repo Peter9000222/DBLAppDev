@@ -44,6 +44,7 @@ public class InboxActivity extends AppCompatActivity{
     private static ArrayList<String> distanceListR;
     public static InboxSentListFragment inboxSentListFragment;
     public static InboxReceivedListFragment inboxReceivedListFragment;
+    public static ArrayList<String> idListR;
 
     String topic;
     ArrayList<String> interests = new ArrayList<>();
@@ -101,7 +102,7 @@ public class InboxActivity extends AppCompatActivity{
         //give info from map
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            userID = extras.getString("userID");
+            idListR = extras.getStringArrayList("userID");
             topicListR = extras.getStringArrayList("userTopic");
             interestListRequest = (ArrayList<ArrayList<String>>) extras.getSerializable("userInterestList");
             hasID = extras.getBoolean("hasID");
@@ -221,6 +222,7 @@ public class InboxActivity extends AppCompatActivity{
             bottomSheetRequestFragment.setInterest(interestListRequest.get(position));
             bottomSheetRequestFragment.show(getSupportFragmentManager(), bottomSheetRequestFragment.getTag());
             bottomSheetRequestFragment.setPosition(position);
+            bottomSheetRequestFragment.setId(idListR.get(position));
         }
     }
 

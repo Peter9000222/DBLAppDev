@@ -78,6 +78,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     private static ArrayList<String> distanceListS;
     private static ArrayList<String> distanceListR;
     private static ArrayList<String> interestListR;
+    private static ArrayList<String> idListR;
 
     ArrayList<String> requesterIDs = new ArrayList<String>();
 
@@ -181,6 +182,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         topicListR = new ArrayList<>();
         timeListR = new ArrayList<>();
         distanceListR = new ArrayList<>();
+        idListR = new ArrayList<>();
     }
 
     public static Map getMapInstance(){
@@ -306,6 +308,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 hasID = false;
                 inboxIntent.putExtra("hasID", hasID);
                 inboxIntent.putExtra("userTopic", topicListR);
+                inboxIntent.putExtra("userID", idListR);
                 inboxIntent.putExtra("hashMap", hashmapListRequest);
                 inboxIntent.putExtra("userInterestList", interestListRequest);
                 inboxIntent.putExtra("userTime", timeListR);
@@ -716,8 +719,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
      */
     // Processes request from user with ID {@code nKey}
     public void processNewIncomingRequest(String nKey, String nTimeStamp) {
-
-
         NearbyUser requester = mapOfNearbyUsers.get(nKey);
         ArrayList<String> empty = new ArrayList<>();
         topicListR.add(requester.getTopic());
@@ -727,17 +728,16 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         }
         else {
             interestListRequest.add(requester.getInterests());
+            idListR.add(requester.getUserID());
         }
 
         //hashmapListRequest.put(nKey, requester.getInterests());
         LatLng location = requester.getLocation();
         timeListR.add(nTimeStamp);
-        // TODO process new request in UI
     }
 
     public void updateRequestUI(String nKey) {
         NearbyUser requester = mapOfNearbyUsers.get(nKey);
-
         String topic = requester.getTopic();
         ArrayList<String> interests = requester.getInterests();
         LatLng location = requester.getLocation();
@@ -748,8 +748,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     public void processResponseToSentRequest(String key, String timeStamp, Boolean status) {
         if (status) {
             //request to user with ID 'key' was accepted
+            Toast toast = Toast.makeText(getApplicationContext(), "accepted your request", Toast.LENGTH_SHORT);
+            toast.show();
         } else {
-            //request to user with ID 'key' was rejected
+            Toast toast = Toast.makeText(getApplicationContext(), "denied your request", Toast.LENGTH_SHORT);
+            toast.show();
         }
 
         //TODO process response to a sent request
@@ -757,12 +760,20 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     public void sendRequest(String receiverKey) {
         setRequestToDatabase(receiverKey);
+
+        NearbyUser receiver = mapOfNearbyUsers.get(receiverKey);
+        String topic = receiver.getTopic();
+        ArrayList<String> interests = receiver.getInterests();
+        LatLng location = receiver.getLocation();
+        String timeStamp = (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString());
+
     }
 
     public void sendResponse(String requesterID, boolean response) {
         // TODO send response when user clicks accept or deny
-        
         respondToRequestDatabase(requesterID, response);
+        Toast toast = Toast.makeText(getApplicationContext(), "request " + response, Toast.LENGTH_SHORT);
+        toast.show();
     }
     /*
      * End request handling methods
