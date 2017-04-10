@@ -708,9 +708,16 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
 
         NearbyUser requester = mapOfNearbyUsers.get(nKey);
-
+        ArrayList<String> empty = new ArrayList<>();
         topicListR.add(requester.getTopic());
-        interestListRequest.add(requester.getInterests());
+        if (requester.getInterests() == null){
+            empty.add("");
+            interestListRequest.add(empty);
+        }
+        else {
+            interestListRequest.add(requester.getInterests());
+        }
+
         //hashmapListRequest.put(nKey, requester.getInterests());
         LatLng location = requester.getLocation();
         timeListR.add(nTimeStamp);
