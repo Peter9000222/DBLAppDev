@@ -85,7 +85,7 @@ public class InboxSendAdapter extends
         TextView tvTime = viewHolder.inboxSendTimeTextView;
         tvTime.setText("Request sent at: " + time);
         TextView tvDistance = viewHolder.inboxSendDistanceTextView;
-        tvDistance.setText("Distance: " + distance + "m");
+        tvDistance.setText("Distance: " + distance);
 
     }
 

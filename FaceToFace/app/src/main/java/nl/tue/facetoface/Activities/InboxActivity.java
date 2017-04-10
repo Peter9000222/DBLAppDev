@@ -45,6 +45,7 @@ public class InboxActivity extends AppCompatActivity{
     public static InboxSentListFragment inboxSentListFragment;
     public static InboxReceivedListFragment inboxReceivedListFragment;
     public static ArrayList<String> idListR;
+    public static ArrayList<String> idListS;
 
     String topic;
     ArrayList<String> interests = new ArrayList<>();
@@ -103,6 +104,7 @@ public class InboxActivity extends AppCompatActivity{
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             idListR = extras.getStringArrayList("userID");
+            idListS = extras.getStringArrayList("userIDS");
             topicListR = extras.getStringArrayList("userTopic");
             interestListRequest = (ArrayList<ArrayList<String>>) extras.getSerializable("userInterestList");
             hasID = extras.getBoolean("hasID");
@@ -222,6 +224,7 @@ public class InboxActivity extends AppCompatActivity{
             bottomSheetCancelFragment.setInterestList(interestListSent.get(position));
             bottomSheetCancelFragment.show(getSupportFragmentManager(), bottomSheetCancelFragment.getTag());
             bottomSheetCancelFragment.setPosition(position);
+            bottomSheetCancelFragment.setUserId(idListS.get(position));
         } else {
             bottomSheetRequestFragment.setTopic(topicListR.get(position));
             bottomSheetRequestFragment.setInterest(interestListRequest.get(position));

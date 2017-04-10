@@ -40,6 +40,7 @@ public class CancelBottomSheet extends BottomSheetDialogFragment {
     private String distance;
     private String topic;
     private int position;
+    private String userId;
     private ArrayList<String> interestList  = new ArrayList<>();
 
     TextView tvTime;
@@ -76,9 +77,9 @@ public class CancelBottomSheet extends BottomSheetDialogFragment {
         ((View) contentView.getParent()).setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
 
         fab = (FloatingActionButton) contentView.findViewById(R.id.cancel_fab);
-        fab.setOnClickListener(new ButtonOnClickListener(position, "x", "Cancel"));
+        fab.setOnClickListener(new ButtonOnClickListener(position, userId, "Cancel"));
         cancelButton = (Button) contentView.findViewById(R.id.CancelButton);
-        cancelButton.setOnClickListener(new ButtonOnClickListener(position, "x", "Cancel"));
+        cancelButton.setOnClickListener(new ButtonOnClickListener(position, userId, "Cancel"));
     }
 
     @Override
@@ -99,4 +100,6 @@ public class CancelBottomSheet extends BottomSheetDialogFragment {
     public void setInterestList(ArrayList interestList){ this.interestList = interestList; }
 
     public void setPosition(int position) {this.position = position;}
+
+    public void setUserId(String userId){this.userId = userId;}
 }

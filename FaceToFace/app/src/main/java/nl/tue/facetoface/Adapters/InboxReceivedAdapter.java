@@ -77,14 +77,16 @@ public class InboxReceivedAdapter extends
         String topic = topicList.get(position);
         String time = timeList.get(position);
         String distance = distanceList.get(position);
-
+        if (distance == null) {
+            System.out.print("null");
+        }
         // Set item views based on your views and data model
         TextView tvTopic = viewHolder.inboxReceivedTopicTextView;
         tvTopic.setText("Topic: "+ topic);
         TextView tvTime = viewHolder.inboxReceivedTimeTextView;
         tvTime.setText("Request received at: " + time);
         TextView tvDistance = viewHolder.inboxReceivedDistanceTextView;
-        tvDistance.setText("Distance: " + distance + "m");
+        tvDistance.setText("Distance: " + distance);
     }
 
     // Returns the total count of items in the list

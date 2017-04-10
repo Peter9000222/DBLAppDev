@@ -239,6 +239,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         thisUser.setUserID(userID);
         thisUser.setTopic(topic);
         thisUser.setInterests(interests);
+        thisUser.setLocation(locationUser);
     }
 
     // Set user data in HashMap and upload this HashMap to database
@@ -264,7 +265,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         HashMap<String, Object> requestToSend = new HashMap();
         requestToSend.put("incoming", true);
         requestToSend.put("received", false);
-        requestToSend.put("timeStamp", (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString()));
+        requestToSend.put("timeStamp", (DateFormat.format("hh:mm", new java.util.Date()).toString()));
         requestToSend.put("status", false);
         requestToSend.put("canceled", false);
         requestData.child(receiverID).child(thisUser.getUserID()).setValue(requestToSend);
@@ -273,7 +274,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         HashMap<String, Object> requestWaitForResponse = new HashMap();
         requestWaitForResponse.put("incoming", false);
         requestWaitForResponse.put("received", false);
-        requestWaitForResponse.put("timeStamp", (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString()));
+        requestWaitForResponse.put("timeStamp", (DateFormat.format("hh:mm", new java.util.Date()).toString()));
         requestWaitForResponse.put("status", false);
         requestWaitForResponse.put("canceled", false);
         requestData.child(thisUser.getUserID()).child(receiverID).setValue(requestWaitForResponse);
@@ -285,7 +286,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         HashMap<String, Object> requestResponse = new HashMap();
         requestResponse.put("incoming", false);
         requestResponse.put("received", true);
-        requestResponse.put("timeStamp", (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString()));
+        requestResponse.put("timeStamp", (DateFormat.format("hh:mm", new java.util.Date()).toString()));
         requestResponse.put("status", response);
         requestResponse.put("canceled", false);
         requestData.child(requesterID).child(thisUser.getUserID()).setValue(requestResponse);
@@ -301,7 +302,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         HashMap<String, Object> cancelMeeting = new HashMap();
         cancelMeeting.put("incoming", false);
         cancelMeeting.put("received", true);
-        cancelMeeting.put("timeStamp", (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString()));
+        cancelMeeting.put("timeStamp", (DateFormat.format("hh:mm", new java.util.Date()).toString()));
         cancelMeeting.put("status", false);
         cancelMeeting.put("canceled", true);
         requestData.child(userID).child(thisUser.getUserID()).setValue(cancelMeeting);
@@ -337,6 +338,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 inboxIntent.putExtra("userInterestListS", interestListSent);
                 inboxIntent.putExtra("userTimeS", timeListS);
                 inboxIntent.putExtra("userDistanceS", distanceListS);
+                inboxIntent.putExtra("userIDS", idListS);
                 startActivity(inboxIntent);
                 break;
             case R.id.topicIcon:
@@ -546,6 +548,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         super.onDestroy();
         DestroyUser.child(thisUser.getUserID()).removeValue();
         DestroyUserRequest.child(thisUser.getUserID()).removeValue();
+        finish();
         // Called when stop searching button is pressed
     }
     // End Android activity life cycle methods
@@ -574,6 +577,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         mLatitude = mLastLocation.getLatitude();
         mLongitude = mLastLocation.getLongitude();
         locationUser = new LatLng(mLatitude, mLongitude);
+        thisUser.setLocation(locationUser);
         // mUser.remove();
         mUser = mMap.addMarker(new MarkerOptions().position(locationUser)
             .icon(BitmapDescriptorFactory
@@ -763,8 +767,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         }
 
         //hashmapListRequest.put(nKey, requester.getInterests());
-        LatLng location = requester.getLocation();
-        distanceListR.add("300m");
+        LatLng locationUser1 = requester.getLocation();
+        double user1Lat = locationUser1.latitude;
+        double user1Lng = locationUser1.longitude;
+        LatLng locationUser2 = thisUser.getLocation();
+        double user2Lat = locationUser2.latitude;
+        double user2Lng = locationUser2.longitude;
+        double distance = calculateDistance(user1Lat, user1Lng, user2Lat, user2Lng);
+        distanceListR.add(String.valueOf(Math.round(distance)) + "m");
         timeListR.add(nTimeStamp);
         idListR.add(requester.getUserID());
     }
@@ -794,10 +804,18 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             interestListSent.add(requester.getInterests());
         }
         //hashmapListRequest.put(nKey, requester.getInterests());
-        LatLng location = requester.getLocation();
-        timeListS.add((DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date())).toString());
+        LatLng locationUser1 = requester.getLocation();
+        double user1Lat = locationUser1.latitude;
+        double user1Lng = locationUser1.longitude;
+        LatLng locationUser2 = thisUser.getLocation();
+        double user2Lat = locationUser2.latitude;
+        double user2Lng = locationUser2.longitude;
+        double distance = calculateDistance(user1Lat, user1Lng, user2Lat, user2Lng);
+        distanceListS.add(String.valueOf(Math.round(distance)) + "m");
+        timeListS.add((DateFormat.format("hh:mm", new java.util.Date())).toString());
         idListS.add(requester.getUserID());
-        distanceListS.add("100m");
+
+
     }
 
     public void sendResponse(String requesterID, boolean response, int position) {
@@ -810,10 +828,17 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         interestListRequest.remove(position);
         idListR.remove(position);
         timeListR.remove(position);
+        distanceListR.remove(position);
     }
 
-    public void cancelRequest(String receiverID) {
+    public void cancelRequest(String receiverID, int position) {
         cancelRequestDatabase(receiverID);
+
+        topicListS.remove(position);
+        interestListSent.remove(position);
+        idListS.remove(position);
+        timeListS.remove(position);
+        distanceListS.remove(position);
 
         // TODO this is the method to be invoked when the 'cancel request' button is clicked
     }
