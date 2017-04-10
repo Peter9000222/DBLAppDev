@@ -771,11 +771,17 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     }
 
-    public void sendResponse(String requesterID, boolean response) {
+    public void sendResponse(String requesterID, boolean response, int position) {
         // TODO send response when user clicks accept or deny
         respondToRequestDatabase(requesterID, response);
         Toast toast = Toast.makeText(getApplicationContext(), "request " + response, Toast.LENGTH_SHORT);
         toast.show();
+        requesterIDs.remove(requesterIDs.indexOf(requesterID));
+        requestData.child(thisUser.getUserID()).child(requesterID).removeValue();
+        topicListR.remove(position);
+        interestListRequest.remove(position);
+        idListR.remove(position);
+        timeListR.remove(position);
     }
     /*
      * End request handling methods

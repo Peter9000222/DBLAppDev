@@ -38,7 +38,7 @@ public class ButtonOnClickListener implements View.OnClickListener {
                 fragmentSent.notifyAdapter();
             } else if (tag.matches("Accept")){
                 InboxActivity.acceptRequest(position);
-                x.getMapInstance().sendResponse(idBottomSheet, true);
+                x.getMapInstance().sendResponse(idBottomSheet, true, position);
                 fragmentReceived = InboxActivity.getReceivedFragment();
                 fragmentReceived.notifyAdapter();
             } else if (tag.matches("Send Request")){
@@ -48,7 +48,7 @@ public class ButtonOnClickListener implements View.OnClickListener {
 
             } else if (tag.matches("Decline")){
                 InboxActivity.declineRequest(position);
-                x.getMapInstance().sendResponse(idBottomSheet, false);
+                x.getMapInstance().sendResponse(idBottomSheet, false, position);
                 fragmentReceived = InboxActivity.getReceivedFragment();
                 fragmentReceived.notifyAdapter();
             }
