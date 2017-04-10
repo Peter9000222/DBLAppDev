@@ -57,7 +57,7 @@ public class UserMarkerBottomSheet extends BottomSheetDialogFragment {
         bottomSheetBehavior = BottomSheetBehavior.from((View)contentView.getParent());
         bottomSheetBehavior.setPeekHeight(size.y);
         sendRequest = (Button) contentView.findViewById(R.id.SendRequestButton);
-        sendRequest.setOnClickListener(new ButtonOnClickListener(1, "Send Request"));
+        sendRequest.setOnClickListener(new ButtonOnClickListener(1, getIdSheet(), "Send Request"));
         ((View) contentView.getParent()).setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
 
 
@@ -69,6 +69,7 @@ public class UserMarkerBottomSheet extends BottomSheetDialogFragment {
     public void setIdSheet(String idSheet){this.idSheet = idSheet;}
 
     public String getIdSheet(){ return this.idSheet;}
+
 
 }
 

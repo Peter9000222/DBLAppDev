@@ -65,6 +65,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     protected Marker mUser;
     public ThisUser thisUser;
     public Boolean hasID;
+    private UserMarkerBottomSheet markerSheet;
+    static Map mapInstance;
 
     // Create database
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
@@ -95,6 +97,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     // OnCreate lifecycle method
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mapInstance = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
@@ -149,6 +152,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
         // Set new child in database for this user to receive requests
         openUserInboxDatabase();
+    }
+
+    public static Map getMapInstance(){
+        return mapInstance;
     }
 
     /*
@@ -516,7 +523,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             String topicMarker = user.getTopic();
             ArrayList<String> interestsMarker = user.getInterests();
 
-            UserMarkerBottomSheet markerSheet = new UserMarkerBottomSheet();
+            markerSheet = new UserMarkerBottomSheet();
             markerSheet.setTopic(topicMarker);
             markerSheet.setInterest(interestsMarker);
             markerSheet.setIdSheet(idMarker);
@@ -524,7 +531,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         }
             // If own marker clicked
             else{
-                UserMarkerBottomSheet markerSheet = new UserMarkerBottomSheet();
+                markerSheet = new UserMarkerBottomSheet();
                 Bundle extras = getIntent().getExtras();
                 markerSheet.setTopic(extras.getString("topic"));
                 markerSheet.setInterest(extras.getStringArrayList("interests"));
@@ -532,6 +539,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 markerSheet.show(getSupportFragmentManager(), "test");
         }
         return true;
+    }
+
+    public UserMarkerBottomSheet getMarkerSheet(){
+        return markerSheet;
     }
 
     // Build Google API client

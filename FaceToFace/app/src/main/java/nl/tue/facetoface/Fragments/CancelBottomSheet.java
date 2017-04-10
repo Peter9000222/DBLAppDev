@@ -76,9 +76,9 @@ public class CancelBottomSheet extends BottomSheetDialogFragment {
         ((View) contentView.getParent()).setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
 
         fab = (FloatingActionButton) contentView.findViewById(R.id.cancel_fab);
-        fab.setOnClickListener(new ButtonOnClickListener(position, "Cancel"));
+        fab.setOnClickListener(new ButtonOnClickListener(position, "x", "Cancel"));
         cancelButton = (Button) contentView.findViewById(R.id.CancelButton);
-        cancelButton.setOnClickListener(new ButtonOnClickListener(position, "Cancel"));
+        cancelButton.setOnClickListener(new ButtonOnClickListener(position, "x", "Cancel"));
     }
 
     @Override

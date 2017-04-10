@@ -60,9 +60,9 @@ public class RequestBottomSheet extends BottomSheetDialogFragment {
         bottomSheetBehavior.setPeekHeight(size.y);
 
         acceptButton = (Button) contentView.findViewById(R.id.AcceptButton);
-        acceptButton.setOnClickListener(new ButtonOnClickListener(position, "Accept"));
+        acceptButton.setOnClickListener(new ButtonOnClickListener(position, "x", "Accept"));
         declineButton = (Button) contentView.findViewById(R.id.DeclineButton);
-        declineButton.setOnClickListener(new ButtonOnClickListener(position, "Decline"));
+        declineButton.setOnClickListener(new ButtonOnClickListener(position, "x", "Decline"));
         ((View) contentView.getParent()).setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
 
 
