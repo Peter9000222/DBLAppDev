@@ -3,6 +3,7 @@ package nl.tue.facetoface.Models;
 import android.view.View;
 
 import nl.tue.facetoface.Activities.InboxActivity;
+import nl.tue.facetoface.Activities.Map;
 import nl.tue.facetoface.Fragments.InboxReceivedListFragment;
 import nl.tue.facetoface.Fragments.InboxSentListFragment;
 import nl.tue.facetoface.Fragments.UserMarkerBottomSheet;
@@ -13,14 +14,21 @@ import nl.tue.facetoface.Fragments.UserMarkerBottomSheet;
 
 public class ButtonOnClickListener implements View.OnClickListener {
         int position;
+        String idBottomSheet;
         String tag;
         InboxSentListFragment fragmentSent;
         InboxReceivedListFragment fragmentReceived;
+        Map x;
         UserMarkerBottomSheet userBottomSheetListener;
-        public ButtonOnClickListener(int position, String tag) {
+
+        public ButtonOnClickListener(int position, String idBottomSheet, String tag) {
             this.position = position;
+            this.idBottomSheet = idBottomSheet;
             this.tag = tag;
         }
+
+
+
         @Override
         public void onClick(View v)
         {
@@ -35,6 +43,8 @@ public class ButtonOnClickListener implements View.OnClickListener {
             } else if (tag.matches("Send Request")){
                 /*String idBottomSheet = userBottomSheetListener.getIdSheet();*/
                 //TODO - send request to database
+                x.getMapInstance().sendRequest(idBottomSheet);
+
             } else if (tag.matches("Decline")){
                 InboxActivity.declineRequest(position);
                 fragmentReceived = InboxActivity.getReceivedFragment();
