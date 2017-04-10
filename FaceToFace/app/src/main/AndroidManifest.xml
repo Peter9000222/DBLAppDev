@@ -31,25 +31,29 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".Activities.Map">
+            android:name=".Activities.Map"
+            android:screenOrientation="portrait">
 
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.TopicActivity">
+            android:name=".Activities.TopicActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".Activities.InboxActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        <activity android:name=".Activities.InboxActivity">
-
         </activity>
     </application>
 
