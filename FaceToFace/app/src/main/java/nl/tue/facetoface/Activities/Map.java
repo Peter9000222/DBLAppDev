@@ -92,6 +92,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     // Requests reference
     DatabaseReference requestData = mRootRef.child("Requests");
     DatabaseReference Requests = mRootRef.child("Requests");
+    DatabaseReference DestroyUserRequest = mRootRef.child("Requests");
 
     // Location handlers
     LocationManager mlocManager;
@@ -142,11 +143,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         });
 
         // Show list of topics fragment when list of topics button is clicked
-        Button buttonListOfTopics = (Button) findViewById(R.id.buttonListOfTopics);
+        Button buttonListOfTopics = (Button) findViewById(R.id.stopButton);
         buttonListOfTopics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO show list of topics fragment when button is clicked
+                // list button is now stop app button
+                finish();
             }
         });
 
@@ -505,8 +508,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     protected void onDestroy() {
         super.onDestroy();
         DestroyUser.child(thisUser.getUserID()).removeValue();
-        // Users.child(thisUser.getUserID()).removeValue();
+        DestroyUserRequest.child(thisUser.getUserID()).removeValue();
         // TODO fix removing user from database upon closing app
+        // called when stop searching button is pressed
     }
     // End Android activity life cycle methods
 
