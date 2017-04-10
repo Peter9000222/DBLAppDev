@@ -756,6 +756,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     public void sendRequest(String receiverKey) {
         setRequestToDatabase(receiverKey);
+
+        NearbyUser receiver = mapOfNearbyUsers.get(receiverKey);
+        String topic = receiver.getTopic();
+        ArrayList<String> interests = receiver.getInterests();
+        LatLng location = receiver.getLocation();
+        String timeStamp = (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString());
+
     }
 
     public void sendResponse(String requesterID, boolean response) {
