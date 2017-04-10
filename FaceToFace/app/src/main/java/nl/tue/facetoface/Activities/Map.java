@@ -44,7 +44,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.zip.DataFormatException;
 
 import nl.tue.facetoface.Fragments.UserMarkerBottomSheet;
 import nl.tue.facetoface.Models.NearbyUser;
@@ -150,8 +149,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         buttonListOfTopics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO show list of topics fragment when button is clicked
-                // list button is now stop app button
+                // List button is now stop app button
                 finish();
             }
         });
@@ -268,6 +266,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         requestToSend.put("received", false);
         requestToSend.put("timeStamp", (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString()));
         requestToSend.put("status", false);
+        requestToSend.put("canceled", false);
         requestData.child(receiverID).child(thisUser.getUserID()).setValue(requestToSend);
 
         // Wait for response from user with ID {@code receiverID}
@@ -276,6 +275,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         requestWaitForResponse.put("received", false);
         requestWaitForResponse.put("timeStamp", (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString()));
         requestWaitForResponse.put("status", false);
+        requestWaitForResponse.put("canceled", false);
         requestData.child(thisUser.getUserID()).child(receiverID).setValue(requestWaitForResponse);
     }
 
@@ -287,7 +287,24 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         requestResponse.put("received", true);
         requestResponse.put("timeStamp", (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString()));
         requestResponse.put("status", response);
+        requestResponse.put("canceled", false);
         requestData.child(requesterID).child(thisUser.getUserID()).setValue(requestResponse);
+    }
+
+    // Cancel request sent to user with ID {@code receiverID)}
+    private void cancelRequestDatabase(String receiverID) {
+        requestData.child(receiverID).child(thisUser.getUserID()).removeValue();
+    }
+
+    // Cancel meeting with user with ID {@code userID}
+    private void cancelMeetingDatabase(String userID) {
+        HashMap<String, Object> cancelMeeting = new HashMap();
+        cancelMeeting.put("incoming", false);
+        cancelMeeting.put("received", true);
+        cancelMeeting.put("timeStamp", (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString()));
+        cancelMeeting.put("status", false);
+        cancelMeeting.put("canceled", true);
+        requestData.child(userID).child(thisUser.getUserID()).setValue(cancelMeeting);
     }
 
     // Set new child in database for this user to receive requests
@@ -418,8 +435,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                             user.setLocation(latLng);
 
                             updateMarker(dKey);
-                            updateRequestUI(dKey);
-                            //TODO ?update user card UI?
                         //}
                     //}
                 }
@@ -479,12 +494,18 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 HashMap<String, Object> request = (HashMap<String, Object>) dataSnapshot.getValue();
                 String dKey = dataSnapshot.getKey();
 
+                // Check whether the request is a meeting cancellation notifier
+                Boolean canceled = (Boolean) request.get("canceled");
+                if (canceled == true) {
+                    processMeetingCanceled(dKey);
+                    return;
+                }
+
                 // Check whether the request is a sent request (incoming == false) and whether
                 // the request has been received by the other user (received == true);
                 Boolean incoming = (Boolean) request.get("incoming");
                 Boolean received = (Boolean) request.get("received");
                 if (incoming == true || received == false ) {
-                    System.out.println("wtf true");
                     return;
                 }
 
@@ -496,6 +517,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                String dKey = dataSnapshot.getKey();
+                //requesterIDs.remove(requesterIDs.indexOf(dKey));
+                processRequestCanceled(dKey);
             }
 
             @Override
@@ -522,8 +546,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         super.onDestroy();
         DestroyUser.child(thisUser.getUserID()).removeValue();
         DestroyUserRequest.child(thisUser.getUserID()).removeValue();
-        // TODO fix removing user from database upon closing app
-        // called when stop searching button is pressed
+        // Called when stop searching button is pressed
     }
     // End Android activity life cycle methods
 
@@ -666,7 +689,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     public double calculateDistance(double user1Lat, double user1Lng, double user2Lat, double user2Lng) {
-
         final int R = 6371; // Radius of the earth
         Double latDistance = Math.toRadians(user2Lat - user1Lat);
         Double lonDistance = Math.toRadians(user2Lng - user1Lng);
@@ -747,26 +769,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         idListR.add(requester.getUserID());
     }
 
-    public void updateRequestUI(String nKey) {
-        NearbyUser requester = mapOfNearbyUsers.get(nKey);
-        String topic = requester.getTopic();
-        ArrayList<String> interests = requester.getInterests();
-        LatLng location = requester.getLocation();
-
-        //TODO update requester topic, interests and location in UI
-    }
-
     public void processResponseToSentRequest(String key, String timeStamp, Boolean status) {
         if (status) {
-            //request to user with ID 'key' was accepted
+            // Request to user with ID 'key' was accepted
             Toast toast = Toast.makeText(getApplicationContext(), "accepted your request", Toast.LENGTH_SHORT);
             toast.show();
         } else {
             Toast toast = Toast.makeText(getApplicationContext(), "denied your request", Toast.LENGTH_SHORT);
             toast.show();
         }
-
-        //TODO process response to a sent request
     }
 
     public void sendRequest(String receiverKey) {
@@ -787,11 +798,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         timeListS.add((DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date())).toString());
         idListS.add(requester.getUserID());
         distanceListS.add("100m");
-
     }
 
     public void sendResponse(String requesterID, boolean response, int position) {
-        // TODO send response when user clicks accept or deny
         respondToRequestDatabase(requesterID, response);
         Toast toast = Toast.makeText(getApplicationContext(), "request " + response, Toast.LENGTH_SHORT);
         toast.show();
@@ -802,8 +811,43 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         idListR.remove(position);
         timeListR.remove(position);
     }
+
+    public void cancelRequest(String receiverID) {
+        cancelRequestDatabase(receiverID);
+
+        // TODO this is the method to be invoked when the 'cancel request' button is clicked
+    }
+
+    public void cancelMeeting(String userID) {
+        cancelMeetingDatabase(userID);
+
+        // TODO this is the method to be invoked when the 'cancel meeting' button is clicked
+
+    }
+
+    public void processRequestCanceled(String requesterID) {
+
+        // TODO this is the method that is run when another user cancels a request.
+        // TODO = remove request from user with ID == requesterID from the inbox
+
+    }
+
+    public void processMeetingCanceled(String userID) {
+
+        // TODO this is the method that is run when another user cancels a meeting
+        // TODO = process cancellation of meeting in UI
+
+    }
     /*
      * End request handling methods
      */
 
 }
+
+// TODO 1. couple cancel buttons to backend
+// TODO 2. fix multiple markers for one user
+// TODO 3. give visual feedback when there's a match with another user
+// TODO 4. fix distance and time in inbox
+// TODO 5. fix inProximity/markers
+// TODO 6. create UI 'cancel meeting' button and couple it to backend
+// TODO 7. give visual feedback when another user cancels a meeting
