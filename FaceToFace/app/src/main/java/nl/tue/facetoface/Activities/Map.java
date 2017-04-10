@@ -851,3 +851,4 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 // TODO 5. fix inProximity/markers
 // TODO 6. create UI 'cancel meeting' button and couple it to backend
 // TODO 7. give visual feedback when another user cancels a meeting
+// TODO 8. refactor and comment code
