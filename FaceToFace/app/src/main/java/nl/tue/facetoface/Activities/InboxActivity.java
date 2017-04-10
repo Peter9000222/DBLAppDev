@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +34,8 @@ public class InboxActivity extends AppCompatActivity{
     static RequestBottomSheet bottomSheetRequestFragment;
     private static ArrayList<ArrayList<String>> interestListSent;
     private static ArrayList<ArrayList<String>> interestListRequest;
-    private ArrayList<String> interestListS;
-    private ArrayList<String> interestListR;
+    private static ArrayList<String> interestListS;
+    private static ArrayList<String> interestListR;
     private static ArrayList<String> topicListS;
     private static ArrayList<String> topicListR;
     private static ArrayList<String> timeListS;
@@ -75,13 +77,13 @@ public class InboxActivity extends AppCompatActivity{
         for (i=0; i<30; i+=1){
             interestListS.add(String.valueOf(i) + " Sent");
             interestListSent.add(interestListS);
-            interestListR.add(String.valueOf(i) + "Request");
-            interestListRequest.add(interestListR);
+            //interestListR.add(String.valueOf(i) + "Request");
+            //interestListRequest.add(interestListR);
             topicListS.add(String.valueOf(i )+ " Sent");
             timeListS.add(String.valueOf(i) + " Sent");
             distanceListS.add(String.valueOf(i) + " Sent");
-            topicListR.add(String.valueOf(i) + "Request");
-            timeListR.add(String.valueOf(i) + "Request");
+            //topicListR.add(String.valueOf(i) + "Request");
+            //timeListR.add(String.valueOf(i) + "Request");
             distanceListR.add(String.valueOf(i) + "Request");
         }
 
@@ -100,9 +102,11 @@ public class InboxActivity extends AppCompatActivity{
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             userID = extras.getString("userID");
-            topic = extras.getString("topic");
-            interests = extras.getStringArrayList("interests");
+            topicListR = extras.getStringArrayList("userTopic");
+            interestListR = extras.getStringArrayList("userInterestList");
+            interestListRequest.add(interestListR);
             hasID = extras.getBoolean("hasID");
+            timeListR = extras.getStringArrayList("userTime");
         }
     }
 
@@ -113,8 +117,6 @@ public class InboxActivity extends AppCompatActivity{
         adapter.addFragment(inboxSentListFragment, "Sent");
         viewPager.setAdapter(adapter);
     }
-
-
 
     static class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -278,4 +280,12 @@ public class InboxActivity extends AppCompatActivity{
 
     public static InboxSentListFragment getSentFragment(){return inboxSentListFragment;}
     public static InboxReceivedListFragment getReceivedFragment(){return inboxReceivedListFragment;}
+
+    public static void setUserData(String topic, ArrayList<String> interests, LatLng location, String timeStamp){
+        topicListR.add(topic);
+        interestListRequest.add(interests);
+        //location = location;
+        timeListR.add(timeStamp);
+        inboxReceivedListFragment.notifyAdapter();
+    }
 }

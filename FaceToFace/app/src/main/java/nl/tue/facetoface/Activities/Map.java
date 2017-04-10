@@ -68,6 +68,16 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     private UserMarkerBottomSheet markerSheet;
     static Map mapInstance;
 
+    private static ArrayList<ArrayList<String>> interestListSent;
+    private static ArrayList<ArrayList<String>> interestListRequest;
+    private static ArrayList<String> topicListS;
+    private static ArrayList<String> topicListR;
+    private static ArrayList<String> timeListS;
+    private static ArrayList<String> timeListR;
+    private static ArrayList<String> distanceListS;
+    private static ArrayList<String> distanceListR;
+    private static ArrayList<String> interestListR;
+
     // Create database
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
@@ -152,6 +162,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
         // Set new child in database for this user to receive requests
         openUserInboxDatabase();
+
+        interestListSent = new ArrayList<>(); //each position has an list with interests of a user
+        interestListRequest = new ArrayList<>();
+        topicListS = new ArrayList<>(); //each position has a topic of a user
+        timeListS = new ArrayList<>(); //each position has a time of a user
+        distanceListS = new ArrayList<>(); //each postion has a distance of a user
+        topicListR = new ArrayList<>();
+        timeListR = new ArrayList<>();
+        distanceListR = new ArrayList<>();
     }
 
     public static Map getMapInstance(){
@@ -276,8 +295,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 inboxIntent.putExtra("exUserID", thisUser.getUserID());
                 hasID = false;
                 inboxIntent.putExtra("hasID", hasID);
-                inboxIntent.putExtra("userTopic", thisUser.getTopic());
-                inboxIntent.putExtra("userInterestList", thisUser.getInterests());
+                inboxIntent.putExtra("userTopic", topicListR);
+                inboxIntent.putExtra("userInterestList", interestListRequest);
+                inboxIntent.putExtra("userTime", timeListR);
                 startActivity(inboxIntent);
                 break;
             case R.id.topicIcon:
@@ -676,11 +696,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     public void processNewIncomingRequest(String nKey, String nTimeStamp) {
         NearbyUser requester = mapOfNearbyUsers.get(nKey);
 
-        String topic = requester.getTopic();
-        ArrayList<String> interests = requester.getInterests();
+        topicListR.add(requester.getTopic());
+        interestListRequest.add(requester.getInterests());
         LatLng location = requester.getLocation();
-        String timeStamp = nTimeStamp;
-
+        timeListR.add(nTimeStamp);
         // TODO process new request in UI
     }
 
