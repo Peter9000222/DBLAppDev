@@ -392,9 +392,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     dLng = 0.0;
                 }
 
-                //TODO check why checking for inProximity is not reliable
-                //if (!((mLatitude == null) || (mLongitude == null))) {
-                    //if (inProximity(mLatitude, mLongitude, dLat, dLng) && thisUser.getUserID() != dKey) {
+                if (!((mLatitude == null) || (mLongitude == null))) {
+                    if (inProximity(mLatitude, mLongitude, dLat, dLng) && thisUser.getUserID() != dKey) {
                         // Save the new user in mapOfNearbyUsers
                         LatLng latLng = new LatLng(dLat, dLng);
                         NearbyUser nearbyUser = new NearbyUser(dKey, dTopic, dInterests, latLng);
@@ -404,8 +403,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 if (dKey != thisUser.getUserID()) {
                     addMarker(dKey);
                 }
-                    //}
-                //}
+                    }
+                }
             }
 
             @Override
@@ -427,8 +426,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
                 boolean notThisUser = dKey != thisUser.getUserID();
 
-                //if (!((mLatitude == null) || (mLongitude == null)) && notThisUser) {
-                    //if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
+                if (!((mLatitude == null) || (mLongitude == null)) && notThisUser) {
+                    if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
                         LatLng latLng = new LatLng(dLat, dLng);
                         NearbyUser user = mapOfNearbyUsers.get(dKey);
                         if (user != null) {
@@ -437,8 +436,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                             user.setLocation(latLng);
 
                             updateMarker(dKey);
-                        //}
-                    //}
+                        }
+                    }
                 }
             }
 
@@ -839,8 +838,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         idListS.remove(position);
         timeListS.remove(position);
         distanceListS.remove(position);
-
-        // TODO this is the method to be invoked when the 'cancel request' button is clicked
     }
 
     public void cancelMeeting(String userID) {
