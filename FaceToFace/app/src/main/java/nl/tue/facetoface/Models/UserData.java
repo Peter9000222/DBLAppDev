@@ -17,6 +17,7 @@ public class UserData {
     protected ArrayList<String> interests;
     protected LatLng location;
     protected Marker marker;
+    protected boolean isConversationPartner = false;
 
     public String getUserID() {
         return userID;
@@ -54,4 +55,8 @@ public class UserData {
         marker = nMarker;
     }
 
+    public boolean getIsConversationPartner() { return isConversationPartner; }
+
+    public void setIsConversationPartner(boolean isConversationPartner) { this.isConversationPartner
+            = isConversationPartner; }
 }
