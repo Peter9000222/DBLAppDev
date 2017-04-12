@@ -34,6 +34,7 @@ public class ButtonOnClickListener implements View.OnClickListener {
         {
             if (tag.matches("Cancel")){
                 InboxActivity.cancelSentRequest(position);
+                x.getMapInstance().cancelRequest(idBottomSheet, position);
                 fragmentSent = InboxActivity.getSentFragment();
                 fragmentSent.notifyAdapter();
             } else if (tag.matches("Accept")){
