@@ -43,7 +43,8 @@ public class ButtonOnClickListener implements View.OnClickListener {
                 fragmentReceived = InboxActivity.getReceivedFragment();
                 fragmentReceived.notifyAdapter();
             } else if (tag.matches("Send Request")){
-
+                /*String idBottomSheet = userBottomSheetListener.getIdSheet();*/
+                //TODO - send request to database
                 x.getMapInstance().sendRequest(idBottomSheet);
 
             } else if (tag.matches("Decline")){
