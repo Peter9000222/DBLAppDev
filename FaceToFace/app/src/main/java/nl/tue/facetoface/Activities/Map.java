@@ -71,6 +71,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     private UserMarkerBottomSheet markerSheet;
     static Map mapInstance;
     public TextView textViewTopicMeeting;
+    public Button cancelMeetingButton;
 
     private static ArrayList<ArrayList<String>> interestListSent;
     private static ArrayList<ArrayList<String>> interestListRequest;
@@ -161,7 +162,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             }
         });
 
-        Button cancelMeetingButton = (Button) findViewById(cancelButton);
+        cancelMeetingButton = (Button) findViewById(cancelButton);
+        cancelMeetingButton.setText("");
         cancelMeetingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -823,6 +825,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             toast.show();
             textViewTopicMeeting.setText("Topic of Meeting: " + mapOfNearbyUsers.get(key).getTopic().toString());
             textViewTopicMeeting.setVisibility(View.VISIBLE);
+            cancelMeetingButton.setText("Cancel Meeting");
         } else {
             Toast toast = Toast.makeText(getApplicationContext(), "A sent request has been denied.", Toast.LENGTH_SHORT);
             toast.show();
@@ -873,6 +876,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             toast.show();
             textViewTopicMeeting.setText("Topic of Meeting: " + topic);
             textViewTopicMeeting.setVisibility(View.VISIBLE);
+            cancelMeetingButton.setText("Cancel Meeting");
         } else {
             Toast toast = Toast.makeText(getApplicationContext(), "The request has been denied.", Toast.LENGTH_SHORT);
             toast.show();
@@ -898,6 +902,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         Toast toast = Toast.makeText(getApplicationContext(), "The meeting has been canceled.", Toast.LENGTH_SHORT);
         toast.show();
         textViewTopicMeeting.setVisibility(View.INVISIBLE);
+        cancelMeetingButton.setText("");
 
     }
 
@@ -919,6 +924,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         Toast toast = Toast.makeText(getApplicationContext(), "The meeting has been canceled.", Toast.LENGTH_SHORT);
         toast.show();
         textViewTopicMeeting.setVisibility(View.INVISIBLE);
+        cancelMeetingButton.setText("");
     }
     /*
      * End request handling methods
