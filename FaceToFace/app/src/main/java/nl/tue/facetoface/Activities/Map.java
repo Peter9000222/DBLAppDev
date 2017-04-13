@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.LocationListener;
@@ -51,6 +52,8 @@ import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.R;
 
 import static nl.tue.facetoface.R.id.map;
+import static nl.tue.facetoface.R.id.text;
+import static nl.tue.facetoface.R.id.textViewMeeting;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks,
         OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener {
@@ -67,6 +70,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     public Boolean hasID;
     private UserMarkerBottomSheet markerSheet;
     static Map mapInstance;
+    TextView textViewMeeting;
 
     private static ArrayList<ArrayList<String>> interestListSent;
     private static ArrayList<ArrayList<String>> interestListRequest;
@@ -153,6 +157,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 finish();
             }
         });
+
+        textViewMeeting = (TextView) findViewById(R.id.textViewMeeting);
+        textViewMeeting.setVisibility(View.INVISIBLE);
 
         // Set user data (ID, topic, interest(s))
         setUser();
@@ -297,6 +304,17 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         requestData.child(receiverID).child(thisUser.getUserID()).removeValue();
     }
 
+    // cancel request @ requester with ID {@code requiesterID}
+    private void responceCancel(String requesterID){
+        HashMap<String, Object> requestResponse = new HashMap();
+        requestResponse.put("incoming", false);
+        requestResponse.put("received", true);
+        requestResponse.put("timeStamp", (DateFormat.format("hh:mm", new java.util.Date()).toString()));
+        requestResponse.put("status", false);
+        requestResponse.put("canceled", true);
+        requestData.child(requesterID).child(thisUser.getUserID()).setValue(requestResponse);
+    }
+
     // Cancel meeting with user with ID {@code userID}
     private void cancelMeetingDatabase(String userID) {
         HashMap<String, Object> cancelMeeting = new HashMap();
@@ -435,7 +453,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                             user.setInterests(dInterests);
                             user.setLocation(latLng);
 
-                            updateMarker(dKey);
+                            updateMarker(dKey, "x", false);
                         }
                     }
                 }
@@ -721,15 +739,30 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     // Updates position of the marker of the user with ID {@code key} in map
-    public void updateMarker(String key) {
-        NearbyUser user = mapOfNearbyUsers.get(key);
-        if (user != null) {
-            LatLng location = user.getLocation();
-            double lat = location.latitude;
-            double lng = location.longitude;
-            Marker marker = user.getMarker();
-            if (marker != null) {
-                marker.setPosition(new LatLng(lat, lng));
+    public void updateMarker(String key, String partnerID, boolean hasPartner) {
+        if (hasPartner){
+            NearbyUser user = mapOfNearbyUsers.get(partnerID);
+            if (user != null) {
+                LatLng location = user.getLocation();
+                double lat = location.latitude;
+                double lng = location.longitude;
+                Marker marker = user.getMarker();
+                if (marker != null) {
+                    marker.setIcon(BitmapDescriptorFactory
+                            .defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                    marker.setPosition(new LatLng(lat, lng));
+                }
+            }
+        } else {
+            NearbyUser user = mapOfNearbyUsers.get(key);
+            if (user != null) {
+                LatLng location = user.getLocation();
+                double lat = location.latitude;
+                double lng = location.longitude;
+                Marker marker = user.getMarker();
+                if (marker != null) {
+                    marker.setPosition(new LatLng(lat, lng));
+                }
             }
         }
     }
@@ -783,6 +816,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             // Request to user with ID 'key' was accepted
             Toast toast = Toast.makeText(getApplicationContext(), "accepted your request", Toast.LENGTH_SHORT);
             toast.show();
+            setResponderAsPartner(key);
+            textViewMeeting.setText("Topic Meeting: " + mapOfNearbyUsers.get(key).getTopic().toString());
+            textViewMeeting.setVisibility(View.VISIBLE);
         } else {
             Toast toast = Toast.makeText(getApplicationContext(), "denied your request", Toast.LENGTH_SHORT);
             toast.show();
@@ -821,6 +857,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         respondToRequestDatabase(requesterID, response);
         Toast toast = Toast.makeText(getApplicationContext(), "request " + response, Toast.LENGTH_SHORT);
         toast.show();
+        textViewMeeting.setText("Topic Meeting: " + topic);
+        textViewMeeting.setVisibility(View.VISIBLE);
+
         requesterIDs.remove(requesterIDs.indexOf(requesterID));
         requestData.child(thisUser.getUserID()).child(requesterID).removeValue();
         topicListR.remove(position);
@@ -828,6 +867,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         idListR.remove(position);
         timeListR.remove(position);
         distanceListR.remove(position);
+
+        setRequesterAsPartner(requesterID);
     }
 
     public void cancelRequest(String receiverID, int position) {
@@ -848,7 +889,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     public void processRequestCanceled(String requesterID) {
-
         // TODO this is the method that is run when another user cancels a request.
         // TODO = remove request from user with ID == requesterID from the inbox
 
@@ -864,6 +904,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
      * End request handling methods
      */
 
+    public void setRequesterAsPartner(String requesterID){
+        updateMarker("x", requesterID, true);
+    }
+
+    public void setResponderAsPartner(String responderID){
+        updateMarker("x", responderID, true);
+    }
 }
 
 // TODO 1. couple cancel buttons to backend
