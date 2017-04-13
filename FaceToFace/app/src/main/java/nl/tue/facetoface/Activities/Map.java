@@ -920,4 +920,4 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 // TODO 5. fix inProximity/markers
 // TODO 6. improve aesthetics of the cancel button
 // TODO DONE. give visual feedback when another user cancels a meeting
-// TODO 8. refactor and comment code
+// TODO 8. refactor and comment code.
