@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.LocationListener;
@@ -52,6 +53,7 @@ import nl.tue.facetoface.R;
 
 import static nl.tue.facetoface.R.id.cancelButton;
 import static nl.tue.facetoface.R.id.map;
+import static nl.tue.facetoface.R.id.textViewTopicMeeting;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks,
         OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener {
@@ -68,6 +70,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     public Boolean hasID;
     private UserMarkerBottomSheet markerSheet;
     static Map mapInstance;
+    public TextView textViewTopicMeeting;
 
     private static ArrayList<ArrayList<String>> interestListSent;
     private static ArrayList<ArrayList<String>> interestListRequest;
@@ -167,6 +170,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 }
             }
         });
+
+        textViewTopicMeeting = (TextView) findViewById(R.id.textViewTopicMeeting);
+        textViewTopicMeeting.setVisibility(View.INVISIBLE);
 
         // Set user data (ID, topic, interest(s))
         setUser();
@@ -815,6 +821,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             matchID = key;
             Toast toast = Toast.makeText(getApplicationContext(), "You have a connection - someone has accepted your request!", Toast.LENGTH_SHORT);
             toast.show();
+            textViewTopicMeeting.setText("Topic of Meeting: " + mapOfNearbyUsers.get(key).getTopic().toString());
+            textViewTopicMeeting.setVisibility(View.VISIBLE);
         } else {
             Toast toast = Toast.makeText(getApplicationContext(), "A sent request has been denied.", Toast.LENGTH_SHORT);
             toast.show();
@@ -863,6 +871,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         if (response) {
             Toast toast = Toast.makeText(getApplicationContext(), "The request has been accepted.", Toast.LENGTH_SHORT);
             toast.show();
+            textViewTopicMeeting.setText("Topic of Meeting: " + topic);
+            textViewTopicMeeting.setVisibility(View.VISIBLE);
         } else {
             Toast toast = Toast.makeText(getApplicationContext(), "The request has been denied.", Toast.LENGTH_SHORT);
             toast.show();
@@ -887,6 +897,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         addMarker(userID, false);
         Toast toast = Toast.makeText(getApplicationContext(), "The meeting has been canceled.", Toast.LENGTH_SHORT);
         toast.show();
+        textViewTopicMeeting.setVisibility(View.INVISIBLE);
+
     }
 
     public void processRequestCanceled(String requesterID) {
@@ -906,6 +918,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
         Toast toast = Toast.makeText(getApplicationContext(), "The meeting has been canceled.", Toast.LENGTH_SHORT);
         toast.show();
+        textViewTopicMeeting.setVisibility(View.INVISIBLE);
     }
     /*
      * End request handling methods
