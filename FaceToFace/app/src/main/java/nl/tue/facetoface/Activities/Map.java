@@ -896,7 +896,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     public void processRequestCanceled(String requesterID) {
-        cancelMeeting(requesterID);
 
         // TODO this is the method that is run when another user cancels a request.
         // TODO = remove request from user with ID == requesterID from the inbox
