@@ -892,6 +892,19 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         // TODO this is the method that is run when another user cancels a request.
         // TODO = remove request from user with ID == requesterID from the inbox
 
+        NearbyUser canceller = mapOfNearbyUsers.get(requesterID);
+        requesterIDs.remove(requesterID);
+
+        topicListR.remove(canceller.getTopic());
+        interestListRequest.remove(canceller.getInterests());
+        idListR.remove(requesterID);
+
+        //These need to be fixed
+        //int i = topicListR.indexOf(canceller.getTopic());
+        //timeListR.remove(i);
+        //distanceListR.remove(i);
+
+
     }
 
     public void processMeetingCanceled(String userID) {
