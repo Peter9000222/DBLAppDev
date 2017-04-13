@@ -729,7 +729,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         double lng = location.longitude;
         float hue = 180;
 
-        if(!user.getIsConversationPartner()){
+        Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
+                .icon(BitmapDescriptorFactory
+                        .defaultMarker(hue)));
+        user.setMarker(marker);
+        marker.setTag(key);
+        hashMapMarkers.put(key, marker);
+
+        /*if(!user.getIsConversationPartner()){
             Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
                     .icon(BitmapDescriptorFactory
                             .defaultMarker(hue)));
@@ -743,7 +750,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             user.setMarker(marker);
             marker.setTag(key);
             hashMapMarkers.put(key, marker);
-        }
+        }*/
     }
 
     // Updates position of the marker of the user with ID {@code key} in map
@@ -757,9 +764,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
             //if you accepted the other users request
             if (marker != null) {
-                if(user.getIsConversationPartner()){
-                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-                }
+//                if(user.getIsConversationPartner()){
+//                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+//                }
                 marker.setPosition(new LatLng(lat, lng));
             }
         }
@@ -787,7 +794,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     public void processNewIncomingRequest(String nKey, String nTimeStamp) {
         NearbyUser requester = mapOfNearbyUsers.get(nKey);
         ArrayList<String> empty = new ArrayList<>();
-        topicListR.add(requester.getTopic().toString());
+        topicListR.add(requester.getTopic());
         if (requester.getInterests() == null){
             empty.add("");
             interestListRequest.add(empty);
@@ -855,13 +862,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         Toast toast = Toast.makeText(getApplicationContext(), "request " + response, Toast.LENGTH_SHORT);
         toast.show();
 
-        if(response){
+        /*if(response){
             //User accepted a request, requester data will be updated this will trigger AddMarker()
             NearbyUser requester = mapOfNearbyUsers.get(requesterID);
             requester.setIsConversationPartner(true);
             conversationPartner = requesterID;
 
-        }
+        }*/
 
         requesterIDs.remove(requesterIDs.indexOf(requesterID));
         requestData.child(thisUser.getUserID()).child(requesterID).removeValue();
@@ -869,7 +876,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         interestListRequest.remove(position);
         idListR.remove(position);
         timeListR.remove(position);
-        distanceListR.remove(position);
     }
 
     public void cancelRequest(String receiverID, int position) {
@@ -890,6 +896,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     public void processRequestCanceled(String requesterID) {
+        cancelMeeting(requesterID);
 
         // TODO this is the method that is run when another user cancels a request.
         // TODO = remove request from user with ID == requesterID from the inbox
