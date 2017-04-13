@@ -25,7 +25,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -51,7 +50,7 @@ import nl.tue.facetoface.Models.NearbyUser;
 import nl.tue.facetoface.Models.ThisUser;
 import nl.tue.facetoface.R;
 
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_YELLOW;
+import static nl.tue.facetoface.R.id.cancelButton;
 import static nl.tue.facetoface.R.id.map;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks,
@@ -68,7 +67,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     public ThisUser thisUser;
     public Boolean hasID;
     private UserMarkerBottomSheet markerSheet;
-    private HashMap<String, Marker> hashMapMarkers;
     static Map mapInstance;
 
     private static ArrayList<ArrayList<String>> interestListSent;
@@ -109,7 +107,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     ArrayList<String> interests = new ArrayList<>();
     String userID;
     LatLng locationUser;
-    String conversationPartner;
+
+    // ID of user matched with
+    String matchID;
 
     // HashMap to store instances of NearbyUsers
     HashMap<String, NearbyUser> mapOfNearbyUsers = new HashMap<String, NearbyUser>();
@@ -158,14 +158,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             }
         });
 
-        /*Button buttonMeeting = (Button) findViewById(R.id.meetingButton);
-        buttonMeeting.setOnClickListener(new View.OnClickListener(){
+        Button cancelMeetingButton = (Button) findViewById(cancelButton);
+        cancelMeetingButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                *//*cancelMeeting(conversationPartner);*//*
-
+            public void onClick(View v) {
+                if (matchID != null) {
+                    cancelMeeting(matchID);
+                }
             }
-        });*/
+        });
 
         // Set user data (ID, topic, interest(s))
         setUser();
@@ -197,7 +198,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         distanceListR = new ArrayList<>();
         idListR = new ArrayList<>();
         idListS = new ArrayList<>();
-        hashMapMarkers = new HashMap<>();
     }
 
     public static Map getMapInstance(){
@@ -304,6 +304,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         requestResponse.put("status", response);
         requestResponse.put("canceled", false);
         requestData.child(requesterID).child(thisUser.getUserID()).setValue(requestResponse);
+        if (response == true) {
+            displayMatch(requesterID);
+            matchID = requesterID;
+        }
     }
 
     // Cancel request sent to user with ID {@code receiverID)}
@@ -406,8 +410,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     dLng = 0.0;
                 }
 
-                if (!((mLatitude == null) || (mLongitude == null))) {
-                    if (inProximity(mLatitude, mLongitude, dLat, dLng) && thisUser.getUserID() != dKey) {
+                //TODO check why checking for inProximity is not reliable
+                //if (!((mLatitude == null) || (mLongitude == null))) {
+                    //if (inProximity(mLatitude, mLongitude, dLat, dLng) && thisUser.getUserID() != dKey) {
                         // Save the new user in mapOfNearbyUsers
                         LatLng latLng = new LatLng(dLat, dLng);
                         NearbyUser nearbyUser = new NearbyUser(dKey, dTopic, dInterests, latLng);
@@ -415,10 +420,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
                         // Add marker for the new user
                 if (dKey != thisUser.getUserID()) {
-                    addMarker(dKey);
+                    addMarker(dKey, false);
                 }
-                    }
-                }
+                    //}
+                //}
             }
 
             @Override
@@ -440,8 +445,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
                 boolean notThisUser = dKey != thisUser.getUserID();
 
-                if (!((mLatitude == null) || (mLongitude == null)) && notThisUser) {
-                    if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
+                //if (!((mLatitude == null) || (mLongitude == null)) && notThisUser) {
+                    //if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
                         LatLng latLng = new LatLng(dLat, dLng);
                         NearbyUser user = mapOfNearbyUsers.get(dKey);
                         if (user != null) {
@@ -450,8 +455,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                             user.setLocation(latLng);
 
                             updateMarker(dKey);
-                        }
-                    }
+                        //}
+                    //}
                 }
             }
 
@@ -596,8 +601,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             .icon(BitmapDescriptorFactory
             .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
         mUser.setTag("mydevice");
-        hashMapMarkers.put("mydevice", mUser);
-
         if (firstTimeOrManual)
         {
             mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
@@ -722,35 +725,21 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
      * Begin marker handling methods
      */
     // Adds new marker corresponding to user with ID {@code key} to map
-    public void addMarker(String key) {
+    public void addMarker(String key, boolean match) {
         NearbyUser user = mapOfNearbyUsers.get(key);
         LatLng location = user.getLocation();
         double lat = location.latitude;
         double lng = location.longitude;
         float hue = 180;
+        if (match) {
+            hue = 30;
+        }
 
         Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
-                .icon(BitmapDescriptorFactory
-                        .defaultMarker(hue)));
+            .icon(BitmapDescriptorFactory
+            .defaultMarker(hue)));
         user.setMarker(marker);
         marker.setTag(key);
-        hashMapMarkers.put(key, marker);
-
-        /*if(!user.getIsConversationPartner()){
-            Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
-                    .icon(BitmapDescriptorFactory
-                            .defaultMarker(hue)));
-            user.setMarker(marker);
-            marker.setTag(key);
-            hashMapMarkers.put(key, marker);
-        } else{
-            Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
-                    .icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-            user.setMarker(marker);
-            marker.setTag(key);
-            hashMapMarkers.put(key, marker);
-        }*/
     }
 
     // Updates position of the marker of the user with ID {@code key} in map
@@ -761,12 +750,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             double lat = location.latitude;
             double lng = location.longitude;
             Marker marker = user.getMarker();
-
-            //if you accepted the other users request
             if (marker != null) {
-//                if(user.getIsConversationPartner()){
-//                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-//                }
                 marker.setPosition(new LatLng(lat, lng));
             }
         }
@@ -781,6 +765,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 marker.remove();
                 user.setMarker(null);
             }
+        }
+    }
+
+    public void displayMatch(String key) {
+        NearbyUser user = mapOfNearbyUsers.get(key);
+        if (user != null) {
+            removeMarker(key);
+            addMarker(key, true);
         }
     }
     /*
@@ -819,12 +811,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     public void processResponseToSentRequest(String key, String timeStamp, Boolean status) {
         if (status) {
             // Request to user with ID 'key' was accepted
-            Toast toast = Toast.makeText(getApplicationContext(), "accepted your request", Toast.LENGTH_SHORT);
+            displayMatch(key);
+            matchID = key;
+            Toast toast = Toast.makeText(getApplicationContext(), "You have a connection - someone has accepted your request!", Toast.LENGTH_SHORT);
             toast.show();
-            NearbyUser user = mapOfNearbyUsers.get(key);
-            user.setIsConversationPartner(true);
         } else {
-            Toast toast = Toast.makeText(getApplicationContext(), "denied your request", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getApplicationContext(), "A sent request has been denied.", Toast.LENGTH_SHORT);
             toast.show();
         }
     }
@@ -854,28 +846,27 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         timeListS.add((DateFormat.format("hh:mm", new java.util.Date())).toString());
         idListS.add(requester.getUserID());
 
-
+        Toast toast = Toast.makeText(getApplicationContext(), "The request has been sent.", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     public void sendResponse(String requesterID, boolean response, int position) {
         respondToRequestDatabase(requesterID, response);
-        Toast toast = Toast.makeText(getApplicationContext(), "request " + response, Toast.LENGTH_SHORT);
-        toast.show();
-
-        /*if(response){
-            //User accepted a request, requester data will be updated this will trigger AddMarker()
-            NearbyUser requester = mapOfNearbyUsers.get(requesterID);
-            requester.setIsConversationPartner(true);
-            conversationPartner = requesterID;
-
-        }*/
-
         requesterIDs.remove(requesterIDs.indexOf(requesterID));
         requestData.child(thisUser.getUserID()).child(requesterID).removeValue();
         topicListR.remove(position);
         interestListRequest.remove(position);
         idListR.remove(position);
         timeListR.remove(position);
+        distanceListR.remove(position);
+
+        if (response) {
+            Toast toast = Toast.makeText(getApplicationContext(), "The request has been accepted.", Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            Toast toast = Toast.makeText(getApplicationContext(), "The request has been denied.", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     public void cancelRequest(String receiverID, int position) {
@@ -886,27 +877,35 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         idListS.remove(position);
         timeListS.remove(position);
         distanceListS.remove(position);
+        Toast toast = Toast.makeText(getApplicationContext(), "The request has been canceled.", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     public void cancelMeeting(String userID) {
         cancelMeetingDatabase(userID);
-
-        // TODO this is the method to be invoked when the 'cancel meeting' button is clicked
-
+        removeMarker(userID);
+        addMarker(userID, false);
+        Toast toast = Toast.makeText(getApplicationContext(), "The meeting has been canceled.", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     public void processRequestCanceled(String requesterID) {
+
+        Toast toast = Toast.makeText(getApplicationContext(), "The request has been canceled.", Toast.LENGTH_SHORT);
+        toast.show();
 
         // TODO this is the method that is run when another user cancels a request.
         // TODO = remove request from user with ID == requesterID from the inbox
 
     }
 
+    // TODO to be tested
     public void processMeetingCanceled(String userID) {
+        removeMarker(userID);
+        addMarker(userID, false);
 
-        // TODO this is the method that is run when another user cancels a meeting
-        // TODO = process cancellation of meeting in UI
-
+        Toast toast = Toast.makeText(getApplicationContext(), "The meeting has been canceled.", Toast.LENGTH_SHORT);
+        toast.show();
     }
     /*
      * End request handling methods
@@ -914,11 +913,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
 }
 
-// TODO 1. couple cancel buttons to backend
+// TODO 1. couple cancel buttons to backend - implement processRequestCanceled(String requesterID)
 // TODO 2. fix multiple markers for one user
-// TODO 3. give visual feedback when there's a match with another user
+// TODO DONE. give visual feedback when there's a match with another user
 // TODO 4. fix distance and time in inbox
 // TODO 5. fix inProximity/markers
-// TODO 6. create UI 'cancel meeting' button and couple it to backend
-// TODO 7. give visual feedback when another user cancels a meeting
+// TODO 6. improve aesthetics of the cancel button
+// TODO DONE. give visual feedback when another user cancels a meeting
 // TODO 8. refactor and comment code
