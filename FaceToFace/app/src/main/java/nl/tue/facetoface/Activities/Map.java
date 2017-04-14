@@ -911,6 +911,18 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         Toast toast = Toast.makeText(getApplicationContext(), "The request has been canceled.", Toast.LENGTH_SHORT);
         toast.show();
 
+        NearbyUser canceller = mapOfNearbyUsers.get(requesterID);
+        requesterIDs.remove(requesterID);
+
+        topicListR.remove(canceller.getTopic());
+        interestListRequest.remove(canceller.getInterests());
+        idListR.remove(requesterID);
+
+        //These need to be fixed
+        //int i = topicListR.indexOf(canceller.getTopic());
+        //timeListR.remove(i);
+        //distanceListR.remove(i);
+
         // TODO this is the method that is run when another user cancels a request.
         // TODO = remove request from user with ID == requesterID from the inbox
 
