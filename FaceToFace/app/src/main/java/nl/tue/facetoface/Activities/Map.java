@@ -201,7 +201,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         hashmapListRequest = new HashMap<>();
         topicListS = new ArrayList<>(); //each position has a topic of a user
         timeListS = new ArrayList<>(); //each position has a time of a user
-        distanceListS = new ArrayList<>(); //each postion has a distance of a user
+        distanceListS = new ArrayList<>(); //each position has a distance of a user
         topicListR = new ArrayList<>();
         timeListR = new ArrayList<>();
         distanceListR = new ArrayList<>();
@@ -406,7 +406,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         Users.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
                 // Save the new user in map
                 @SuppressWarnings("unchecked")
                 HashMap<String, Object> map = (HashMap<String, Object>) dataSnapshot.getValue();
@@ -421,25 +420,21 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     dLng = 0.0;
                 }
 
-                if ((mLatitude != null) && (mLongitude != null)) {
-                    System.out.println("wtf running added inprox");
-                    if (inProximity(mLatitude, mLongitude, dLat, dLng) && thisUser.getUserID() != dKey) {
-                        System.out.println("wtf running added inprox1");
-                        // Save the new user in mapOfNearbyUsers
-                        LatLng latLng = new LatLng(dLat, dLng);
-                        NearbyUser nearbyUser = new NearbyUser(dKey, dTopic, dInterests, latLng);
-                        mapOfNearbyUsers.put(dKey, nearbyUser);
+                // Save the new user in mapOfNearbyUsers
+                LatLng latLng = new LatLng(dLat, dLng);
+                NearbyUser nearbyUser = new NearbyUser(dKey, dTopic, dInterests, latLng);
+                mapOfNearbyUsers.put(dKey, nearbyUser);
 
-                        // Add marker for the new user
+                // Add marker for the new user
+                if ((mLatitude != null) && (mLongitude != null)) {
+                    if (inProximity(mLatitude, mLongitude, dLat, dLng) && thisUser.getUserID() != dKey) {
                         addMarker(dKey, false);
-                        System.out.println("wtf running added inprox2");
                     }
                 }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
                 // Save the updated user in a map
                 @SuppressWarnings("unchecked")
                 HashMap<String, Object> map = (HashMap<String, Object>) dataSnapshot.getValue();
@@ -454,28 +449,23 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     dLng = 0.0;
                 }
 
-                System.out.println("wtf running changed inprox");
-                if ((mLatitude != null) && (mLongitude != null) && dKey != thisUser.getUserID()) {
-                    System.out.println("wtf running changed inprox1");
-                    if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
-                        System.out.println("wtf running changed inprox2");
-                        LatLng latLng = new LatLng(dLat, dLng);
-                        NearbyUser user = mapOfNearbyUsers.get(dKey);
-                        if (user != null) {
-                            System.out.println("wtf running changed inprox3");
-                            user.setTopic(dTopic);
-                            user.setInterests(dInterests);
-                            user.setLocation(latLng);
-                            if (user.getMarker() == null) {
+                LatLng latLng = new LatLng(dLat, dLng);
+                NearbyUser user = mapOfNearbyUsers.get(dKey);
+                if (user != null) {
+                    user.setTopic(dTopic);
+                    user.setInterests(dInterests);
+                    user.setLocation(latLng);
+                    if ((mLatitude != null) && (mLongitude != null) && dKey != thisUser.getUserID()) {
+                        if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
+                            if (user.getMarker() != null) {
+                                removeMarker(dKey);
                                 addMarker(dKey, false);
-                            } else {
-                                updateMarker(dKey);
                             }
-                            System.out.println("wtf running changed inprox4");
+                        } else {
+                            if (user.getMarker() != null) {
+                                removeMarker(dKey);
+                            }
                         }
-                    } else {
-                        removeMarker(dKey);
-                        System.out.println("wtf marker removed");
                     }
                 }
             }
@@ -729,7 +719,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         }
 
         double distance = calculateDistance(user1Lat, user1Lng, user2Lat, user2Lng);
-        System.out.println("wtf running method inprox");
         return distance <= 1000;
     }
 
@@ -741,7 +730,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 + Math.cos(Math.toRadians(user1Lat)) * Math.cos(Math.toRadians(user2Lat))
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        System.out.println("wtf running method calcdistance");
         return R * c * 1000; // Convert to meters
     }
 
@@ -923,25 +911,27 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     public void processRequestCanceled(String requesterID) {
-
         Toast toast = Toast.makeText(getApplicationContext(), "The request has been canceled.", Toast.LENGTH_SHORT);
         toast.show();
 
         NearbyUser canceller = mapOfNearbyUsers.get(requesterID);
         requesterIDs.remove(requesterID);
 
+        if (topicListR.contains(canceller.getTopic())) {
+            int i = topicListR.indexOf(canceller.getTopic());
+            if (!timeListR.isEmpty()) {
+                timeListR.remove(i);
+            }
+            if (!distanceListR.isEmpty()) ; {
+                distanceListR.remove(i);
+            }
+        }
+
         topicListR.remove(canceller.getTopic());
         interestListRequest.remove(canceller.getInterests());
         idListR.remove(requesterID);
 
-        //These need to be fixed
-        //int i = topicListR.indexOf(canceller.getTopic());
-        //timeListR.remove(i);
-        //distanceListR.remove(i);
-
-        // TODO this is the method that is run when another user cancels a request.
-        // TODO = remove request from user with ID == requesterID from the inbox
-
+        // This is the method that is run when another user cancels a request
     }
 
     public void processMeetingCanceled(String userID) {
@@ -959,10 +949,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
 }
 
-// TODO 1. fix removing time and distance from inbox when another user cancels request
-// TODO 2. fix multiple markers for one user
+// TODO fix multiple markers for one user
 
-// TODO refactor and comment code.
+// TODO refactor and comment code
 
 // DONE. give visual feedback when there's a match with another user
 // DONE. fix distance and time in inbox
@@ -970,3 +959,4 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 // DONE. improve aesthetics of the cancel button
 // DONE. give visual feedback when another user cancels a meeting
 // DONE. disable ability to send yourself a request
+// DONE. fix removing time and distance from inbox when another user cancels request
