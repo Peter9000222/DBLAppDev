@@ -240,7 +240,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-        mUser.remove();
+        if (mUser != null) {
+            mUser.remove();
+        }
         updateLocation(false);
         setUserLocationToDatabase();
     }
@@ -959,12 +961,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
 // TODO 1. fix removing time and distance from inbox when another user cancels request
 // TODO 2. fix multiple markers for one user
-// TODO 3. disable ability to send yourself a request
 
 // TODO refactor and comment code.
 
-// TODO DONE. give visual feedback when there's a match with another user
-// TODO DONE. fix distance and time in inbox
-// TODO DONE. fix inProximity/markers
-// TODO DONE. improve aesthetics of the cancel button
-// TODO DONE. give visual feedback when another user cancels a meeting
+// DONE. give visual feedback when there's a match with another user
+// DONE. fix distance and time in inbox
+// DONE. fix inProximity/markers
+// DONE. improve aesthetics of the cancel button
+// DONE. give visual feedback when another user cancels a meeting
+// DONE. disable ability to send yourself a request
