@@ -53,7 +53,6 @@ import nl.tue.facetoface.R;
 
 import static nl.tue.facetoface.R.id.cancelButton;
 import static nl.tue.facetoface.R.id.map;
-import static nl.tue.facetoface.R.id.textViewTopicMeeting;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks,
         OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener {
@@ -97,7 +96,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     DatabaseReference Users = mRootRef.child("Users");
     DatabaseReference DestroyUser = mRootRef.child("Users");
 
-    // Requests reference in databae
+    // Requests reference in database
     DatabaseReference requestData = mRootRef.child("Requests");
     DatabaseReference Requests = mRootRef.child("Requests");
     DatabaseReference DestroyUserRequest = mRootRef.child("Requests");
@@ -122,7 +121,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     // OnCreate lifecycle method
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         // Will be used when request button is clicked
         mapInstance = this;
 
@@ -316,8 +314,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         requestResponse.put("canceled", false);
         requestData.child(requesterID).child(thisUser.getUserID()).setValue(requestResponse);
         if (response == true) {
-            displayMatch(requesterID);
             matchID = requesterID;
+            displayMatch(requesterID);
         }
     }
 
@@ -335,6 +333,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         cancelMeeting.put("status", false);
         cancelMeeting.put("canceled", true);
         requestData.child(userID).child(thisUser.getUserID()).setValue(cancelMeeting);
+        matchID = null;
     }
 
     // Set new child in database for this user to receive requests
@@ -395,6 +394,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         if (mUser != null) {
             mUser.remove();
         }
+
+        for (String key : mapOfNearbyUsers.keySet()) {
+            NearbyUser user = mapOfNearbyUsers.get(key);
+            if (user.getMarker() != null) {
+                removeMarker(key);
+            }
+        }
     }
 
     @Override
@@ -426,11 +432,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 mapOfNearbyUsers.put(dKey, nearbyUser);
 
                 // Add marker for the new user
-                if ((mLatitude != null) && (mLongitude != null)) {
-                    if (inProximity(mLatitude, mLongitude, dLat, dLng) && thisUser.getUserID() != dKey) {
-                        addMarker(dKey, false);
-                    }
+                if (!thisUser.getUserID().equals(dKey) && nearbyUser.getMarker() == null) {
+                    addMarker(dKey, false);
                 }
+
             }
 
             @Override
@@ -601,7 +606,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     // Update the location on the map
     private void updateLocation(boolean firstTimeOrManual) {
-
         mLatitude = mLastLocation.getLatitude();
         mLongitude = mLastLocation.getLongitude();
         locationUser = new LatLng(mLatitude, mLongitude);
@@ -675,7 +679,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
         } else {
             setLocation();
             startLocationUpdates();
@@ -714,12 +717,18 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     // Calculates whether a new NearbyUser is in the proximity of ThisUser
     public boolean inProximity(double user1Lat, double user1Lng, double user2Lat, double user2Lng) {
 
-        if (((user1Lat == 0.0) && (user1Lng == 0.0)) || ((user2Lat == 0.0) && (user2Lng ==0.0))) {
+        // Causes errors for some reason
+        /*if (((user1Lat == 0.0) && (user1Lng == 0.0)) || ((user2Lat == 0.0) && (user2Lng == 0.0))) {
+            System.out.println("wtf return false");
             return false;
-        }
+        }*/
 
         double distance = calculateDistance(user1Lat, user1Lng, user2Lat, user2Lng);
-        return distance <= 1000;
+        if (distance <= 1000) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public double calculateDistance(double user1Lat, double user1Lng, double user2Lat, double user2Lng) {
@@ -743,28 +752,16 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         double lat = location.latitude;
         double lng = location.longitude;
         float hue = 180;
-        if (match) {
+        if (match || key.equals(matchID)) {
             hue = 30;
         }
 
-        Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
-            .icon(BitmapDescriptorFactory
-            .defaultMarker(hue)));
-        user.setMarker(marker);
-        marker.setTag(key);
-    }
-
-    // Updates position of the marker of the user with ID {@code key} in map
-    public void updateMarker(String key) {
-        NearbyUser user = mapOfNearbyUsers.get(key);
-        if (user != null) {
-            LatLng location = user.getLocation();
-            double lat = location.latitude;
-            double lng = location.longitude;
-            Marker marker = user.getMarker();
-            if (marker != null) {
-                marker.setPosition(new LatLng(lat, lng));
-            }
+        if (user.getMarker() == null) {
+            Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
+                    .icon(BitmapDescriptorFactory
+                            .defaultMarker(hue)));
+            user.setMarker(marker);
+            marker.setTag(key);
         }
     }
 
@@ -807,7 +804,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             interestListRequest.add(requester.getInterests());
         }
 
-        //hashmapListRequest.put(nKey, requester.getInterests());
         LatLng locationUser1 = requester.getLocation();
         double user1Lat = locationUser1.latitude;
         double user1Lng = locationUser1.longitude;
@@ -849,7 +845,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         else {
             interestListSent.add(requester.getInterests());
         }
-        //hashmapListRequest.put(nKey, requester.getInterests());
         LatLng locationUser1 = requester.getLocation();
         double user1Lat = locationUser1.latitude;
         double user1Lng = locationUser1.longitude;
@@ -878,6 +873,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         if (response) {
             Toast toast = Toast.makeText(getApplicationContext(), "The request has been accepted.", Toast.LENGTH_SHORT);
             toast.show();
+            matchID = requesterID;
             textViewTopicMeeting.setText("Topic of Meeting: " + topic);
             textViewTopicMeeting.setVisibility(View.VISIBLE);
             cancelMeetingButton.setText("Cancel Meeting");
@@ -907,7 +903,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         toast.show();
         textViewTopicMeeting.setVisibility(View.INVISIBLE);
         cancelMeetingButton.setText("");
-
+        matchID = null;
     }
 
     public void processRequestCanceled(String requesterID) {
@@ -935,6 +931,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     public void processMeetingCanceled(String userID) {
+        matchID = null;
         removeMarker(userID);
         addMarker(userID, false);
 
@@ -948,15 +945,3 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
      */
 
 }
-
-// TODO fix multiple markers for one user
-
-// TODO refactor and comment code
-
-// DONE. give visual feedback when there's a match with another user
-// DONE. fix distance and time in inbox
-// DONE. fix inProximity/markers
-// DONE. improve aesthetics of the cancel button
-// DONE. give visual feedback when another user cancels a meeting
-// DONE. disable ability to send yourself a request
-// DONE. fix removing time and distance from inbox when another user cancels request
