@@ -86,17 +86,18 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     private static ArrayList<String> idListR;
     private static ArrayList<String> idListS;
 
+    // Keep track of users who have sent thisUser a request
     ArrayList<String> requesterIDs = new ArrayList<String>();
 
     // Create database
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
-    // Userdata reference
+    // Users reference in database
     DatabaseReference userData = mRootRef.child("Users");
     DatabaseReference Users = mRootRef.child("Users");
     DatabaseReference DestroyUser = mRootRef.child("Users");
 
-    // Requests reference
+    // Requests reference in databae
     DatabaseReference requestData = mRootRef.child("Requests");
     DatabaseReference Requests = mRootRef.child("Requests");
     DatabaseReference DestroyUserRequest = mRootRef.child("Requests");
@@ -106,7 +107,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     LocationRequest mLocationRequest;
     int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 123;
 
-    // ThisUser data variables
+    // thisUser data variables
     String topic;
     ArrayList<String> interests = new ArrayList<>();
     String userID;
@@ -122,7 +123,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //will be used when request button is clicked
+        // Will be used when request button is clicked
         mapInstance = this;
 
         super.onCreate(savedInstanceState);
@@ -418,20 +419,20 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     dLng = 0.0;
                 }
 
-                //TODO check why checking for inProximity is not reliable
-                //if (!((mLatitude == null) || (mLongitude == null))) {
-                    //if (inProximity(mLatitude, mLongitude, dLat, dLng) && thisUser.getUserID() != dKey) {
+                if ((mLatitude != null) && (mLongitude != null)) {
+                    System.out.println("wtf running added inprox");
+                    if (inProximity(mLatitude, mLongitude, dLat, dLng) && thisUser.getUserID() != dKey) {
+                        System.out.println("wtf running added inprox1");
                         // Save the new user in mapOfNearbyUsers
                         LatLng latLng = new LatLng(dLat, dLng);
                         NearbyUser nearbyUser = new NearbyUser(dKey, dTopic, dInterests, latLng);
                         mapOfNearbyUsers.put(dKey, nearbyUser);
 
                         // Add marker for the new user
-                if (dKey != thisUser.getUserID()) {
-                    addMarker(dKey, false);
+                        addMarker(dKey, false);
+                        System.out.println("wtf running added inprox2");
+                    }
                 }
-                    //}
-                //}
             }
 
             @Override
@@ -451,20 +452,29 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     dLng = 0.0;
                 }
 
-                boolean notThisUser = dKey != thisUser.getUserID();
-
-                //if (!((mLatitude == null) || (mLongitude == null)) && notThisUser) {
-                    //if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
+                System.out.println("wtf running changed inprox");
+                if ((mLatitude != null) && (mLongitude != null) && dKey != thisUser.getUserID()) {
+                    System.out.println("wtf running changed inprox1");
+                    if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
+                        System.out.println("wtf running changed inprox2");
                         LatLng latLng = new LatLng(dLat, dLng);
                         NearbyUser user = mapOfNearbyUsers.get(dKey);
                         if (user != null) {
+                            System.out.println("wtf running changed inprox3");
                             user.setTopic(dTopic);
                             user.setInterests(dInterests);
                             user.setLocation(latLng);
-
-                            updateMarker(dKey);
-                        //}
-                    //}
+                            if (user.getMarker() == null) {
+                                addMarker(dKey, false);
+                            } else {
+                                updateMarker(dKey);
+                            }
+                            System.out.println("wtf running changed inprox4");
+                        }
+                    } else {
+                        removeMarker(dKey);
+                        System.out.println("wtf marker removed");
+                    }
                 }
             }
 
@@ -710,11 +720,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     // Calculates whether a new NearbyUser is in the proximity of ThisUser
     public boolean inProximity(double user1Lat, double user1Lng, double user2Lat, double user2Lng) {
 
-        if (((user1Lat == 0.0) && (user1Lng ==0.0)) || ((user2Lat == 0.0) && (user2Lng ==0.0))){
+        if (((user1Lat == 0.0) && (user1Lng == 0.0)) || ((user2Lat == 0.0) && (user2Lng ==0.0))) {
             return false;
         }
 
         double distance = calculateDistance(user1Lat, user1Lng, user2Lat, user2Lng);
+        System.out.println("wtf running method inprox");
         return distance <= 1000;
     }
 
@@ -726,6 +737,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 + Math.cos(Math.toRadians(user1Lat)) * Math.cos(Math.toRadians(user2Lat))
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        System.out.println("wtf running method calcdistance");
         return R * c * 1000; // Convert to meters
     }
 
@@ -928,7 +940,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     }
 
-    // TODO to be tested
     public void processMeetingCanceled(String userID) {
         removeMarker(userID);
         addMarker(userID, false);
@@ -944,11 +955,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
 }
 
-// TODO 1. couple cancel buttons to backend - implement processRequestCanceled(String requesterID)
+// TODO 1. fix removing time and distance from inbox when another user cancels request
 // TODO 2. fix multiple markers for one user
+// TODO 3. disable ability to send yourself a request
+
+// TODO refactor and comment code.
+
 // TODO DONE. give visual feedback when there's a match with another user
-// TODO 4. fix distance and time in inbox
-// TODO 5. fix inProximity/markers
-// TODO 6. improve aesthetics of the cancel button
+// TODO DONE. fix distance and time in inbox
+// TODO DONE. fix inProximity/markers
+// TODO DONE. improve aesthetics of the cancel button
 // TODO DONE. give visual feedback when another user cancels a meeting
-// TODO 8. refactor and comment code.
