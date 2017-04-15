@@ -641,6 +641,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             markerSheet.setInterest(interestsMarker);
             markerSheet.setIdSheet(idMarker);
             markerSheet.show(getSupportFragmentManager(), "test");
+            markerSheet.setIsOwnMarker(false);
         }
             // If own marker clicked
             else{
@@ -650,6 +651,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 markerSheet.setInterest(extras.getStringArrayList("interests"));
                 markerSheet.setIdSheet(extras.getString("userID"));
                 markerSheet.show(getSupportFragmentManager(), "test");
+                markerSheet.setIsOwnMarker(true);
         }
         return true;
     }

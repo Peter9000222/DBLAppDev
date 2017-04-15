@@ -37,6 +37,7 @@ public class UserMarkerBottomSheet extends BottomSheetDialogFragment {
     RecyclerView.LayoutManager userMarker_manager;
 
     Button sendRequest;
+    private boolean isOwnMarker;
 
     @Override
     public void setupDialog(final Dialog dialog, int style) {
@@ -57,7 +58,11 @@ public class UserMarkerBottomSheet extends BottomSheetDialogFragment {
         bottomSheetBehavior = BottomSheetBehavior.from((View)contentView.getParent());
         bottomSheetBehavior.setPeekHeight(size.y);
         sendRequest = (Button) contentView.findViewById(R.id.SendRequestButton);
-        sendRequest.setOnClickListener(new ButtonOnClickListener(1, getIdSheet(), "Send Request"));
+        if (isOwnMarker){
+            sendRequest.setVisibility(View.GONE);
+        } else {
+            sendRequest.setOnClickListener(new ButtonOnClickListener(1, getIdSheet(), "Send Request"));
+        }
         ((View) contentView.getParent()).setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
 
 
@@ -69,6 +74,8 @@ public class UserMarkerBottomSheet extends BottomSheetDialogFragment {
     public void setIdSheet(String idSheet){this.idSheet = idSheet;}
 
     public String getIdSheet(){ return this.idSheet;}
+
+    public void setIsOwnMarker(boolean isOwnMarker){this.isOwnMarker = isOwnMarker;}
 
 
 }
