@@ -874,9 +874,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             Toast toast = Toast.makeText(getApplicationContext(), "The request has been accepted.", Toast.LENGTH_SHORT);
             toast.show();
             matchID = requesterID;
-            textViewTopicMeeting.setText("Topic of Meeting: " + topic);
+            textViewTopicMeeting.setText("Meeting topic: " + topic);
             textViewTopicMeeting.setVisibility(View.VISIBLE);
-            cancelMeetingButton.setText("Cancel Meeting");
+            cancelMeetingButton.setText("Cancel meeting");
         } else {
             Toast toast = Toast.makeText(getApplicationContext(), "The request has been denied.", Toast.LENGTH_SHORT);
             toast.show();
@@ -907,8 +907,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     public void processRequestCanceled(String requesterID) {
-        Toast toast = Toast.makeText(getApplicationContext(), "The request has been canceled.", Toast.LENGTH_SHORT);
-        toast.show();
+        //Toast toast = Toast.makeText(getApplicationContext(), "The request has been canceled.", Toast.LENGTH_SHORT);
+        //toast.show();
 
         NearbyUser canceller = mapOfNearbyUsers.get(requesterID);
         requesterIDs.remove(requesterID);
