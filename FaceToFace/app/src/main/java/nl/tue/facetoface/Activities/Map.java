@@ -464,8 +464,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                         if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
                             if (user.getMarker() != null) {
                                 removeMarker(dKey);
-                                addMarker(dKey, false);
                             }
+                            addMarker(dKey, false);
                         } else {
                             if (user.getMarker() != null) {
                                 removeMarker(dKey);
@@ -719,7 +719,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
         // Causes errors for some reason
         /*if (((user1Lat == 0.0) && (user1Lng == 0.0)) || ((user2Lat == 0.0) && (user2Lng == 0.0))) {
-            System.out.println("wtf return false");
             return false;
         }*/
 
