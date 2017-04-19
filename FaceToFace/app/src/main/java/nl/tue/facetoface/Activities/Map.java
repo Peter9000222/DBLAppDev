@@ -72,6 +72,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     public TextView textViewTopicMeeting;
     public Button cancelMeetingButton;
 
+    /*
+    ending with S: related to sent requests
+    ending with R: related to received requests
+     */
     private static ArrayList<ArrayList<String>> interestListSent;
     private static ArrayList<ArrayList<String>> interestListRequest;
     private static HashMap<String, ArrayList<String>> hashmapListRequest;
@@ -341,12 +345,17 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         requestData.child(thisUser.getUserID()).setValue("");
     }
 
+    //Set two clickable symbols to go to topic and inbox activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
+    /*
+    When clicking on an icon the related activity will be started, data needed by that activity
+    will be passed with
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -438,6 +447,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
             }
 
+            //Method called when data of another user is changed
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 // Save the updated user in a map
@@ -567,6 +577,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         });
     }
 
+    //When Map activity is stopped
     @Override
     protected void onStop() {
         super.onStop();
@@ -576,6 +587,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         }
     }
 
+    //When Map activity is destroyed
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -627,6 +639,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     @Override
     public boolean onMarkerClick(Marker marker) {
         String idMarker = (String) marker.getTag();
+
+        //marker is clicked that is your own marker
         if(idMarker != "mydevice") {
             NearbyUser user = mapOfNearbyUsers.get(idMarker);
             String topicMarker = user.getTopic();
@@ -650,10 +664,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 markerSheet.setIsOwnMarker(true);
         }
         return true;
-    }
-
-    public UserMarkerBottomSheet getMarkerSheet(){
-        return markerSheet;
     }
 
     // Build Google API client
@@ -685,6 +695,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         }
     }
 
+    //Receive results of permission request
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -751,6 +762,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         double lat = location.latitude;
         double lng = location.longitude;
         float hue = 180;
+
+        //marker color is orange when there is a match (accepted request)
         if (match || key.equals(matchID)) {
             hue = 30;
         }
@@ -767,7 +780,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     // Removes the marker of user with ID {@code key} from map
     public void removeMarker(String key) {
         NearbyUser user = mapOfNearbyUsers.get(key);
-        if (user !=null) {
+        if (user != null) {
             Marker marker = user.getMarker();
             if (marker != null) {
                 marker.remove();

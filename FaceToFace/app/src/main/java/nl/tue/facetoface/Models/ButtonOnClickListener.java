@@ -18,6 +18,8 @@ public class ButtonOnClickListener implements View.OnClickListener {
         String tag;
         InboxSentListFragment fragmentSent;
         InboxReceivedListFragment fragmentReceived;
+
+        //instance of the Map activity
         Map x;
         UserMarkerBottomSheet userBottomSheetListener;
 
@@ -28,7 +30,7 @@ public class ButtonOnClickListener implements View.OnClickListener {
         }
 
 
-
+        //Events triggered by buttons from bottomsheets
         @Override
         public void onClick(View v)
         {
