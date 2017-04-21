@@ -1,9 +1,6 @@
 package nl.tue.facetoface.Models;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * Created by piano on 22-Mar-17.
@@ -12,8 +9,8 @@ import java.util.UUID;
 public class ThisUser extends UserData {
 
     public ThisUser() {
-        userID = "";//
-        topic = "ik ben harry";
+        userID = "";
+        topic = "";
         interests = new ArrayList<>();
         location = null;
         marker = null;

@@ -33,7 +33,8 @@ public class InboxSendAdapter extends
 
             inboxSendTopicTextView = (TextView) itemView.findViewById(R.id.inboxsendTopicTextView);
             inboxSendTimeTextView = (TextView) itemView.findViewById(R.id.inboxsendTimeTextView);
-            inboxSendDistanceTextView = (TextView) itemView.findViewById(R.id.inboxsendDistanceTextView);
+            inboxSendDistanceTextView = (TextView) itemView.findViewById(
+                    R.id.inboxsendDistanceTextView);
         }
     }
 
@@ -45,7 +46,8 @@ public class InboxSendAdapter extends
     private Context mContext;
 
     // Pass in the contact array into the constructor
-    public InboxSendAdapter(Context context, ArrayList<String> topic, ArrayList<String> time, List<String> distance) {
+    public InboxSendAdapter(Context context, ArrayList<String> topic, ArrayList<String> time,
+                            List<String> distance) {
         topicList = topic;
         timeList = time;
         distanceList = distance;

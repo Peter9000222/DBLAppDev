@@ -45,13 +45,15 @@ public class InboxReceivedListFragment extends Fragment {
         time = ((InboxActivity)getActivity()).getTime("Received");
         distance = ((InboxActivity)getActivity()).getDistance("Received");
 
-        InboxReceived_recyc = (RecyclerView) getView().findViewById(R.id.inbox_received_recycler_view);
+        InboxReceived_recyc = (RecyclerView) getView().findViewById(
+                R.id.inbox_received_recycler_view);
         InboxReceived_manager = new LinearLayoutManager(getContext());
         InboxReceived_recyc.setLayoutManager(InboxReceived_manager);
         InboxReceived_adap = new InboxReceivedAdapter(getContext(), topic, time, distance);
         InboxReceived_recyc.setAdapter(InboxReceived_adap);
 
-        InboxReceived_recyc.addOnItemTouchListener(new InboxActivity.RecyclerTouchListener(getActivity(),
+        InboxReceived_recyc.addOnItemTouchListener(new InboxActivity.RecyclerTouchListener(
+                getActivity(),
                 InboxReceived_recyc, new InboxActivity.ClickListener() {
             @Override
             public void onClick(View view, final int position) {

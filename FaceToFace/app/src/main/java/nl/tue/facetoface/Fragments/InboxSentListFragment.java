@@ -55,8 +55,8 @@ public class InboxSentListFragment extends Fragment {
         InboxSend_adap = new InboxSendAdapter(getContext(), topic, time, distance);
         InboxSend_recyc.setAdapter(InboxSend_adap);
 
-        InboxSend_recyc.addOnItemTouchListener(new InboxActivity.RecyclerTouchListener(getActivity(),
-                InboxSend_recyc, new InboxActivity.ClickListener() {
+        InboxSend_recyc.addOnItemTouchListener(new InboxActivity.RecyclerTouchListener(
+                getActivity(), InboxSend_recyc, new InboxActivity.ClickListener() {
             @Override
             public void onClick(View view, final int position) {
                 //Values are passing to activity & to fragment as well

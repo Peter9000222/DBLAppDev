@@ -155,22 +155,24 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             }
         });
 
-        // Show list of topics fragment when list of topics button is clicked
-        Button buttonListOfTopics = (Button) findViewById(R.id.stopButton);
-        buttonListOfTopics.setOnClickListener(new View.OnClickListener() {
+        // stop the map activity to be sure the user is deleted when closing the app
+        Button buttonStopSearch = (Button) findViewById(R.id.stopButton);
+        buttonStopSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // List button is now stop app button
+                // finish the map activity call to ondestroy
                 finish();
             }
         });
 
+        // set cancel meeting button
         cancelMeetingButton = (Button) findViewById(cancelButton);
         cancelMeetingButton.setText("");
         cancelMeetingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (matchID != null) {
+                    //cancel the meeting if button is pressed
                     cancelMeeting(matchID);
                 }
             }
@@ -190,6 +192,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         // Send user data to database
         setUserToDatabase();
 
+        // get the hasmap with all the nearby users back from topic only when topic is changed
         Bundle extras = getIntent().getExtras();
         if (extras.getSerializable("userHashMap") != null) {
             mapOfNearbyUsers = (HashMap<String, NearbyUser>) extras.getSerializable("userHashMap");
@@ -229,10 +232,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             .addLocationRequest(mLocationRequest);
 
     protected void startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                mLocationRequest, this);
     }
 
     protected void stopLocationUpdates() {
@@ -404,6 +410,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             mUser.remove();
         }
 
+        // remove old markers
         for (String key : mapOfNearbyUsers.keySet()) {
             NearbyUser user = mapOfNearbyUsers.get(key);
             if (user.getMarker() != null) {
@@ -470,8 +477,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     user.setTopic(dTopic);
                     user.setInterests(dInterests);
                     user.setLocation(latLng);
-                    if ((mLatitude != null) && (mLongitude != null) && dKey != thisUser.getUserID()) { // own location not null & not this user
-                        if (inProximity(mLatitude, mLongitude, dLat, dLng)) { // user in proximity (1km range) of this user
+                    // own location not null & not this user
+                    if ((mLatitude != null) && (mLongitude != null) && dKey
+                            != thisUser.getUserID()) {
+                        // user in proximity (1km range) of this user
+                        if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
                             if (user.getMarker() != null) {
                                 removeMarker(dKey);
                             }
@@ -485,6 +495,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 }
             }
 
+            // remove marker when a user is not online anymore
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 String dKey = dataSnapshot.getKey();
@@ -527,7 +538,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 processNewIncomingRequest(dKey, time);
 
                 // Display toast notification about the new request
-                Toast toast = Toast.makeText(getApplicationContext(), "You have received a new request!", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "You have received a new request!", Toast.LENGTH_SHORT);
                 toast.show();
             }
 
@@ -536,7 +548,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
                 // Save request with response in map
-                HashMap<String, Object> request = (HashMap<String, Object>) dataSnapshot.getValue();
+                HashMap<String, Object> request = (HashMap<String, Object>)
+                        dataSnapshot.getValue();
                 String dKey = dataSnapshot.getKey();
 
                 // Check whether the request is a meeting cancellation notifier
@@ -600,9 +613,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
     // Set initial location of the user
     private void setLocation() {
-        // mMap.clear();
         if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -624,8 +639,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         thisUser.setLocation(locationUser);
         // mUser.remove();
         mUser = mMap.addMarker(new MarkerOptions().position(locationUser)
-            .icon(BitmapDescriptorFactory
-            .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                .icon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
         mUser.setTag("mydevice");
         if (firstTimeOrManual)
         {
@@ -653,15 +668,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             markerSheet.show(getSupportFragmentManager(), "test");
             markerSheet.setIsOwnMarker(false);
         }
-            // If own marker clicked
-            else{
-                markerSheet = new UserMarkerBottomSheet();
-                Bundle extras = getIntent().getExtras();
-                markerSheet.setTopic(extras.getString("topic"));
-                markerSheet.setInterest(extras.getStringArrayList("interests"));
-                markerSheet.setIdSheet(extras.getString("userID"));
-                markerSheet.show(getSupportFragmentManager(), "test");
-                markerSheet.setIsOwnMarker(true);
+        // If own marker clicked
+        else{
+            markerSheet = new UserMarkerBottomSheet();
+            Bundle extras = getIntent().getExtras();
+            markerSheet.setTopic(extras.getString("topic"));
+            markerSheet.setInterest(extras.getStringArrayList("interests"));
+            markerSheet.setIdSheet(extras.getString("userID"));
+            markerSheet.show(getSupportFragmentManager(), "test");
+            markerSheet.setIsOwnMarker(true);
         }
         return true;
     }
@@ -684,7 +699,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     // Google API client connection callback
     @Override
     public void onConnected(Bundle connectionHint) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Ask for permission dialog
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -711,7 +728,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     public void onConnectionFailed(ConnectionResult result) {
         // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
         // onConnectionFailed.
-        // Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+        // Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " +
+        // result.getErrorCode());
         Toast.makeText(this, "Connection failed", Toast.LENGTH_LONG).show();
     }
 
@@ -726,7 +744,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     // Calculates whether a new NearbyUser is in the proximity of ThisUser
-    public boolean inProximity(double user1Lat, double user1Lng, double user2Lat, double user2Lng) {
+    public boolean inProximity(double user1Lat, double user1Lng, double user2Lat,
+                               double user2Lng) {
 
         double distance = calculateDistance(user1Lat, user1Lng, user2Lat, user2Lng);
         if (distance <= 1000) {
@@ -737,15 +756,19 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     // Returns the distance between two gps locations in meters.
-    public double calculateDistance(double user1Lat, double user1Lng, double user2Lat, double user2Lng) {
+    public double calculateDistance(double user1Lat, double user1Lng, double user2Lat,
+                                    double user2Lng) {
         final int R = 6371; // Radius of the earth
-        Double latDistance = Math.toRadians(user2Lat - user1Lat); // based on the two latitudes
-        Double lonDistance = Math.toRadians(user2Lng - user1Lng); // based on the two longitudes
+        // based on the two latitudes
+        Double latDistance = Math.toRadians(user2Lat - user1Lat);
+        // based on the two longitudes
+        Double lonDistance = Math.toRadians(user2Lng - user1Lng);
         Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
                 + Math.cos(Math.toRadians(user1Lat)) * Math.cos(Math.toRadians(user2Lat))
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c * 1000; // Convert to meters
+        // Convert to meters
+        return R * c * 1000;
     }
 
     /*
@@ -829,13 +852,17 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             // Request to user with ID 'key' was accepted
             displayMatch(key);
             matchID = key;
-            Toast toast = Toast.makeText(getApplicationContext(), "You have a connection - someone has accepted your request!", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "You have a connection - someone has accepted your request!",
+                    Toast.LENGTH_SHORT);
             toast.show();
-            textViewTopicMeeting.setText("Topic of Meeting: " + mapOfNearbyUsers.get(key).getTopic().toString());
+            textViewTopicMeeting.setText("Topic of Meeting: " +
+                    mapOfNearbyUsers.get(key).getTopic().toString());
             textViewTopicMeeting.setVisibility(View.VISIBLE);
             cancelMeetingButton.setText("Cancel Meeting");
         } else {
-            Toast toast = Toast.makeText(getApplicationContext(), "A sent request has been denied.", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "A sent request has been denied.", Toast.LENGTH_SHORT);
             toast.show();
         }
     }
@@ -864,7 +891,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         timeListS.add((DateFormat.format("hh:mm", new java.util.Date())).toString());
         idListS.add(requester.getUserID());
 
-        Toast toast = Toast.makeText(getApplicationContext(), "The request has been sent.", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getApplicationContext(), "The request has been sent.",
+                Toast.LENGTH_SHORT);
         toast.show();
     }
 
@@ -879,14 +907,16 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         distanceListR.remove(position);
 
         if (response) {
-            Toast toast = Toast.makeText(getApplicationContext(), "The request has been accepted.", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getApplicationContext(), "The request has been accepted.",
+                    Toast.LENGTH_SHORT);
             toast.show();
             matchID = requesterID;
             textViewTopicMeeting.setText("Meeting topic: " + topic);
             textViewTopicMeeting.setVisibility(View.VISIBLE);
             cancelMeetingButton.setText("Cancel meeting");
         } else {
-            Toast toast = Toast.makeText(getApplicationContext(), "The request has been denied.", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getApplicationContext(), "The request has been denied.",
+                    Toast.LENGTH_SHORT);
             toast.show();
         }
     }
@@ -899,7 +929,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         idListS.remove(position);
         timeListS.remove(position);
         distanceListS.remove(position);
-        Toast toast = Toast.makeText(getApplicationContext(), "The request has been canceled.", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getApplicationContext(), "The request has been canceled.",
+                Toast.LENGTH_SHORT);
         toast.show();
     }
 
@@ -907,7 +938,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         cancelMeetingDatabase(userID);
         removeMarker(userID);
         addMarker(userID, false);
-        Toast toast = Toast.makeText(getApplicationContext(), "The meeting has been canceled.", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getApplicationContext(), "The meeting has been canceled.",
+                Toast.LENGTH_SHORT);
         toast.show();
         textViewTopicMeeting.setVisibility(View.INVISIBLE);
         cancelMeetingButton.setText("");
@@ -915,12 +947,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     public void processRequestCanceled(String requesterID) {
-        //Toast toast = Toast.makeText(getApplicationContext(), "The request has been canceled.", Toast.LENGTH_SHORT);
+        // TODO: 21-4-2017 shouldn't this toast be uncommented ?? !!
+
+        //Toast toast = Toast.makeText(getApplicationContext(), "The request has been canceled.",
+        // Toast.LENGTH_SHORT);
         //toast.show();
 
         // This is the method that is run when another user cancels a request
 
-        //Retrieven an instance of "NearbyUser" for the cancellers ID
+        //Retrieve an instance of "NearbyUser" for the cancellers ID
         //Then remove it form the list with IDs from requesters
         NearbyUser canceller = mapOfNearbyUsers.get(requesterID);
         requesterIDs.remove(requesterID);
@@ -953,7 +988,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         removeMarker(userID);
         addMarker(userID, false);
 
-        Toast toast = Toast.makeText(getApplicationContext(), "The meeting has been canceled.", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getApplicationContext(), "The meeting has been canceled.",
+                Toast.LENGTH_SHORT);
         toast.show();
         textViewTopicMeeting.setVisibility(View.INVISIBLE);
         cancelMeetingButton.setText("");

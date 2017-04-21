@@ -30,9 +30,12 @@ public class InboxReceivedAdapter extends
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            inboxReceivedTopicTextView = (TextView) itemView.findViewById(R.id.inboxReceivedTopicTextView);
-            inboxReceivedTimeTextView = (TextView) itemView.findViewById(R.id.inboxReceivedTimeTextView);
-            inboxReceivedDistanceTextView = (TextView) itemView.findViewById(R.id.inboxReceivedDistanceTextView);
+            inboxReceivedTopicTextView = (TextView) itemView.findViewById(
+                    R.id.inboxReceivedTopicTextView);
+            inboxReceivedTimeTextView = (TextView) itemView.findViewById(
+                    R.id.inboxReceivedTimeTextView);
+            inboxReceivedDistanceTextView = (TextView) itemView.findViewById(
+                    R.id.inboxReceivedDistanceTextView);
         }
     }
 
@@ -44,7 +47,8 @@ public class InboxReceivedAdapter extends
     private Context mContext;
 
     // Pass in the contact array into the constructor
-    public InboxReceivedAdapter(Context context, List<String> topic, List<String> time, List<String> distance) {
+    public InboxReceivedAdapter(Context context, List<String> topic, List<String> time,
+                                List<String> distance) {
         topicList = topic;
         timeList = time;
         distanceList = distance;
@@ -66,7 +70,8 @@ public class InboxReceivedAdapter extends
         View contactView = inflater.inflate(R.layout.inbox_received_cards, parent, false);
 
         // Return a new holder instance
-        InboxReceivedAdapter.ViewHolder viewHolder = new InboxReceivedAdapter.ViewHolder(contactView);
+        InboxReceivedAdapter.ViewHolder viewHolder = new InboxReceivedAdapter.ViewHolder(
+                contactView);
         return viewHolder;
     }
 

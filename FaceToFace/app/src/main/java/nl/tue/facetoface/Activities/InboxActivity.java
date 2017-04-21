@@ -106,12 +106,14 @@ public class InboxActivity extends AppCompatActivity{
             idListR = extras.getStringArrayList("userID");
             idListS = extras.getStringArrayList("userIDS");
             topicListR = extras.getStringArrayList("userTopic");
-            interestListRequest = (ArrayList<ArrayList<String>>) extras.getSerializable("userInterestList");
+            interestListRequest = (ArrayList<ArrayList<String>>)
+                    extras.getSerializable("userInterestList");
             hasID = extras.getBoolean("hasID");
             distanceListR = extras.getStringArrayList("userDistanceR");
             timeListR = extras.getStringArrayList("userTime");
             topicListS = extras.getStringArrayList("userTopicS");
-            interestListSent = (ArrayList<ArrayList<String>>) extras.getSerializable("userInterestListS");
+            interestListSent = (ArrayList<ArrayList<String>>)
+                    extras.getSerializable("userInterestListS");
             timeListS = extras.getStringArrayList("userTimeS");
             distanceListS = extras.getStringArrayList("userDistanceS");
         }
@@ -154,17 +156,17 @@ public class InboxActivity extends AppCompatActivity{
         }
 
     }
-        // When an icon in the toolbar is clicked
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            switch(id) {
-                case android.R.id.home :
-                    onBackPressed();
-                    return true;
-            }
-            return super.onOptionsItemSelected(item);
+    // When an icon in the toolbar is clicked
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch(id) {
+            case android.R.id.home :
+                onBackPressed();
+                return true;
         }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onBackPressed() {
@@ -180,22 +182,24 @@ public class InboxActivity extends AppCompatActivity{
     }
 
     public interface ClickListener{
-         void onClick(View view, int position);
+        void onClick(View view, int position);
     }
 
     public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener{
         private ClickListener clicklistener;
         private GestureDetector gestureDetector;
 
-        public RecyclerTouchListener(Context context,final RecyclerView recyclerView, final ClickListener clicklistener){
+        public RecyclerTouchListener(Context context,final RecyclerView recyclerView,
+                                     final ClickListener clicklistener){
 
             this.clicklistener=clicklistener;
-            gestureDetector=new GestureDetector(context,new GestureDetector.SimpleOnGestureListener(){
-                @Override
-                public boolean onSingleTapUp(MotionEvent e) {
-                    return true;
-                }
-            });
+            gestureDetector=new GestureDetector(context,new
+                    GestureDetector.SimpleOnGestureListener(){
+                        @Override
+                        public boolean onSingleTapUp(MotionEvent e) {
+                            return true;
+                        }
+                    });
         }
 
         @Override
@@ -222,13 +226,15 @@ public class InboxActivity extends AppCompatActivity{
             bottomSheetCancelFragment.setDistance(distanceListS.get(position));
             bottomSheetCancelFragment.setTopic(topicListS.get(position));
             bottomSheetCancelFragment.setInterestList(interestListSent.get(position));
-            bottomSheetCancelFragment.show(getSupportFragmentManager(), bottomSheetCancelFragment.getTag());
+            bottomSheetCancelFragment.show(getSupportFragmentManager(),
+                    bottomSheetCancelFragment.getTag());
             bottomSheetCancelFragment.setPosition(position);
             bottomSheetCancelFragment.setUserId(idListS.get(position));
         } else {
             bottomSheetRequestFragment.setTopic(topicListR.get(position));
             bottomSheetRequestFragment.setInterest(interestListRequest.get(position));
-            bottomSheetRequestFragment.show(getSupportFragmentManager(), bottomSheetRequestFragment.getTag());
+            bottomSheetRequestFragment.show(getSupportFragmentManager(),
+                    bottomSheetRequestFragment.getTag());
             bottomSheetRequestFragment.setPosition(position);
             bottomSheetRequestFragment.setId(idListR.get(position));
         }
@@ -288,9 +294,12 @@ public class InboxActivity extends AppCompatActivity{
     }
 
     public static InboxSentListFragment getSentFragment(){return inboxSentListFragment;}
-    public static InboxReceivedListFragment getReceivedFragment(){return inboxReceivedListFragment;}
+    public static InboxReceivedListFragment getReceivedFragment(){
+        return inboxReceivedListFragment;
+    }
 
-    public static void setUserData(String topic, ArrayList<String> interests, LatLng location, String timeStamp){
+    public static void setUserData(String topic, ArrayList<String> interests, LatLng location,
+                                   String timeStamp){
         topicListR.add(topic);
         interestListRequest.add(interests);
         //location = location;

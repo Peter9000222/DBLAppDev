@@ -42,7 +42,8 @@ public class UserMarkerBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void setupDialog(final Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        View contentView = View.inflate(getContext(), R.layout.fragment_user_marker_bottomsheet, null);
+        View contentView = View.inflate(getContext(), R.layout.fragment_user_marker_bottomsheet,
+                null);
         dialog.setContentView(contentView);
         tvTopic = (TextView) contentView.findViewById(R.id.topicTitle);
         tvTopic.setText(topic);
@@ -61,9 +62,11 @@ public class UserMarkerBottomSheet extends BottomSheetDialogFragment {
         if (isOwnMarker){
             sendRequest.setVisibility(View.GONE);
         } else {
-            sendRequest.setOnClickListener(new ButtonOnClickListener(1, getIdSheet(), "Send Request"));
+            sendRequest.setOnClickListener(new ButtonOnClickListener(1, getIdSheet(),
+                    "Send Request"));
         }
-        ((View) contentView.getParent()).setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
+        ((View) contentView.getParent()).setBackgroundColor(ContextCompat.getColor(getContext(),
+                android.R.color.transparent));
 
 
     }
