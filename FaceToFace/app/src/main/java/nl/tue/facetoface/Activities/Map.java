@@ -470,8 +470,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     user.setTopic(dTopic);
                     user.setInterests(dInterests);
                     user.setLocation(latLng);
-                    if ((mLatitude != null) && (mLongitude != null) && dKey != thisUser.getUserID()) {
-                        if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
+                    if ((mLatitude != null) && (mLongitude != null) && dKey != thisUser.getUserID()) { // own location not null & not this user
+                        if (inProximity(mLatitude, mLongitude, dLat, dLng)) { // user in proximity (1km range) of this user
                             if (user.getMarker() != null) {
                                 removeMarker(dKey);
                             }
@@ -728,23 +728,19 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     // Calculates whether a new NearbyUser is in the proximity of ThisUser
     public boolean inProximity(double user1Lat, double user1Lng, double user2Lat, double user2Lng) {
 
-        // Causes errors for some reason
-        /*if (((user1Lat == 0.0) && (user1Lng == 0.0)) || ((user2Lat == 0.0) && (user2Lng == 0.0))) {
-            return false;
-        }*/
-
         double distance = calculateDistance(user1Lat, user1Lng, user2Lat, user2Lng);
         if (distance <= 1000) {
-            return true;
+            return true; // User is within 1 km of this user
         } else {
-            return false;
+            return false; // User is not within 1 km range of this user
         }
     }
 
+    // Returns the distance between two gps locations in meters.
     public double calculateDistance(double user1Lat, double user1Lng, double user2Lat, double user2Lng) {
         final int R = 6371; // Radius of the earth
-        Double latDistance = Math.toRadians(user2Lat - user1Lat);
-        Double lonDistance = Math.toRadians(user2Lng - user1Lng);
+        Double latDistance = Math.toRadians(user2Lat - user1Lat); // based on the two latitudes
+        Double lonDistance = Math.toRadians(user2Lng - user1Lng); // based on the two longitudes
         Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
                 + Math.cos(Math.toRadians(user1Lat)) * Math.cos(Math.toRadians(user2Lat))
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
@@ -922,24 +918,34 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         //Toast toast = Toast.makeText(getApplicationContext(), "The request has been canceled.", Toast.LENGTH_SHORT);
         //toast.show();
 
+        // This is the method that is run when another user cancels a request
+
+        //Retrieven an instance of "NearbyUser" for the cancellers ID
+        //Then remove it form the list with IDs from requesters
         NearbyUser canceller = mapOfNearbyUsers.get(requesterID);
         requesterIDs.remove(requesterID);
 
+        /*
+        The if statements here determine the position of the requests' attributes in each of their
+        corresponding lists if the requests' topic is present in the topicListR.
+        Not that this position is the same in all lists as they have been set to the same position
+        upon creation.
+        Besides that it also determines wether a list is non-emtpy before it tries to delete
+        something from it.
+         */
         if (topicListR.contains(canceller.getTopic())) {
-            int i = topicListR.indexOf(canceller.getTopic());
+            int i = topicListR.indexOf(canceller.getTopic()); // set position i
             if (!timeListR.isEmpty()) {
-                timeListR.remove(i);
+                timeListR.remove(i); // removes timestamp of request
             }
             if (!distanceListR.isEmpty()) ; {
-                distanceListR.remove(i);
+                distanceListR.remove(i); // removes distance of request
             }
         }
 
-        topicListR.remove(canceller.getTopic());
-        interestListRequest.remove(canceller.getInterests());
-        idListR.remove(requesterID);
-
-        // This is the method that is run when another user cancels a request
+        topicListR.remove(canceller.getTopic()); // removes topic of request
+        interestListRequest.remove(canceller.getInterests()); // removes interests of request
+        idListR.remove(requesterID); // removes requester ID of request
     }
 
     public void processMeetingCanceled(String userID) {
