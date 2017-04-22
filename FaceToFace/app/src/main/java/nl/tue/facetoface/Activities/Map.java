@@ -294,6 +294,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
     }
 
     // Send request to user with ID {@code receiverID}
+    /* "incoming" indicates whether the received/updated request is an incoming or sent request
+     * "received" indicates whether the received/updated request has been processed by the receiver
+     * "status" indicates the response of the receiver (accept/deny request)
+     * "canceled" indicates whether a request has been canceled
+     */
     private void setRequestToDatabase(String receiverID) {
         HashMap<String, Object> requestToSend = new HashMap();
         requestToSend.put("incoming", true);
@@ -480,13 +485,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                     // own location not null & not this user
                     if ((mLatitude != null) && (mLongitude != null) && dKey
                             != thisUser.getUserID()) {
-                        // user in proximity (1km range) of this user
+                        // check if user in proximity (1km range) of this user
                         if (inProximity(mLatitude, mLongitude, dLat, dLng)) {
+                            // if true, update position marker
                             if (user.getMarker() != null) {
                                 removeMarker(dKey);
                             }
                             addMarker(dKey, false);
                         } else {
+                            // else remove marker
                             if (user.getMarker() != null) {
                                 removeMarker(dKey);
                             }
@@ -522,12 +529,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 HashMap<String, Object> request = (HashMap<String, Object>) dataSnapshot.getValue();
                 String dKey = dataSnapshot.getKey();
 
+                // Ignore request if that user has already sent an unresponded request
                 if (requesterIDs.contains(dKey)) {
                     return;
                 }
 
+                // Add requester to list of users who have sent a request
                 requesterIDs.add(dKey);
 
+                // Check if request is a received request or a sent request
                 Boolean incoming = (Boolean) request.get("incoming");
                 if (incoming == false) {
                     return;
@@ -535,6 +545,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
 
                 // Process the request
                 String time = (String) request.get("timeStamp");
+
+                // Delegate further requests processing to this method
                 processNewIncomingRequest(dKey, time);
 
                 // Display toast notification about the new request
@@ -555,6 +567,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 // Check whether the request is a meeting cancellation notifier
                 Boolean canceled = (Boolean) request.get("canceled");
                 if (canceled == true) {
+                    // Delegate cancellation processing to this method
                     processMeetingCanceled(dKey);
                     return;
                 }
@@ -570,13 +583,14 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
                 // Process the response
                 String time = (String) request.get("timeStamp");
                 Boolean status = (Boolean) request.get("status");
+                // Delegate response to a sent request to this method
                 processResponseToSentRequest(dKey, time, status);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 String dKey = dataSnapshot.getKey();
-                //requesterIDs.remove(requesterIDs.indexOf(dKey));
+                //Delegate processing of a canceled request to this method
                 processRequestCanceled(dKey);
             }
 
@@ -782,7 +796,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         double lng = location.longitude;
         float hue = 180;
 
-        //marker color is orange when there is a match (accepted request)
+        //set marker color to orange when there is a match (accepted request)
         if (match || key.equals(matchID)) {
             hue = 30;
         }
@@ -791,6 +805,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
             Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
                     .icon(BitmapDescriptorFactory
                             .defaultMarker(hue)));
+            // store marker in the NearbyUser user instance to be able to retrieve it later
             user.setMarker(marker);
             marker.setTag(key);
         }
@@ -808,6 +823,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         }
     }
 
+    // Calls addMarker with the second parameter as true to indicate that there's a match
     public void displayMatch(String key) {
         NearbyUser user = mapOfNearbyUsers.get(key);
         if (user != null) {
@@ -847,6 +863,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         idListR.add(requester.getUserID());
     }
 
+    // Processes response to a sent request
     public void processResponseToSentRequest(String key, String timeStamp, Boolean status) {
         if (status) {
             // Request to user with ID 'key' was accepted
@@ -867,7 +884,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         }
     }
 
+    // Method called when the send request button is clicked
     public void sendRequest(String receiverKey) {
+        // Process it in database
         setRequestToDatabase(receiverKey);
 
         NearbyUser requester = mapOfNearbyUsers.get(receiverKey);
@@ -896,8 +915,11 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         toast.show();
     }
 
+    // Method called when a user accepts or denies a received request
     public void sendResponse(String requesterID, boolean response, int position) {
+        // Process it in database
         respondToRequestDatabase(requesterID, response);
+
         requesterIDs.remove(requesterIDs.indexOf(requesterID));
         requestData.child(thisUser.getUserID()).child(requesterID).removeValue();
         topicListR.remove(position);
@@ -921,7 +943,9 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         }
     }
 
+    // Method called when a user clicks on the cancel request button
     public void cancelRequest(String receiverID, int position) {
+        // Process it in database
         cancelRequestDatabase(receiverID);
 
         topicListS.remove(position);
@@ -934,10 +958,15 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         toast.show();
     }
 
+    // Method called when the user clicks the cancel meeting button
     public void cancelMeeting(String userID) {
+        // Process it in database
         cancelMeetingDatabase(userID);
+
+        // Update marker to remove indication of a match
         removeMarker(userID);
         addMarker(userID, false);
+
         Toast toast = Toast.makeText(getApplicationContext(), "The meeting has been canceled.",
                 Toast.LENGTH_SHORT);
         toast.show();
@@ -946,17 +975,17 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         matchID = null;
     }
 
+    // Method called when another user cancels a request sent to this user
     public void processRequestCanceled(String requesterID) {
         // TODO: 21-4-2017 shouldn't this toast be uncommented ?? !!
+        // TODO: answer: no. it causes a bug in which this toast is always shown when returning from the topic activity.
 
         //Toast toast = Toast.makeText(getApplicationContext(), "The request has been canceled.",
         // Toast.LENGTH_SHORT);
         //toast.show();
 
-        // This is the method that is run when another user cancels a request
-
-        //Retrieve an instance of "NearbyUser" for the cancellers ID
-        //Then remove it form the list with IDs from requesters
+        //Retrieve the instance of "NearbyUser" for the cancellers ID
+        //Then remove it from the list with IDs from requesters
         NearbyUser canceller = mapOfNearbyUsers.get(requesterID);
         requesterIDs.remove(requesterID);
 
@@ -983,8 +1012,12 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Connec
         idListR.remove(requesterID); // removes requester ID of request
     }
 
+    // This method is called when another user cancels an ongoing meeting with this user
     public void processMeetingCanceled(String userID) {
+        // Reset matchID
         matchID = null;
+
+        // Remove indication of the match
         removeMarker(userID);
         addMarker(userID, false);
 
