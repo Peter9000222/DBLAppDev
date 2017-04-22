@@ -6,12 +6,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by piano on 22-Mar-17.
+ * This class models a nearbyUser (users who are not thisUser)
  */
 
 public class NearbyUser extends UserData implements Serializable {
-
-    protected Boolean onlineStatus;
 
     public NearbyUser(String nID, String nTopic, ArrayList<String> nInterests, LatLng nLocation) {
         userID = nID;
@@ -19,10 +17,6 @@ public class NearbyUser extends UserData implements Serializable {
         interests = nInterests;
         location = nLocation;
         marker = null;
-        onlineStatus = true;
     }
 
-    public Boolean getOnlineStatus() {
-        return onlineStatus;
-    }
 }

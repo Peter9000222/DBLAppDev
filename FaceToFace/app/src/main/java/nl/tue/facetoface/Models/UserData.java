@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 /**
- * Created by piano on 22-Mar-17.
+ * This class models the users
  */
 
 public class UserData {

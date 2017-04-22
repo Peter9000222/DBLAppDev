@@ -1,8 +1,7 @@
 package nl.tue.facetoface.Models;
 
-/**
- * Created by piano on 22-Mar-17.
- */
+
+//Created to model requests as according to the class diagram, left unused in the implementation.
 
 public class Request {
 
